@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'org.foop.final-project.the-message-server' is invalid and this project uses 'org.foop.finalproject.themessageserver' instead.
+* The original package name 'org.foop.final-project.the-message-server' is invalid and this project uses 'org.foop.finalproject.theMessageServer' instead.
 
 # Getting Started
 

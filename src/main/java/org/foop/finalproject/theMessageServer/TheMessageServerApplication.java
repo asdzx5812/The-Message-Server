@@ -1,4 +1,4 @@
-package org.foop.finalproject.themessageserver;
+package org.foop.finalproject.theMessageServer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

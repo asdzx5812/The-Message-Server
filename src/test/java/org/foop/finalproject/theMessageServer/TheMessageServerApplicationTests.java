@@ -1,4 +1,4 @@
-package org.foop.finalproject.themessageserver;
+package org.foop.finalproject.theMessageServer;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
