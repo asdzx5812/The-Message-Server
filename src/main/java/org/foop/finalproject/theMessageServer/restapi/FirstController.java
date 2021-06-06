@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class FirstController {
     @RequestMapping("/hello")
     public String firstControllerResponse(){
-        return "EG小ㄐㄐ";
+        return "擇哥小ㄐㄐ";
     }
 }
