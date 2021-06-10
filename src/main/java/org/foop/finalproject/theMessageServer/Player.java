@@ -51,7 +51,8 @@ public class Player {
 
     public void passIntelligence() { // Todo
         // api
-        // Game.passingIntelligence(this, )
+        GameCard intelligenceToPass; //Todo
+//         Game.passingIntelligence(this, intelligenceToPass);
     }
 
     public Action selectAction() { // Todo
@@ -68,5 +69,14 @@ public class Player {
     }
 
     public void onDie() { // Todo
+    }
+
+    public boolean onPassedInFront(GameCard intelligence) {
+        Game.dispatchSelectingActions();
+        boolean receiveIntelligence = false;
+        if (receiveIntelligence) {
+            onReceiveIntelligence(intelligence);
+        }
+        return receiveIntelligence;
     }
 }

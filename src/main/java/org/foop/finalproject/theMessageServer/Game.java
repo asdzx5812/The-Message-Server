@@ -65,6 +65,13 @@ public class Game {
 
     public void passIntelligence(Player passingPlayer, GameCard intelligence) {
         passDirection = 1;
+        int passingPlayerIndex = players.indexOf(passingPlayer);
+        int currentPlayerIndex = (passingPlayerIndex + passDirection) % players.size();
+        while (currentPlayerIndex != passingPlayerIndex) {
+            Player currentPlayer = players.get(currentPlayerIndex);
+            currentPlayer.onPassedInFront(intelligence);
+            currentPlayerIndex = (currentPlayerIndex + passDirection) % players.size();
+        }
 
     }
 
