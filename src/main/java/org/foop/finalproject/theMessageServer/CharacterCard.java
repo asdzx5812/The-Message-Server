@@ -17,12 +17,12 @@ public class CharacterCard {
 
     public String getMissionDescription(){
         if(this.hidden)
-            throw new RuntimeException("The information is hiddened.");
+            throw new RuntimeException("The information is hidden.");
         return this.mission.getDescription();
     }
     public String getSkillDescription(){
         if(this.hidden)
-            throw new RuntimeException("The information is hiddened.");
+            throw new RuntimeException("The information is hidden.");
         return this.skill.getDescription();
     }
     public boolean isMale(){return this.gender.isMale();}

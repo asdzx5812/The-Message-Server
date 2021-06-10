@@ -2,6 +2,7 @@ package org.foop.finalproject.theMessageServer;
 
 import org.foop.finalproject.theMessageServer.enums.Camp;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
+import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 
 import java.util.ArrayList;
 
@@ -31,28 +32,40 @@ public class Player {
 
     public void play() {
         drawCards();
-        Game.onRoundStart();
+        Game.onRoundStart(); // For 燒毀
         playGameCards();
         passIntelligence();
-        playGameCards();
+        Game.dispatchSelectingActions();
     }
 
     public void drawCards() {
         handCards.addAll(Game.drawCards(2));
+        // Todo
+        // Notify client
+
     }
 
     public void playGameCards() {
         while (true) {
-            // Todo
-
-
+            // Todo: ask client to select
+            boolean doAction = false;
+            if (!doAction) {
+                break;
+            }
+            Game.dispatchSelectingActions();
         }
     }
 
     public void passIntelligence() { // Todo
         // api
-        GameCard intelligenceToPass; //Todo
-//         Game.passingIntelligence(this, intelligenceToPass);
+        GameCard intelligenceToPass = null; //Todo
+        if (intelligenceToPass.getIntelligenceType() == IntelligenceType.DIRECT_MSG) {
+            Player target = null; // Todo: getTarget()
+            Game.passIntelligence(this, intelligenceToPass, target);
+        }
+        else {
+            Game.passIntelligence(this, intelligenceToPass);
+        }
     }
 
     public Action selectAction() { // Todo
@@ -62,13 +75,16 @@ public class Player {
 
     public void onReceiveIntelligence(GameCard intelli) {
         intelligence.get(intelli.color.type).add(intelli);
-        if (isDead())
+        if (isDead()) {
             onDie();
-        else if (isWin())
+        }
+        else if (isWin()) {
             Game.onGameOver();
+        }
     }
 
     public void onDie() { // Todo
+        Game.onPlayerDie(this);
     }
 
     public boolean onPassedInFront(GameCard intelligence) {

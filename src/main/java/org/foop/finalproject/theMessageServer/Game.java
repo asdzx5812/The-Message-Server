@@ -14,20 +14,14 @@ public class Game {
     static protected GameCard passingIntelligence;
 
     static private int passDirection = 1;
-
-
-    static public boolean isGameOver() {
-        for(Player player : players)
-            if (player.isWin())
-                return true;
-        return false;
-    }
+    static private boolean isGameOver = false;
 
     static public void start() {
-        while (!isGameOver()) {
+        while (!isGameOver) {
             for (Player player : players) {
-                if (!player.isDead())
+                if (!player.isDead()) {
                     player.play();
+                }
             }
         }
     }
@@ -38,8 +32,9 @@ public class Game {
 
     static public void dispatchSelectingActions() {
         for (Player player : players) {
-            if (!player.isDead())
+            if (!player.isDead()) {
                 player.selectAction();
+            }
         }
     }
 
@@ -65,27 +60,41 @@ public class Game {
         playedCards.clear();
     }
 
-    public void passIntelligence(Player passingPlayer, GameCard intelligence) {
+    static public void passIntelligence(Player sender, GameCard intelligence) {
         passDirection = 1;
-        int passingPlayerIndex = players.indexOf(passingPlayer);
-        int currentPlayerIndex = (passingPlayerIndex + passDirection) % players.size();
-        while (currentPlayerIndex != passingPlayerIndex) {
+        int senderIndex = players.indexOf(sender);
+        int currentPlayerIndex = (senderIndex + passDirection) % players.size();
+        while (currentPlayerIndex != senderIndex) {
             Player currentPlayer = players.get(currentPlayerIndex);
-            currentPlayer.onPassedInFront(intelligence);
+            if (!currentPlayer.isDead()) {
+                if (currentPlayer.onPassedInFront(intelligence)) {
+                    break;
+                }
+            }
             currentPlayerIndex = (currentPlayerIndex + passDirection) % players.size();
         }
+        // The intelligence passed back to the sender
+        if (currentPlayerIndex == senderIndex) {
+            sender.onReceiveIntelligence(intelligence);
+        }
+    }
+
+    static public void passIntelligence(Player sender, GameCard intelligence, Player target) {
+        if (!target.onPassedInFront(intelligence)) {
+            sender.onReceiveIntelligence(intelligence);
+        }
+    }
+
+    static public void onGameCardPlayed() {
 
     }
 
-    public void onGameCardPlayed() {
-
-    }
-
-    public void onPlayerDie() {
+    static public void onPlayerDie(Player deadPlayer) {
 
     }
 
     static public void onGameOver() {
-
+        isGameOver = true;
+        // Todo: cancel all threads
     }
 }
