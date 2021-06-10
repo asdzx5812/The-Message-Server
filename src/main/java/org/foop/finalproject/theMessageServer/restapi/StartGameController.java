@@ -8,7 +8,7 @@ import javax.annotation.PostConstruct;
 
 // 用來開始執行程式 （用PostConstruct標記的方法會在一開始就執行）
 public class StartGameController {
-    @PostConstruct
+    //@PostConstruct
     public void startGame(){
         Game game = new Game();
         game.start();
