@@ -1,5 +1,6 @@
 package org.foop.finalproject.theMessageServer;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
@@ -13,6 +14,7 @@ public class Game {
     static protected GameCard passingIntelligence;
 
     static private int passDirection = 1;
+
 
     static public boolean isGameOver() {
         for(Player player : players)
