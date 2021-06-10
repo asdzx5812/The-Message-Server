@@ -4,12 +4,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.foop.finalproject.theMessageServer.Game;
 
-@RestController
+import javax.annotation.PostConstruct;
+
+// 用來開始執行程式 （用PostConstruct標記的方法會在一開始就執行）
 public class StartGameController {
-    @PostMapping("/start")
-    public String startGame(){
+    @PostConstruct
+    public void startGame(){
         Game game = new Game();
         game.start();
-        return "";
     }
 }
