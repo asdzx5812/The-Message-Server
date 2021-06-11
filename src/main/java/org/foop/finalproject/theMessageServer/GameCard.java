@@ -25,7 +25,7 @@ public abstract class GameCard {
     }
 
     public abstract void perform(Player target);
-
+    // 回合開始
     public boolean canPlayOnRoundStart(){ return playOnRoundStart; }
     public boolean canPlayWhenOtherCardPlayed(){ return playWhenOtherCardPlayed; }
     public boolean canPlayOnOthersTurn(){ return playOnOthersTurn; }

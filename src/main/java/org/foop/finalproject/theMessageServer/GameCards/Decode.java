@@ -5,10 +5,13 @@ import org.foop.finalproject.theMessageServer.Player;
 import java.security.spec.ECField;
 
 public class Decode extends GameCard {
-    @Override
-    public void perform(Player target) {
-        name = "Decode";
+    Decode(){
+        name = "Decode"; // 破譯
         timingDescription = "Play when message comes to you.";
         effectDescription = "Check the message.";
+        playOnWhenIntelligencePassingInFrontOfPlayer = true;
+    }
+    @Override
+    public void perform(Player target) {
     }
 }

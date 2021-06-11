@@ -5,9 +5,10 @@ import org.foop.finalproject.theMessageServer.Player;
 public class Intercept extends GameCard {
     public Intercept() {
         super();
-        name = "INTERCEPT";
+        name = "INTERCEPT"; // 截獲
         timingDescription = "Play when message transmitting in others round.";
         effectDescription = "Transmitting message comes to you immediately and you become [Lock On Status].";
+        playOnWhenIntelligencePassingInFrontOfOthers = true;
     }
 
 
