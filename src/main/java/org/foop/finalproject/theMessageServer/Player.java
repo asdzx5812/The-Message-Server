@@ -5,17 +5,28 @@ import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Player {
+    protected String id;
     protected CharacterCard character;
     protected Camp camp;
     protected ArrayList<GameCard> handCards;
     protected ArrayList<ArrayList<GameCard>> intelligence = new ArrayList<>(3); // 0 -> RED, 1 -> BLUE, 2 -> BLACK
 
     public Player(CharacterCard character, Camp camp, ArrayList<GameCard> handCards) {
+        this.id = UUID.randomUUID().toString();
         this.character = character;
         this.camp = camp;
         this.handCards = handCards;
+    }
+
+    public void setCharacter(CharacterCard character) {
+        this.character = character;
+    }
+
+    public void removeHandCardByIndex(int idx) {
+        handCards.remove(idx);
     }
 
     public boolean isWin() {
@@ -73,12 +84,11 @@ public class Player {
         return null;
     }
 
-    public void onReceiveIntelligence(GameCard intelli) {
+    public void onReceivedIntelligence(GameCard intelli) {
         intelligence.get(intelli.color.type).add(intelli);
         if (isDead()) {
             onDie();
-        }
-        else if (isWin()) {
+        } else if (isWin()) {
             Game.onGameOver();
         }
     }
@@ -91,7 +101,7 @@ public class Player {
         Game.dispatchSelectingActions();
         boolean receiveIntelligence = false;
         if (receiveIntelligence) {
-            onReceiveIntelligence(intelligence);
+            onReceivedIntelligence(intelligence);
         }
         return receiveIntelligence;
     }

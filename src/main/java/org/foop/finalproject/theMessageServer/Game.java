@@ -1,6 +1,5 @@
 package org.foop.finalproject.theMessageServer;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
@@ -15,6 +14,10 @@ public class Game {
 
     static private int passDirection = 1;
     static private boolean isGameOver = false;
+
+    public static GameCard getPassingIntelligence() {
+        return passingIntelligence;
+    }
 
     static public void start() {
         while (!isGameOver) {
@@ -75,13 +78,13 @@ public class Game {
         }
         // The intelligence passed back to the sender
         if (currentPlayerIndex == senderIndex) {
-            sender.onReceiveIntelligence(intelligence);
+            sender.onReceivedIntelligence(intelligence);
         }
     }
 
     static public void passIntelligence(Player sender, GameCard intelligence, Player target) {
         if (!target.onPassedInFront(intelligence)) {
-            sender.onReceiveIntelligence(intelligence);
+            sender.onReceivedIntelligence(intelligence);
         }
     }
 
@@ -96,5 +99,14 @@ public class Game {
     static public void onGameOver() {
         isGameOver = true;
         // Todo: cancel all threads
+    }
+
+    static public Player getPlayerById(String id) {
+        for (Player player : players) {
+            if (player.id.equals((id))) {
+                return player;
+            }
+        }
+        return null;
     }
 }
