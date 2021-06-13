@@ -9,6 +9,8 @@ public class Intercept extends GameCard {
         timingDescription = "Play when message transmitting in others round.";
         effectDescription = "Transmitting message comes to you immediately and you become [Lock On Status].";
         playOnWhenIntelligencePassingInFrontOfOthers = true;
+        playOnWhenIntelligenceSendByPlayer = true;
+        playOnWhenIntelligenceSendByOthers = true;
     }
 
 

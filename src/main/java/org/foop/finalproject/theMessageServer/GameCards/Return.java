@@ -9,6 +9,7 @@ public class Return extends GameCard {
         timingDescription = "Play when message comes to you in other players' turn. Player in [Lock On Status] will not affect by this card";
         effectDescription = "The intelligence will be transmitted in another direction.";
         playOnWhenIntelligencePassingInFrontOfPlayer = true;
+        playOnWhenIntelligenceSendByOthers = true;
     }
     @Override
     public void perform(Player target) {

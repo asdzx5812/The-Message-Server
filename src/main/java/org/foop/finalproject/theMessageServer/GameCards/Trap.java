@@ -7,8 +7,10 @@ public class Trap extends GameCard {
         name = "Trap"; // 調虎離山
         timingDescription = "Play when message transmitting.";
         effectDescription = "Another player becomes [Trap Status] (Player in [Lock On Status] cn not be affected by this)";
-        playOnWhenIntelligencePassingInFrontOfOthers = true;
         playOnWhenIntelligencePassingInFrontOfPlayer = true;
+        playOnWhenIntelligencePassingInFrontOfOthers = true;
+        playOnWhenIntelligenceSendByPlayer = true;
+        playOnWhenIntelligenceSendByOthers = true;
     }
 
     @Override

@@ -10,6 +10,8 @@ public class Decode extends GameCard {
         timingDescription = "Play when message comes to you.";
         effectDescription = "Check the message.";
         playOnWhenIntelligencePassingInFrontOfPlayer = true;
+        playOnWhenIntelligenceSendByPlayer = true;
+        playOnWhenIntelligenceSendByOthers = true;
     }
     @Override
     public void perform(Player target) {

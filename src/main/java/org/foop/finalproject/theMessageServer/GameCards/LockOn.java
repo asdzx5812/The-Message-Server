@@ -9,6 +9,9 @@ public class LockOn extends GameCard{
         timingDescription = "Play in playing step of own round.";
         effectDescription = "Another player becomes [Lock On Status] and he can not play [transfer].";
         playOnPlayerTurn = true;
+        playOnWhenIntelligencePassingInFrontOfOthers = true;
+        playOnWhenIntelligencePassingInFrontOfPlayer = true;
+        playOnWhenIntelligenceSendByPlayer = true;
     }
 
     @Override
