@@ -1,22 +1,45 @@
 package org.foop.finalproject.theMessageServer;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
 
-public class Game {
-    static protected ArrayList<GameCard> characterCards;
-    static protected ArrayList<Player> players;
+import org.foop.finalproject.theMessageServer.enums.Camp;
 
-    static protected Stack<GameCard> gameCardsDeck;
-    static protected ArrayList<GameCard> playedCards;
-    static protected GameCard passingIntelligence;
+public class Game implements Runnable {
+    private int playerNum;
+    protected ArrayList<GameCard> characterCards;
+    protected ArrayList<Player> players;
 
-    static private int passDirection = 1;
-    static private boolean isGameOver = false;
+    protected Stack<GameCard> gameCardsDeck;
+    protected ArrayList<GameCard> playedCards;
+    protected GameCard passingIntelligence;
 
-    static public void start() {
+    private int passDirection = 1;
+    private boolean isGameOver = false;
+    public boolean isWaitingPlayerAction = false;
+
+    public GameCard getPassingIntelligence() {
+        return passingIntelligence;
+    }
+
+    public Game(ArrayList<User> users) {
+        this.playerNum = users.size();
+        ArrayList<Camp> camps = getInitialCampList();
+        Collections.shuffle(users);
+        Collections.shuffle(camps);
+        for (int i = 0; i < users.size(); i++) {
+            players.add(new Player(this, camps.get(i), users.get(i)));
+        }
+    }
+
+    @Override
+    public void run() {
+        start();
+    }
+
+    public void start() {
+        dealInitialCards();
         while (!isGameOver) {
             for (Player player : players) {
                 if (!player.isDead()) {
@@ -26,11 +49,17 @@ public class Game {
         }
     }
 
-    static public void onRoundStart() {
+    public void dealInitialCards() {
+        for (Player player : players) {
+            player.drawInitialCards();
+        }
+    }
+
+    public void onRoundStart() {
         dispatchSelectingActions();
     }
 
-    static public void dispatchSelectingActions() {
+    public void dispatchSelectingActions() {
         for (Player player : players) {
             if (!player.isDead()) {
                 player.selectAction();
@@ -38,8 +67,7 @@ public class Game {
         }
     }
 
-
-    static public ArrayList<GameCard> drawCards(int num) {
+    public ArrayList<GameCard> drawCards(int num) {
         ArrayList<GameCard> cards = new ArrayList<>();
         if (num >= gameCardsDeck.size()) {
             num -= gameCardsDeck.size();
@@ -54,13 +82,13 @@ public class Game {
         return cards;
     }
 
-    static public void refreshGameCardsDeck() {
+    public void refreshGameCardsDeck() {
         Collections.shuffle(playedCards);
         gameCardsDeck.addAll(playedCards);
         playedCards.clear();
     }
 
-    static public void passIntelligence(Player sender, GameCard intelligence) {
+    public void passIntelligence(Player sender, GameCard intelligence) {
         passDirection = 1;
         int senderIndex = players.indexOf(sender);
         int currentPlayerIndex = (senderIndex + passDirection) % players.size();
@@ -75,26 +103,71 @@ public class Game {
         }
         // The intelligence passed back to the sender
         if (currentPlayerIndex == senderIndex) {
-            sender.onReceiveIntelligence(intelligence);
+            sender.onReceivedIntelligence(intelligence);
         }
     }
 
-    static public void passIntelligence(Player sender, GameCard intelligence, Player target) {
+    public void passIntelligence(Player sender, GameCard intelligence, Player target) {
         if (!target.onPassedInFront(intelligence)) {
-            sender.onReceiveIntelligence(intelligence);
+            sender.onReceivedIntelligence(intelligence);
         }
     }
 
-    static public void onGameCardPlayed() {
+    public void onGameCardPlayed() {
 
     }
 
-    static public void onPlayerDie(Player deadPlayer) {
+    public void onPlayerDie(Player deadPlayer) {
 
     }
 
-    static public void onGameOver() {
+    public void onGameOver() {
         isGameOver = true;
         // Todo: cancel all threads
+    }
+
+    public Player getPlayerById(String id) {
+        for (Player player : players) {
+            if (player.id.equals((id))) {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    private ArrayList<Camp> getInitialCampList() {
+        switch (playerNum) {
+            case 2:
+                return getCampByNums(1, 1, 0);
+            case 3:
+                return getCampByNums(1, 1, 1);
+            case 4:
+                return getCampByNums(1, 1, 2);
+            case 5:
+                return getCampByNums(2, 2, 1);
+            case 6:
+                return getCampByNums(2, 2, 2);
+            case 7:
+                return getCampByNums(3, 3, 1);
+            case 8:
+                return getCampByNums(3, 3, 2);
+            case 9:
+                return getCampByNums(3, 3, 3);
+        }
+        throw new RuntimeException("PlayerNumError");
+    }
+
+    private ArrayList<Camp> getCampByNums(int blueNum, int redNum, int greenNum) {
+        ArrayList<Camp> initialCamp = new ArrayList<>();
+        for (int i = 0; i < blueNum; i++) {
+            initialCamp.add(Camp.BLUE);
+        }
+        for (int i = 0; i < redNum; i++) {
+            initialCamp.add(Camp.RED);
+        }
+        for (int i = 0; i < greenNum; i++) {
+            initialCamp.add(Camp.GREEN);
+        }
+        return initialCamp;
     }
 }

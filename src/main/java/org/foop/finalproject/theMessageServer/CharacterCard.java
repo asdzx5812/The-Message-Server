@@ -7,7 +7,7 @@ public class CharacterCard {
     protected Skill skill;
     protected boolean hidden;
 
-    CharacterCard(String name, Gender gender, Mission mission, Skill skill, boolean hidden){
+    CharacterCard(String name, Gender gender, Mission mission, Skill skill, boolean hidden) {
         this.name = name;
         this.gender = gender;
         this.mission = mission;
