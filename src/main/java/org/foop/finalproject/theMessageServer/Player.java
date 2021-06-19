@@ -100,8 +100,8 @@ public class Player {
         return null;
     }
 
-    public void setActionToPerform(int idx, Player target) {
-        this.actionToPerform = new Action(handCards.get(idx), target);
+    public Action setActionToPerform(int idx, Player target) {
+        return new Action(this, handCards.get(idx), target);
     }
 
     public void onReceivedIntelligence(GameCard intelli) {
@@ -124,6 +124,16 @@ public class Player {
             onReceivedIntelligence(intelligence);
         }
         return receiveIntelligence;
+    }
+
+    public GameCard getCardByIndex(int idx) throws Exception {
+        GameCard cardSelected;
+        try{
+            cardSelected = handCards.get(idx);
+        } catch (Exception e) {
+            throw new Exception("Index out of range of handcard.");
+        }
+        return cardSelected;
     }
 
 }

@@ -38,8 +38,9 @@ public class Room {
         } else {
             isPlaying = true;
             game = new Game(users);
-            Thread gameThread = new Thread(game);
-            gameThread.start();
+            game.start();
+            // Thread gameThread = new Thread(game);
+            // gameThread.start();
         }
     }
 
@@ -57,5 +58,9 @@ public class Room {
         catch (Exception e) {
             throw new Exception("Player not found");
         }
+    }
+
+    public Game getGame(){
+        return game;
     }
 }

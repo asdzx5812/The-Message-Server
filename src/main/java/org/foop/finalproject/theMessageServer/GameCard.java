@@ -26,7 +26,7 @@ public abstract class GameCard {
         playOnWhenIntelligenceSendByOthers = false;
     }
 
-    public abstract void perform(Player target);
+    public abstract void perform(Player performer, Player target);
     // 回合開始
     public boolean canPlayOnRoundStart(){ return playOnRoundStart; }
     public boolean canPlayWhenOtherCardPlayed(){ return playWhenOtherCardPlayed; }

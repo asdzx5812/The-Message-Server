@@ -20,7 +20,8 @@ public class RoomService {
 
     public void startGame(String roomId) throws Exception{
         Room room = Main.getRoom(roomId);
-        room.startGame();
         // Todo 通知user的playerId(websocket)
+        room.startGame();
+
     }
 }

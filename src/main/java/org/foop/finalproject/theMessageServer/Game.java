@@ -5,11 +5,21 @@ import java.util.Collections;
 import java.util.Stack;
 
 import org.foop.finalproject.theMessageServer.enums.Camp;
-
-public class Game implements Runnable {
+import org.foop.finalproject.theMessageServer.enums.GameState;
+import org.foop.finalproject.theMessageServer.service.GameService;
+import org.foop.finalproject.theMessageServer.state.Round;
+public class Game{
     private int playerNum;
+    private int currentPlayerIndex;
+    private int currentIntelligencePlayerIndex;
+    private int currentGameCardPlayerIndex;
     protected ArrayList<GameCard> characterCards;
     protected ArrayList<Player> players;
+    protected ArrayList<User> users;
+    //Todo state
+    protected GameState currentState;
+    protected Round round;
+    protected Stack<Action> currentActionsOnBoard;
 
     protected Stack<GameCard> gameCardsDeck;
     protected ArrayList<GameCard> playedCards;
@@ -25,36 +35,44 @@ public class Game implements Runnable {
 
     public Game(ArrayList<User> users) {
         this.playerNum = users.size();
-        ArrayList<Camp> camps = getInitialCampList();
-        Collections.shuffle(users);
-        Collections.shuffle(camps);
-        for (int i = 0; i < users.size(); i++) {
-            players.add(new Player(this, camps.get(i), users.get(i)));
-        }
-    }
+        this.users = users;
 
-    @Override
-    public void run() {
-        start();
     }
 
     public void start() {
-        dealInitialCards();
-        while (!isGameOver) {
-            for (Player player : players) {
-                if (!player.isDead()) {
-                    player.play();
-                }
-            }
+        currentState = GameState.gameStart;
+        currentPlayerIndex = 0;
+        ArrayList<Camp> camps = getInitialCampList();
+        Collections.shuffle(users);
+        Collections.shuffle(camps);
+        for (int i = 0; i < playerNum; i++) {
+            players.add(new Player(this, camps.get(i), users.get(i)));
+            players.get(i).drawInitialCards();
         }
+        // Todo 選角 and Inform every player their player_id
+        for(int i = 0; i < playerNum; i++) {
+            // TODO: inform players their player_id to call api
+        }
+        for(int i = 0; i < playerNum; i++){
+            // TODO: inform players to select character
+            // TODO: 等到全部人都完成廣播遊戲開始
+        }
+
     }
 
-    public void dealInitialCards() {
-        for (Player player : players) {
-            player.drawInitialCards();
-        }
-    }
+    public void run(){
 
+    }
+    public GameState getState(){
+        return currentState;
+    }
+    public void setState(GameState newGameState){
+        currentState = newGameState;
+    }
+    public Round getRound(){
+        return round;
+    }
+    /*
     public void onRoundStart() {
         dispatchSelectingActions();
     }
@@ -66,7 +84,7 @@ public class Game implements Runnable {
             }
         }
     }
-
+    */
     public ArrayList<GameCard> drawCards(int num) {
         ArrayList<GameCard> cards = new ArrayList<>();
         if (num >= gameCardsDeck.size()) {
@@ -138,26 +156,26 @@ public class Game implements Runnable {
     private ArrayList<Camp> getInitialCampList() {
         switch (playerNum) {
             case 2:
-                return getCampByNums(1, 1, 0);
+                return getCampsByNums(1, 1, 0);
             case 3:
-                return getCampByNums(1, 1, 1);
+                return getCampsByNums(1, 1, 1);
             case 4:
-                return getCampByNums(1, 1, 2);
+                return getCampsByNums(1, 1, 2);
             case 5:
-                return getCampByNums(2, 2, 1);
+                return getCampsByNums(2, 2, 1);
             case 6:
-                return getCampByNums(2, 2, 2);
+                return getCampsByNums(2, 2, 2);
             case 7:
-                return getCampByNums(3, 3, 1);
+                return getCampsByNums(3, 3, 1);
             case 8:
-                return getCampByNums(3, 3, 2);
+                return getCampsByNums(3, 3, 2);
             case 9:
-                return getCampByNums(3, 3, 3);
+                return getCampsByNums(3, 3, 3);
         }
         throw new RuntimeException("PlayerNumError");
     }
 
-    private ArrayList<Camp> getCampByNums(int blueNum, int redNum, int greenNum) {
+    private ArrayList<Camp> getCampsByNums(int blueNum, int redNum, int greenNum) {
         ArrayList<Camp> initialCamp = new ArrayList<>();
         for (int i = 0; i < blueNum; i++) {
             initialCamp.add(Camp.BLUE);
@@ -169,5 +187,50 @@ public class Game implements Runnable {
             initialCamp.add(Camp.GREEN);
         }
         return initialCamp;
+    }
+
+    public void placeActionOnBoard(Action action){
+        this.currentActionsOnBoard.push(action);
+    }
+
+    public void setCounteractRound(Player player) {
+        round.setCounteractRound(true);
+        round.setCounteractEnd(player);
+    }
+
+    public void setCurrentGameCardPlayerIndex() {
+        currentGameCardPlayerIndex = currentPlayerIndex;
+    }
+
+    public Player getCurrentPlayer() {
+        return players.get(currentPlayerIndex);
+    }
+
+    public Player getCurrentGameCardPlayer() {
+        return players.get(currentGameCardPlayerIndex);
+    }
+
+    public Player getNextPlayer() {
+        int nextPlayerIndex = (currentPlayerIndex == playerNum)? 0 : currentPlayerIndex + 1;
+        return players.get(nextPlayerIndex);
+    }
+
+    public void finishCounteractRound() {
+        round.setCounteractRound(false);
+        round.setCounteractEnd(null);
+        takeActionOnBoard();
+    }
+    private void takeActionOnBoard(){
+        for(Action action: currentActionsOnBoard){
+            playedCards.add(action.getCard());
+        }
+        if(currentActionsOnBoard.size() % 2 == 1) {
+            currentActionsOnBoard.get(0).execute();
+        }
+        currentActionsOnBoard.clear();
+    }
+    public void finishGameCardRound() {
+        // TODO
+        if (currentState.equals(GameState.beforePassingIntelligence))
     }
 }

@@ -1,10 +1,10 @@
 package org.foop.finalproject.theMessageServer.enums;
 
-public enum Status {
+public enum PlayerStatus {
     Normal("Normal"), LockOn("Lock On"), Trap("Trap");
     public String name;
 
-    Status(String name) {
+    PlayerStatus(String name) {
             this.name = name;
     }
 
