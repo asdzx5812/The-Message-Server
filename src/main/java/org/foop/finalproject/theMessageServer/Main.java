@@ -9,7 +9,7 @@ public class Main {
     static public ArrayList<Room> rooms = new ArrayList<>();
     static public ArrayList<User> users = new ArrayList<>();
     static public void addUser(User user){
-            users.add(user);
+        users.add(user);
     }
     static public String createRoom(User user) {
         String roomId;

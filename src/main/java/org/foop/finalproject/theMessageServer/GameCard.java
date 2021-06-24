@@ -1,6 +1,9 @@
 package org.foop.finalproject.theMessageServer;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 public abstract class GameCard {
     protected GameCardColor color;
@@ -8,6 +11,7 @@ public abstract class GameCard {
     protected String timingDescription;
     protected String effectDescription;
     protected IntelligenceType intelligenceType;
+    protected boolean needTarget;
     protected boolean playOnRoundStart;                                     // 燒毀
     protected boolean playWhenOtherCardPlayed;                              // 識破
     protected boolean playOnPlayerTurn;                                     // 試探、真偽莫辨、鎖定
@@ -26,7 +30,11 @@ public abstract class GameCard {
         playOnWhenIntelligenceSendByOthers = false;
     }
 
-    public abstract void perform(Player performer, Player playerTarget, Game game);
+    // TODO run validator
+    public boolean isValid(){
+        return true;
+    }
+    public abstract void perform(Player performer, Player playerTarget, Game game) throws IOException;
     // 回合開始
     public boolean canPlayOnRoundStart(){ return playOnRoundStart; }
     public boolean canPlayWhenOtherCardPlayed(){ return playWhenOtherCardPlayed; }
@@ -48,5 +56,16 @@ public abstract class GameCard {
     }
     public IntelligenceType getIntelligenceType() {
         return intelligenceType;
+    }
+    public JSONObject toJsonObject(){
+        JSONObject handCardObj = new JSONObject();
+        handCardObj.put("name", name);
+        handCardObj.put("timingdescription", timingDescription);
+        handCardObj.put("effectDescription", effectDescription);
+        handCardObj.put("color", color.toString());
+        handCardObj.put("type", intelligenceType.toString());
+        handCardObj.put("needTarget", needTarget);
+        handCardObj.put("isValid", isValid());
+        return handCardObj;
     }
 }

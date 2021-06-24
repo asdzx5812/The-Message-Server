@@ -5,6 +5,7 @@ import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.security.spec.ECField;
 
 public class Decode extends GameCard {
@@ -20,7 +21,7 @@ public class Decode extends GameCard {
     private MessageService messageService;
 
     @Override
-    public void perform(Player performer, Player playerTarget, Game game) {
+    public void perform(Player performer, Player playerTarget, Game game) throws IOException {
         messageService.sendIntelligenceInformationToPlayer(game, playerTarget);
     }
 }

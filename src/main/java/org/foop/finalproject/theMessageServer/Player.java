@@ -1,17 +1,19 @@
 package org.foop.finalproject.theMessageServer;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.foop.finalproject.theMessageServer.enums.Camp;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
 import org.foop.finalproject.theMessageServer.utils.Utility;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class Player {
     private Game game;
     protected String id;
-    protected CharacterCard character;
+    protected Character character;
     protected Camp camp;
     protected PlayerStatus status;
     protected ArrayList<GameCard> handCards;
@@ -19,17 +21,23 @@ public class Player {
     protected Action actionToPerform;
     protected User user;
 
-    public Player(Game game, Camp camp, User user) {
+    public Player(Game game, Camp camp, Character character, User user) {
         this.game = game;
         this.id = Utility.generatePlayerId();
-        this.character = null;
+        this.character = character;
         this.camp = camp;
         this.status = PlayerStatus.Normal;
         this.handCards = new ArrayList<>();
         this.user = user;
     }
 
-    public void setCharacter(CharacterCard character) {
+    public User getUser(){ return user; }
+
+    public String getId(){ return id; }
+
+    public Character getCharacter(){ return character; }
+
+    public void setCharacter(Character character) {
         this.character = character;
     }
 
@@ -148,5 +156,21 @@ public class Player {
 
     public void changeStatus(PlayerStatus newStatus){
         this.status = newStatus;
+    }
+
+    public JSONObject toJsonObject(){
+        JSONObject playerObj = new JSONObject();
+        playerObj.put("userId", user.getId());
+        playerObj.put("playerId", getId());
+        playerObj.put("name", user.getName());
+        playerObj.put("hamdcardsNum", handCards.size());
+        ArrayList<JSONObject> handCardObj = new ArrayList();
+        for(GameCard gameCard:handCards){
+            handCardObj.add(gameCard.toJsonObject());
+        }
+        playerObj.put("handcards", handCardObj);
+        playerObj.put("camp", camp);
+        playerObj.put("character", character);
+        return playerObj;
     }
 }

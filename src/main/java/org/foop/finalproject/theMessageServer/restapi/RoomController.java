@@ -20,6 +20,7 @@ public class RoomController {
     public ResponseEntity createRoom(@PathVariable String userId) {
         try {
             String roomId = roomService.createRoom(userId);
+            // Todo response maybe need to transform to json
             return ResponseEntity.ok().body(roomId);
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
@@ -33,14 +34,10 @@ public class RoomController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{roomId}/game/start")
-    public ResponseEntity startGame(@PathVariable String userId, @PathVariable String roomId) {
-        try {
-            roomService.startGame(roomId);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
-            return ResponseEntity.status(404).body(e.getMessage());
-        }
+    @DeleteMapping("/{roomId}")
+    public ResponseEntity leaveRoom(@PathVariable String userId, @PathVariable String roomId) throws Exception {
+        roomService.leaveRoom(userId);
+        return ResponseEntity.ok().build();
     }
+
 }

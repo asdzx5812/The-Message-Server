@@ -38,6 +38,7 @@ public class Room {
         } else {
             isPlaying = true;
             game = new Game(users);
+            game.initializeStage();
             game.start();
             // Thread gameThread = new Thread(game);
             // gameThread.start();
@@ -62,5 +63,9 @@ public class Room {
 
     public Game getGame(){
         return game;
+    }
+
+    public void onUserLeave(User user) {
+        users.remove(user);
     }
 }

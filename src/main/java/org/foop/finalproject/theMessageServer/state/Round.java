@@ -3,25 +3,22 @@ import java.util.Stack;
 
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Action;
-public class Round {
-    private boolean counteractRound;
-    private Player counteractEnd;
+import org.foop.finalproject.theMessageServer.round.CounteractRound;
 
-    Round(Player counteractEnd){
-        this.counteractEnd = counteractEnd;
-    }
-    public void setCounteractEnd(Player counteractEnd) {
-        counteractEnd = counteractEnd;
-    }
+public abstract class Round {
+    private Player endPlayer;
+    private int currentPlayerId;
 
-    public void setCounteractRound(boolean counteractRound) {
-        counteractRound = counteractRound;
+    public Round(Player endPlayer){
+        this.endPlayer = endPlayer;
     }
 
-    public Player getCounteractEnd(){
-        return counteractEnd;
+    public void setEnd(Player endPlayer) {
+        this.endPlayer = endPlayer;
     }
-    public boolean isCounteractRound(){
-        return counteractRound;
+
+    public Player getEndPlayer(){
+        return endPlayer;
     }
+
 }

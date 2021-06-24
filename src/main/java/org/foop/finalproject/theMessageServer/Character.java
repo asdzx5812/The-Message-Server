@@ -1,19 +1,24 @@
 package org.foop.finalproject.theMessageServer;
 
-public class CharacterCard {
+import org.foop.finalproject.theMessageServer.missions.emptyMission;
+import org.foop.finalproject.theMessageServer.skills.emptySkill;
+
+public class Character {
     protected String name;
     protected Gender gender;
     protected Mission mission;
     protected Skill skill;
     protected boolean hidden;
 
-    CharacterCard(String name, Gender gender, Mission mission, Skill skill, boolean hidden) {
+    public Character(String name, Gender gender, Mission mission, Skill skill, boolean hidden) {
         this.name = name;
         this.gender = gender;
         this.mission = mission;
         this.skill = skill;
         this.hidden = hidden;
     }
+
+
 
     public String getMissionDescription(){
         if(this.hidden)
@@ -41,33 +46,5 @@ public class CharacterCard {
 
 }
 
-abstract class Mission{
-    protected String description;
-    abstract protected boolean isCompleted();
 
-    public String getDescription() {
-        return description;
-    }
 
-}
-
-abstract class Skill{
-    String description = "";
-    abstract void perform();
-
-    public String getDescription() {
-        return description;
-    }
-
-}
-
-class Gender{
-    private boolean male, female;
-    Gender(boolean male, boolean female){
-        this.male = male;
-        this.female = female;
-    }
-    
-    public boolean isMale(){return male;}
-    public boolean isFemale(){return female;}
-}

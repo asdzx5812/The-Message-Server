@@ -4,16 +4,17 @@ import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.Main;
 import org.foop.finalproject.theMessageServer.User;
 import org.foop.finalproject.theMessageServer.Player;
+import org.json.JSONObject;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 
+@Service
 @ServerEndpoint(value = "/websocket")    //宣告這是一個Socket服務
 public class MessageService{
     /**
@@ -22,7 +23,7 @@ public class MessageService{
      * @throws Exception
      */
     @OnOpen
-    public void onOpen(Session session) throws Exception {
+    public void onOpen(Session session){
         // Main.openSession(session);
     }
     /**
@@ -30,7 +31,7 @@ public class MessageService{
      * @throws Exception
      */
     @OnClose
-    public void onClose() throws Exception {
+    public void onClose(){
         // Main.closeSessions();
     }
     /**
@@ -50,13 +51,15 @@ public class MessageService{
      * @throws Exception
      */
     @OnMessage
-    public void onMessage(String message, Session session) throws Exception {
+    public void onMessage(String message, Session session) throws Exception{
         if (message != null){
             String[] messages = message.split("-",1);
             switch (messages[0]) {
                 case "start": //Todo 創建user
-                    User user = new User(messages[1],session);
+                    User user = new User(messages[1], session);
                     Main.addUser(user);
+                    // Todo 看之後怎麼接
+                    sendMessage("userId:" + user.getId(), session);
                     break;
                 default:
                     break;
@@ -69,12 +72,33 @@ public class MessageService{
      * @param message
      * @throws IOException
      */
-    public void sendMessage(String message) throws IOException {
-        this.session.getBasicRemote().sendText(message);   //向客戶端傳送資料
+    public void sendMessage(String message, Session session) throws IOException{
+        session.getBasicRemote().sendText(message);   //向客戶端傳送資料
+    }
+    public void sendMessage(JSONObject jsonObject, Session session) throws EncodeException, IOException {
+        session.getBasicRemote().sendObject(jsonObject);   //向客戶端傳送資料
+    }
+    public void sendIntelligenceInformationToPlayer(Game game, Player targetPlayer) throws EncodeException, IOException {
+        Session session = getPlayerSessionFromGame(targetPlayer);
+        sendMessage(game.getPassingIntelligence().toJsonObject(), session);
     }
 
-    public void sendIntelligenceInformationToPlayer(Game game, Player targetPlayer){
-        ArrayList<Session> sessions = Main.getSessions(game)
-        //Todo
+    private Session getPlayerSessionFromGame(Player player){
+        return player.getUser().getSession();
+    }
+
+    private ArrayList<Session> getAllSessionsFromGame(Game game){
+        ArrayList<Player> players = game.getPlayers();
+        ArrayList<Session> sessions = new ArrayList<>();
+        for(Player player:players){
+            sessions.add(player.getUser().getSession());
+        }
+        return sessions;
+    }
+    public void broadcastPlayerInformation(Game game, JSONObject playersInformationObj) throws EncodeException, IOException {
+        ArrayList<Session> sessions = getAllSessionsFromGame(game);
+        for(Session session:sessions){
+            sendMessage(playersInformationObj, session);
+        }
     }
 }

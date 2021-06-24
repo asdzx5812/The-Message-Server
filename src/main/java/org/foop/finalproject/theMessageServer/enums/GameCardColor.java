@@ -6,4 +6,14 @@ public enum GameCardColor {
     GameCardColor(int type) {
         this.type = type;
     }
+
+    @Override
+    public String toString(){
+        if(type == 0)
+            return "Red";
+        else if(type == 1)
+            return "Blue";
+        else
+            return "Black";
+    }
 }

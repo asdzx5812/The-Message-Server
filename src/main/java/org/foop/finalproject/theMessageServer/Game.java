@@ -1,19 +1,31 @@
 package org.foop.finalproject.theMessageServer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
 
+import org.foop.finalproject.theMessageServer.GameCards.Counteract;
+import org.foop.finalproject.theMessageServer.round.CounteractRound;
+import org.foop.finalproject.theMessageServer.round.GameCardRound;
+import org.foop.finalproject.theMessageServer.service.MessageService;
+import org.json.JSONObject;
+import org.foop.finalproject.theMessageServer.characterCards.fakeCharacter;
 import org.foop.finalproject.theMessageServer.enums.Camp;
 import org.foop.finalproject.theMessageServer.enums.GameState;
-import org.foop.finalproject.theMessageServer.service.GameService;
 import org.foop.finalproject.theMessageServer.state.Round;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.websocket.EncodeException;
+
 public class Game{
+    @Autowired
+    private MessageService messageService;
     private int playerNum;
     private int currentPlayerIndex;
     private int currentIntelligencePlayerIndex;
     private int currentGameCardPlayerIndex;
-    protected ArrayList<GameCard> characterCards;
+    protected ArrayList<Character> characterCards;
     protected ArrayList<Player> players;
     protected ArrayList<User> users;
     //Todo state
@@ -39,30 +51,36 @@ public class Game{
 
     }
 
-    public void start() {
-        currentState = GameState.gameStart;
+    public ArrayList<Player> getPlayers(){
+        return players;
+    }
+
+    public void initializeStage() throws EncodeException, IOException {
+        currentState = GameState.beforePassingIntelligence;
         currentPlayerIndex = 0;
         ArrayList<Camp> camps = getInitialCampList();
         Collections.shuffle(users);
         Collections.shuffle(camps);
         for (int i = 0; i < playerNum; i++) {
-            players.add(new Player(this, camps.get(i), users.get(i)));
+            Character character = new fakeCharacter();
+            players.add(new Player(this, camps.get(i), character, users.get(i)));
             players.get(i).drawInitialCards();
         }
-        // Todo 選角 and Inform every player their player_id
+
+        JSONObject playersInformationObj = new JSONObject();
+        ArrayList<JSONObject> playersObj = new ArrayList<>();
         for(int i = 0; i < playerNum; i++) {
-            // TODO: inform players their player_id to call api
+            JSONObject playerObj = players.get(i).toJsonObject();
+            playersObj.add(playerObj);
         }
-        for(int i = 0; i < playerNum; i++){
-            // TODO: inform players to select character
-            // TODO: 等到全部人都完成廣播遊戲開始
-        }
+        playersInformationObj.put("players", playersObj);
+        messageService.broadcastPlayerInformation(this, playersInformationObj);
+    }
+
+    public void start(){
 
     }
 
-    public void run(){
-
-    }
     public GameState getState(){
         return currentState;
     }
@@ -198,8 +216,8 @@ public class Game{
     }
 
     public void setCounteractRound(Player player) {
-        round.setCounteractRound(true);
-        round.setCounteractEnd(player);
+        ((GameCardRound)round).setCounteractRound(player);
+        round = ((GameCardRound)round).getCounteractRound();
     }
 
     public void setCurrentGameCardPlayerIndex() {
@@ -215,14 +233,19 @@ public class Game{
     }
 
     public Player getNextPlayer() {
-        int nextPlayerIndex = (currentPlayerIndex == playerNum)? 0 : currentPlayerIndex + 1;
+        int nextPlayerIndex = (currentPlayerIndex == playerNum-1)? 0 : currentPlayerIndex + 1;
         return players.get(nextPlayerIndex);
     }
 
-    public void finishCounteractRound() {
-        round.setCounteractRound(false);
-        round.setCounteractEnd(null);
-        takeActionOnBoard();
+    public void finishRound() {
+        if(round instanceof CounteractRound){
+            round = ((CounteractRound) round).getGameCardRound();
+            ((GameCardRound) round).removeCounteractRound();
+            // TODO: currentPlayerIndex = round.getCurrentPlayer();
+        } else {
+
+        }
+        // takeActionOnBoard();
     }
     private void takeActionOnBoard(){
         for(Action action: currentActionsOnBoard){
@@ -256,5 +279,9 @@ public class Game{
 
     public void changePassingDirection(){
         passDirection *= -1;
+    }
+
+    public void updateCounteractRoundEndPlayer(Player player) {
+        round.setEnd(player);
     }
 }
