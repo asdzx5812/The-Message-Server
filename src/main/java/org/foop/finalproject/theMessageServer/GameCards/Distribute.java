@@ -1,4 +1,5 @@
 package org.foop.finalproject.theMessageServer.GameCards;
+import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Player;
 
@@ -12,7 +13,7 @@ public class Distribute extends GameCard {
     }
 
     @Override
-    public void perform(Player target) {
+    public void perform(Player performer, Player playerTarget, Game game) {
 
     }
 }

@@ -136,7 +136,11 @@ public class Game{
     }
 
     public void onPlayerDie(Player deadPlayer) {
+        // Check green camp win
 
+        // Check red camp win
+
+        // Check blue camp win
     }
 
     public void onGameOver() {
@@ -231,6 +235,26 @@ public class Game{
     }
     public void finishGameCardRound() {
         // TODO
-        if (currentState.equals(GameState.beforePassingIntelligence))
+        if (currentState.equals(GameState.beforePassingIntelligence)){
+            // TODO: ask player to pass intelligence ( if player's handcard == null, he/she will loss the game.
+        } else if(currentState.equals(GameState.intelligencePassing)){
+            // TODO: ask current player to receive or not
+            // if receive -> receive
+            // else -> pass the intelligence to the next player and start new game card round
+        }
+    }
+
+    public void onReceiveIntelligence(Player player) {
+    }
+
+    public void dispatchSelectingActions() {
+    }
+
+    public void onRoundStart() {
+        // for()
+    }
+
+    public void changePassingDirection(){
+        passDirection *= -1;
     }
 }

@@ -1,6 +1,9 @@
 package org.foop.finalproject.theMessageServer.GameCards;
+import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Player;
+import org.foop.finalproject.theMessageServer.service.MessageService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.security.spec.ECField;
 
@@ -13,7 +16,11 @@ public class Decode extends GameCard {
         playOnWhenIntelligenceSendByPlayer = true;
         playOnWhenIntelligenceSendByOthers = true;
     }
+    @Autowired
+    private MessageService messageService;
+
     @Override
-    public void perform(Player target) {
+    public void perform(Player performer, Player playerTarget, Game game) {
+        messageService.sendIntelligenceInformationToPlayer(game, playerTarget);
     }
 }

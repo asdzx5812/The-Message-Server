@@ -52,11 +52,10 @@ public class GameController {
         else{
             targetPlayer = Main.getPlayer(roomId, targetPlayerId);
         }
-
-        Action action = player.setActionToPerform(gameCardIdx, targetPlayer);
+        GameCard gameCard = player.getCardByIndex(gameCardIdx);
+        Action action = new Action(player, gameCard, targetPlayer, game);
 
         gameService.onReceiveGameCard(game, action);
-
         return ResponseEntity.ok().build();
     }
 }

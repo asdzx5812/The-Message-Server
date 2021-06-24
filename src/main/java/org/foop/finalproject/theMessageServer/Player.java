@@ -3,18 +3,19 @@ package org.foop.finalproject.theMessageServer;
 import org.foop.finalproject.theMessageServer.enums.Camp;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
+import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
 import org.foop.finalproject.theMessageServer.utils.Utility;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class Player {
     private Game game;
     protected String id;
     protected CharacterCard character;
     protected Camp camp;
+    protected PlayerStatus status;
     protected ArrayList<GameCard> handCards;
-    protected ArrayList<ArrayList<GameCard>> intelligence = new ArrayList<>(3); // 0 -> RED, 1 -> BLUE, 2 -> BLACK
+    protected ArrayList<ArrayList<GameCard>> intelligences = new ArrayList<>(3); // 0 -> RED, 1 -> BLUE, 2 -> BLACK
     protected Action actionToPerform;
     protected User user;
 
@@ -23,6 +24,7 @@ public class Player {
         this.id = Utility.generatePlayerId();
         this.character = null;
         this.camp = camp;
+        this.status = PlayerStatus.Normal;
         this.handCards = new ArrayList<>();
         this.user = user;
     }
@@ -37,14 +39,14 @@ public class Player {
 
     public boolean isWin() {
         if (camp == Camp.RED || camp == Camp.BLUE)
-            return intelligence.get(camp.type).size() >= 3;
+            return intelligences.get(camp.type).size() >= 3;
         else if (camp == Camp.GREEN)
             return character.mission.isCompleted();
         return false;
     }
 
     public boolean isDead() {
-        return intelligence.get(GameCardColor.BLACK.type).size() >= 3;
+        return intelligences.get(GameCardColor.BLACK.type).size() >= 3;
     }
 
     public void play() {
@@ -100,12 +102,8 @@ public class Player {
         return null;
     }
 
-    public Action setActionToPerform(int idx, Player target) {
-        return new Action(this, handCards.get(idx), target);
-    }
-
-    public void onReceivedIntelligence(GameCard intelli) {
-        intelligence.get(intelli.color.type).add(intelli);
+    public void onReceivedIntelligence(GameCard intelligence) {
+        intelligences.get(intelligence.color.type).add(intelligence);
         if (isDead()) {
             onDie();
         } else if (isWin()) {
@@ -115,6 +113,14 @@ public class Player {
 
     public void onDie() { // Todo
         game.onPlayerDie(this);
+    }
+
+    public void onBurnDown() {
+        ArrayList<GameCard> blackIntelligences = intelligences.get(GameCardColor.BLACK.type);
+        if(intelligences.get(GameCardColor.BLACK.type).size() >= 0){
+            GameCard lastBlackIntelligence = blackIntelligences.get(blackIntelligences.size()-1);
+            blackIntelligences.remove(lastBlackIntelligence);
+        }
     }
 
     public boolean onPassedInFront(GameCard intelligence) {
@@ -136,4 +142,11 @@ public class Player {
         return cardSelected;
     }
 
+    public GameCard getIntelligence(int gameCardIdx) {
+        return handCards.get(gameCardIdx);
+    }
+
+    public void changeStatus(PlayerStatus newStatus){
+        this.status = newStatus;
+    }
 }

@@ -1,6 +1,8 @@
 package org.foop.finalproject.theMessageServer.GameCards;
+import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Player;
+import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
 
 public class Trap extends GameCard {
     public void Trap() {
@@ -14,8 +16,8 @@ public class Trap extends GameCard {
     }
 
     @Override
-    public void perform(Player target) {
-
+    public void perform(Player performer, Player playerTarget, Game game) {
+        playerTarget.changeStatus(PlayerStatus.Trap);
     }
 
 }
