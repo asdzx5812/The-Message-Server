@@ -1,11 +1,12 @@
 package org.foop.finalproject.theMessageServer.enums;
 
 public enum PlayerStatus {
+    // refresh when intelligence turn end
     Normal("Normal"), LockOn("Lock On"), Trap("Trap");
-    public String name;
+    public String state;
 
-    PlayerStatus(String name) {
-            this.name = name;
+    PlayerStatus(String state) {
+            this.state = state;
     }
 
 }

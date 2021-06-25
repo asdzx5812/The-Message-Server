@@ -1,19 +1,16 @@
 package org.foop.finalproject.theMessageServer.enums;
 
 public enum GameCardColor {
-    BLACK(2), RED(0), BLUE(1);
+    BLACK(2, "Black"), RED(0, "Red"), BLUE(1, "Blue");
     public int type;
-    GameCardColor(int type) {
+    public String name;
+    GameCardColor(int type, String name) {
         this.type = type;
+        this.name = name;
     }
 
     @Override
     public String toString(){
-        if(type == 0)
-            return "Red";
-        else if(type == 1)
-            return "Blue";
-        else
-            return "Black";
+        return name;
     }
 }

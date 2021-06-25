@@ -1,26 +1,51 @@
 package org.foop.finalproject.theMessageServer;
 
-public class Action {
-    private Player performer;
-    private GameCard card;
-    private Player playerTarget;
-    private Game game;
+import javax.websocket.EncodeException;
+import java.io.IOException;
 
-    public Action(Player performer, GameCard card, Player playerTarget, Game game) {
+public abstract class Action {
+    protected Game game;
+    protected Player performer;
+    protected GameCard card;
+    protected Player playerTarget;
+
+    public Action(Game game, Player performer, GameCard card) {
+        this.game = game;
+        this.performer = performer;
+        this.card = card;
+    }
+
+    public Action(Game game, Player performer, GameCard card, Player playerTarget) {
+        this.game = game;
         this.performer = performer;
         this.card = card;
         this.playerTarget = playerTarget;
-        this.game = game;
     }
 
-    public void execute() {
-        card.perform(performer, playerTarget, game);
+    abstract public void execute() throws EncodeException, IOException;
+    public Game getGame(){
+        return game;
     }
-
     public GameCard getCard() {
         return card;
     }
-    public Player getPlayer(){
+
+    public Player getPerformer() {
         return performer;
     }
+
+    public void setPlayerTarget(Player playerTarget) { this.playerTarget = playerTarget; }
+
+    public Player getPlayerTarget(){ return playerTarget; }
+
+    public boolean needToChooseTarget(){
+        if(ifNeedTarget() && playerTarget == null)
+            return true;
+        return false;
+    }
+    public boolean ifNeedTarget(){
+        return this.card.getNeedTarget();
+    }
+    //Todo
+    public abstract String toJsonObject();
 }

@@ -5,15 +5,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
 
-import org.foop.finalproject.theMessageServer.GameCards.Counteract;
-import org.foop.finalproject.theMessageServer.round.CounteractRound;
-import org.foop.finalproject.theMessageServer.round.GameCardRound;
+import org.foop.finalproject.theMessageServer.action.GameCardAction;
+import org.foop.finalproject.theMessageServer.round.MainRound;
 import org.foop.finalproject.theMessageServer.service.MessageService;
-import org.json.JSONObject;
-import org.foop.finalproject.theMessageServer.characterCards.fakeCharacter;
+import org.foop.finalproject.theMessageServer.characters.fakeCharacter;
 import org.foop.finalproject.theMessageServer.enums.Camp;
-import org.foop.finalproject.theMessageServer.enums.GameState;
-import org.foop.finalproject.theMessageServer.state.Round;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.websocket.EncodeException;
@@ -22,28 +18,17 @@ public class Game{
     @Autowired
     private MessageService messageService;
     private int playerNum;
-    private int currentPlayerIndex;
-    private int currentIntelligencePlayerIndex;
-    private int currentGameCardPlayerIndex;
     protected ArrayList<Character> characterCards;
     protected ArrayList<Player> players;
     protected ArrayList<User> users;
-    //Todo state
-    protected GameState currentState;
     protected Round round;
-    protected Stack<Action> currentActionsOnBoard;
-
+    protected Stack<GameCardAction> currentActionsOnBoard;
     protected Stack<GameCard> gameCardsDeck;
     protected ArrayList<GameCard> playedCards;
-    protected GameCard passingIntelligence;
 
-    private int passDirection = 1;
-    private boolean isGameOver = false;
+    protected GameCard passingCard;
+    private boolean gameOver = false;
     public boolean isWaitingPlayerAction = false;
-
-    public GameCard getPassingIntelligence() {
-        return passingIntelligence;
-    }
 
     public Game(ArrayList<User> users) {
         this.playerNum = users.size();
@@ -55,9 +40,7 @@ public class Game{
         return players;
     }
 
-    public void initializeStage() throws EncodeException, IOException {
-        currentState = GameState.beforePassingIntelligence;
-        currentPlayerIndex = 0;
+    public void initializeStage() throws Exception {
         ArrayList<Camp> camps = getInitialCampList();
         Collections.shuffle(users);
         Collections.shuffle(camps);
@@ -67,34 +50,20 @@ public class Game{
             players.get(i).drawInitialCards();
         }
 
-        JSONObject playersInformationObj = new JSONObject();
-        ArrayList<JSONObject> playersObj = new ArrayList<>();
-        for(int i = 0; i < playerNum; i++) {
-            JSONObject playerObj = players.get(i).toJsonObject();
-            playersObj.add(playerObj);
-        }
-        playersInformationObj.put("players", playersObj);
-        messageService.broadcastPlayerInformation(this, playersInformationObj);
+        messageService.broadcastPlayerInformation(this, players);
     }
 
-    public void start(){
-
-    }
-
-    public GameState getState(){
-        return currentState;
-    }
-    public void setState(GameState newGameState){
-        currentState = newGameState;
-    }
     public Round getRound(){
         return round;
     }
-    /*
-    public void onRoundStart() {
-        dispatchSelectingActions();
+
+    public void start() throws Exception {
+        messageService.broadCastGameStartMessage(this);
+        round = new MainRound(players.get(0), this);
+        round.onRoundStart();
     }
 
+    /*
     public void dispatchSelectingActions() {
         for (Player player : players) {
             if (!player.isDead()) {
@@ -124,35 +93,6 @@ public class Game{
         playedCards.clear();
     }
 
-    public void passIntelligence(Player sender, GameCard intelligence) {
-        passDirection = 1;
-        int senderIndex = players.indexOf(sender);
-        int currentPlayerIndex = (senderIndex + passDirection) % players.size();
-        while (currentPlayerIndex != senderIndex) {
-            Player currentPlayer = players.get(currentPlayerIndex);
-            if (!currentPlayer.isDead()) {
-                if (currentPlayer.onPassedInFront(intelligence)) {
-                    break;
-                }
-            }
-            currentPlayerIndex = (currentPlayerIndex + passDirection) % players.size();
-        }
-        // The intelligence passed back to the sender
-        if (currentPlayerIndex == senderIndex) {
-            sender.onReceivedIntelligence(intelligence);
-        }
-    }
-
-    public void passIntelligence(Player sender, GameCard intelligence, Player target) {
-        if (!target.onPassedInFront(intelligence)) {
-            sender.onReceivedIntelligence(intelligence);
-        }
-    }
-
-    public void onGameCardPlayed() {
-
-    }
-
     public void onPlayerDie(Player deadPlayer) {
         // Check green camp win
 
@@ -162,8 +102,8 @@ public class Game{
     }
 
     public void onGameOver() {
-        isGameOver = true;
-        // Todo: cancel all threads
+        gameOver = true;
+        messageService.broadcastGameOverMessage(this);
     }
 
     public Player getPlayerById(String id) {
@@ -211,77 +151,41 @@ public class Game{
         return initialCamp;
     }
 
-    public void placeActionOnBoard(Action action){
+    public void placeGameCardActionOnBoard(GameCardAction action){
         this.currentActionsOnBoard.push(action);
-    }
-
-    public void setCounteractRound(Player player) {
-        ((GameCardRound)round).setCounteractRound(player);
-        round = ((GameCardRound)round).getCounteractRound();
-    }
-
-    public void setCurrentGameCardPlayerIndex() {
-        currentGameCardPlayerIndex = currentPlayerIndex;
-    }
-
-    public Player getCurrentPlayer() {
-        return players.get(currentPlayerIndex);
-    }
-
-    public Player getCurrentGameCardPlayer() {
-        return players.get(currentGameCardPlayerIndex);
-    }
-
-    public Player getNextPlayer() {
-        int nextPlayerIndex = (currentPlayerIndex == playerNum-1)? 0 : currentPlayerIndex + 1;
-        return players.get(nextPlayerIndex);
-    }
-
-    public void finishRound() {
-        if(round instanceof CounteractRound){
-            round = ((CounteractRound) round).getGameCardRound();
-            ((GameCardRound) round).removeCounteractRound();
-            // TODO: currentPlayerIndex = round.getCurrentPlayer();
-        } else {
-
-        }
-        // takeActionOnBoard();
-    }
-    private void takeActionOnBoard(){
-        for(Action action: currentActionsOnBoard){
-            playedCards.add(action.getCard());
-        }
-        if(currentActionsOnBoard.size() % 2 == 1) {
-            currentActionsOnBoard.get(0).execute();
-        }
-        currentActionsOnBoard.clear();
-    }
-    public void finishGameCardRound() {
-        // TODO
-        if (currentState.equals(GameState.beforePassingIntelligence)){
-            // TODO: ask player to pass intelligence ( if player's handcard == null, he/she will loss the game.
-        } else if(currentState.equals(GameState.intelligencePassing)){
-            // TODO: ask current player to receive or not
-            // if receive -> receive
-            // else -> pass the intelligence to the next player and start new game card round
-        }
-    }
-
-    public void onReceiveIntelligence(Player player) {
+        messageService.broadcastActionBeenPlayedMessage(this, action);
     }
 
     public void dispatchSelectingActions() {
     }
 
-    public void onRoundStart() {
-        // for()
+    public void setRound(Round round) {
+        this.round = round;
     }
 
-    public void changePassingDirection(){
-        passDirection *= -1;
+    public void leaveRound() throws Exception {
+        if(round instanceof MainRound){
+            onGameOver();
+        }
+        else {
+            this.round = this.round.getParentRound();
+            round.doWhenLeaveChildRound();
+        }
     }
 
-    public void updateCounteractRoundEndPlayer(Player player) {
-        round.setEnd(player);
+    public Stack<GameCardAction> getCurrentActionsOnBoard() {
+        return currentActionsOnBoard;
+    }
+
+    public void takeActionOnBoard() throws EncodeException, IOException {
+        while(currentActionsOnBoard.size() > 0){
+            GameCardAction action = currentActionsOnBoard.pop();
+            action.execute();
+        }
+
+    }
+
+    public void setPassingCard(GameCard passingCard) {
+        this.passingCard = passingCard;
     }
 }

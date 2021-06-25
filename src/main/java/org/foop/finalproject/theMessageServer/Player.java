@@ -1,12 +1,15 @@
 package org.foop.finalproject.theMessageServer;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
 import org.foop.finalproject.theMessageServer.enums.Camp;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
+import org.foop.finalproject.theMessageServer.service.MessageService;
 import org.foop.finalproject.theMessageServer.utils.Utility;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 
@@ -15,6 +18,11 @@ public class Player {
     protected String id;
     protected Character character;
     protected Camp camp;
+    protected boolean die;
+    protected boolean loss;
+    @Autowired
+    protected MessageService messageService;
+
     protected PlayerStatus status;
     protected ArrayList<GameCard> handCards;
     protected ArrayList<ArrayList<GameCard>> intelligences = new ArrayList<>(3); // 0 -> RED, 1 -> BLUE, 2 -> BLACK
@@ -29,6 +37,8 @@ public class Player {
         this.status = PlayerStatus.Normal;
         this.handCards = new ArrayList<>();
         this.user = user;
+        die = false;
+        loss = false;
     }
 
     public User getUser(){ return user; }
@@ -40,6 +50,8 @@ public class Player {
     public void setCharacter(Character character) {
         this.character = character;
     }
+
+    public Camp getCamp() {return camp;}
 
     public void removeHandCardByIndex(int idx) {
         handCards.remove(idx);
@@ -55,14 +67,6 @@ public class Player {
 
     public boolean isDead() {
         return intelligences.get(GameCardColor.BLACK.type).size() >= 3;
-    }
-
-    public void play() {
-        drawCards();
-        game.onRoundStart(); // For 燒毀
-        playGameCards();
-        passIntelligence();
-        game.dispatchSelectingActions();
     }
 
     public void drawInitialCards() {
@@ -90,37 +94,11 @@ public class Player {
         }
     }
 
-    public void passIntelligence() { // Todo
-        // api
-        GameCard intelligenceToPass = null; //Todo
-        if (intelligenceToPass.getIntelligenceType() == IntelligenceType.DIRECT_MSG) {
-            Player target = null; // Todo: getTarget()
-            game.passIntelligence(this, intelligenceToPass, target);
-        }
-        else {
-            game.passIntelligence(this, intelligenceToPass);
-        }
-    }
-
-
     public Action selectAction() { // Todo
         while (game.isWaitingPlayerAction) {
         }
 //        removeHandCardByIndex(gameCardIdx);
         return null;
-    }
-
-    public void onReceivedIntelligence(GameCard intelligence) {
-        intelligences.get(intelligence.color.type).add(intelligence);
-        if (isDead()) {
-            onDie();
-        } else if (isWin()) {
-            game.onGameOver();
-        }
-    }
-
-    public void onDie() { // Todo
-        game.onPlayerDie(this);
     }
 
     public void onBurnDown() {
@@ -129,15 +107,6 @@ public class Player {
             GameCard lastBlackIntelligence = blackIntelligences.get(blackIntelligences.size()-1);
             blackIntelligences.remove(lastBlackIntelligence);
         }
-    }
-
-    public boolean onPassedInFront(GameCard intelligence) {
-        game.dispatchSelectingActions();
-        boolean receiveIntelligence = false;
-        if (receiveIntelligence) {
-            onReceivedIntelligence(intelligence);
-        }
-        return receiveIntelligence;
     }
 
     public GameCard getCardByIndex(int idx) throws Exception {
@@ -150,8 +119,9 @@ public class Player {
         return cardSelected;
     }
 
-    public GameCard getIntelligence(int gameCardIdx) {
-        return handCards.get(gameCardIdx);
+    public void receiveIntelligence(IntelligenceAction intelligence) {
+        GameCard card = intelligence.getCard();
+        intelligences.get(card.color.type).add(card);
     }
 
     public void changeStatus(PlayerStatus newStatus){
@@ -173,4 +143,28 @@ public class Player {
         playerObj.put("character", character);
         return playerObj;
     }
+
+    public void lockOn() {
+        this.status = PlayerStatus.LockOn;
+    }
+    public boolean isLockOn(){
+        return this.status == PlayerStatus.LockOn? true : false;
+    }
+
+    public boolean hasNoHandcard() {
+        return handCards.size() > 0;
+    }
+
+    public void die() { // Todo
+        die = true;
+        messageService.broadcastPlayerDie(game, this);
+        game.onPlayerDie(this);
+
+    }
+
+    public void lossTheGame() {
+        loss = true;
+        messageService.broadcastPlayerLoss(game, this);
+    }
+
 }

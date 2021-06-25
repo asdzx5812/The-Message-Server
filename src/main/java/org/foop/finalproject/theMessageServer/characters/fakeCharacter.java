@@ -1,4 +1,4 @@
-package org.foop.finalproject.theMessageServer.characterCards;
+package org.foop.finalproject.theMessageServer.characters;
 
 import org.foop.finalproject.theMessageServer.Character;
 import org.foop.finalproject.theMessageServer.Gender;

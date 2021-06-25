@@ -2,11 +2,12 @@ package org.foop.finalproject.theMessageServer.GameCards;
 import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Player;
+import org.foop.finalproject.theMessageServer.round.IntelligenceRound;
 import org.foop.finalproject.theMessageServer.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.websocket.EncodeException;
 import java.io.IOException;
-import java.security.spec.ECField;
 
 public class Decode extends GameCard {
     Decode(){
@@ -21,7 +22,7 @@ public class Decode extends GameCard {
     private MessageService messageService;
 
     @Override
-    public void perform(Player performer, Player playerTarget, Game game) throws IOException {
-        messageService.sendIntelligenceInformationToPlayer(game, playerTarget);
+    public void perform(Player performer, Player playerTarget, Game game) throws Exception {
+        messageService.sendIntelligenceInformationToPlayer( ((IntelligenceRound)game.getRound().getParentRound()).getIntelligence().getCard(), playerTarget);
     }
 }

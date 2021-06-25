@@ -3,6 +3,7 @@ import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.json.JSONObject;
 
+import javax.websocket.EncodeException;
 import java.io.IOException;
 
 public abstract class GameCard {
@@ -34,7 +35,7 @@ public abstract class GameCard {
     public boolean isValid(){
         return true;
     }
-    public abstract void perform(Player performer, Player playerTarget, Game game) throws IOException;
+    public abstract void perform(Player performer, Player playerTarget, Game game) throws Exception;
     // 回合開始
     public boolean canPlayOnRoundStart(){ return playOnRoundStart; }
     public boolean canPlayWhenOtherCardPlayed(){ return playWhenOtherCardPlayed; }
@@ -51,6 +52,7 @@ public abstract class GameCard {
     public String getEffectDescription(){
         return effectDescription;
     }
+    public boolean getNeedTarget(){return needTarget;}
     public GameCardColor getColor(){
         return color;
     }

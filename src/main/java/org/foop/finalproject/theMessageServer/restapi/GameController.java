@@ -4,7 +4,7 @@ import org.foop.finalproject.theMessageServer.*;
 import org.foop.finalproject.theMessageServer.enums.GameState;
 import org.foop.finalproject.theMessageServer.service.GameService;
 import org.foop.finalproject.theMessageServer.service.RoomService;
-import org.foop.finalproject.theMessageServer.utils.Utility;
+import org.foop.finalproject.theMessageServer.action.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,22 +16,18 @@ public class GameController {
     private GameService gameService;
     @Autowired
     private RoomService roomService;
-    public ResponseEntity informAllPlayersStartRound(Game game) {
-        game.setState(GameState.valueOf("beforePassingIntelligence"));
-        // Todo 廣播
 
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/pass")
-    public ResponseEntity receivePass(@PathVariable String roomId) throws Exception {
+    @PostMapping("/player/{playerId}/pass")
+    public ResponseEntity receivePass(@PathVariable String roomId, @PathVariable String playerId) throws Exception {
         Game game;
+        Player player = Main.getPlayer(roomId, playerId);
         try {
             game = Main.getRoom(roomId).getGame();
         } catch (Exception e) {
             throw new Exception("Room not found.");
         }
-        gameService.onReceivePass(game);
+        Action pass = new PassAction(game, player);
+        gameService.onReceiveAction(pass);
 
         return ResponseEntity.ok().build();
     }
@@ -39,8 +35,22 @@ public class GameController {
     @PostMapping("/player/{playerId}/game-card/{gameCardIdx}")
     public ResponseEntity receiveGameCard(@PathVariable String roomId,
                                           @PathVariable String playerId,
-                                          @PathVariable int gameCardIdx,
-                                          @RequestParam("targetPlayerId") String targetPlayerId) throws Exception {
+                                          @PathVariable int gameCardIdx) throws Exception {
+        Game game = Main.getRoom(roomId).getGame();
+        Player player = Main.getPlayer(roomId, playerId);
+        if (player == null) {
+            throw new Exception("Performer player not found");
+        }
+
+        GameCard gameCard = player.getCardByIndex(gameCardIdx);
+        Action action = new GameCardAction(game, player, gameCard, null);
+        gameService.onReceiveAction(action);
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("/player/{playerId}/target/{targetPlayerId}")
+    public ResponseEntity receiveTarget(@PathVariable String roomId,
+                                          @PathVariable String playerId,
+                                          @PathVariable String targetPlayerId) throws Exception {
         Game game = Main.getRoom(roomId).getGame();
         Player player = Main.getPlayer(roomId, playerId);
         if (player == null) {
@@ -53,12 +63,11 @@ public class GameController {
         else{
             targetPlayer = Main.getPlayer(roomId, targetPlayerId);
         }
-        GameCard gameCard = player.getCardByIndex(gameCardIdx);
-        Action action = new Action(player, gameCard, targetPlayer, game);
-
-        gameService.onReceiveGameCard(game, action);
+        Action action = new GameCardAction(game, player, null, targetPlayer);
+        gameService.onReceiveAction(action);
         return ResponseEntity.ok().build();
     }
+
     @PostMapping("/start")
     public ResponseEntity startGame(@PathVariable String roomId) {
         try {

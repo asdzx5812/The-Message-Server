@@ -1,6 +1,7 @@
 package org.foop.finalproject.theMessageServer;
 
 import org.foop.finalproject.theMessageServer.utils.Utility;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 
@@ -11,6 +12,7 @@ public class Room {
     private int maxPlayerNum = 9;
     private Game game;
     private boolean isPlaying = false;
+
 
     public Room(String id, User creator) {
         this.id = id;
