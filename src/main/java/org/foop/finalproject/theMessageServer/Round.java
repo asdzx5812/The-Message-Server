@@ -48,7 +48,7 @@ public abstract class Round {
 
     public void setCurrentPlayer(Player currentPlayer) { this.currentPlayer = currentPlayer; }
 
-    public Player getCurrentPlayer() { return currentPlayer;}
+    public Player getCurrentPlayer() { return currentPlayer; }
 
     public Game getGame() { return game;}
 
@@ -57,16 +57,21 @@ public abstract class Round {
     public void setChildRound(Round childRound){ this.childRound = childRound; }
 
     public Player getNextPlayer(){
-        int playerId = -1;
         ArrayList<Player> players = game.getPlayers();
+        int currentPlayerId = -1;
         for(int i = 0; i < players.size(); i++){
             if(players.get(i) == currentPlayer){
-                playerId = i;
+                currentPlayerId = i;
                 break;
             }
         }
-        int nextPlayerId = (playerId + direction + players.size()) % players.size();
-        return players.get(nextPlayerId);
+        int nextPlayerId = (currentPlayerId + direction + players.size()) % players.size();
+        Player nextPlayer = players.get(nextPlayerId);
+        while( nextPlayer.isDead() || nextPlayer.isLosed() ){
+            nextPlayerId = (nextPlayerId + direction + players.size()) % players.size();
+            nextPlayer = players.get(nextPlayerId);
+        }
+        return nextPlayer;
     }
 
     abstract public void onRoundStart() throws Exception;

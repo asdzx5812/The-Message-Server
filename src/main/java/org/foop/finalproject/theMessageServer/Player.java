@@ -1,10 +1,8 @@
 package org.foop.finalproject.theMessageServer;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
 import org.foop.finalproject.theMessageServer.enums.Camp;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
-import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
 import org.foop.finalproject.theMessageServer.service.MessageService;
 import org.foop.finalproject.theMessageServer.utils.Utility;
@@ -19,7 +17,7 @@ public class Player {
     protected Character character;
     protected Camp camp;
     protected boolean die;
-    protected boolean loss;
+    protected boolean lose;
     @Autowired
     protected MessageService messageService;
 
@@ -38,7 +36,7 @@ public class Player {
         this.handCards = new ArrayList<>();
         this.user = user;
         die = false;
-        loss = false;
+        lose = false;
     }
 
     public User getUser(){ return user; }
@@ -57,6 +55,10 @@ public class Player {
         handCards.remove(idx);
     }
 
+    public ArrayList<ArrayList<GameCard>> getIntelligences(){
+        return intelligences;
+    }
+
     public boolean isWin() {
         if (camp == Camp.RED || camp == Camp.BLUE)
             return intelligences.get(camp.type).size() >= 3;
@@ -65,48 +67,19 @@ public class Player {
         return false;
     }
 
-    public boolean isDead() {
-        return intelligences.get(GameCardColor.BLACK.type).size() >= 3;
-    }
+    public boolean isDead() { return die; }
 
-    public void drawInitialCards() {
-        handCards.addAll(game.drawCards(3));
-        // Todo
-        // Notify client
+    public boolean isLosed() { return lose; }
 
-    }
+    public void drawInitialCards() { handCards.addAll(game.drawCards(3)); }
 
     public void drawCards() {
         handCards.addAll(game.drawCards(2));
         // Todo
         // Notify client
+        messageService.informPlayerCardInformation(game, this);
+        messageService.BroadcastPlayerCardNumInformation(game, this);
 
-    }
-
-    public void playGameCards() {
-        while (true) {
-            // Todo: ask client to select
-            boolean doAction = false;
-            if (!doAction) {
-                break;
-            }
-            game.dispatchSelectingActions();
-        }
-    }
-
-    public Action selectAction() { // Todo
-        while (game.isWaitingPlayerAction) {
-        }
-//        removeHandCardByIndex(gameCardIdx);
-        return null;
-    }
-
-    public void onBurnDown() {
-        ArrayList<GameCard> blackIntelligences = intelligences.get(GameCardColor.BLACK.type);
-        if(intelligences.get(GameCardColor.BLACK.type).size() >= 0){
-            GameCard lastBlackIntelligence = blackIntelligences.get(blackIntelligences.size()-1);
-            blackIntelligences.remove(lastBlackIntelligence);
-        }
     }
 
     public GameCard getCardByIndex(int idx) throws Exception {
@@ -133,7 +106,7 @@ public class Player {
         playerObj.put("userId", user.getId());
         playerObj.put("playerId", getId());
         playerObj.put("name", user.getName());
-        playerObj.put("hamdcardsNum", handCards.size());
+        playerObj.put("handcardsNum", handCards.size());
         ArrayList<JSONObject> handCardObj = new ArrayList();
         for(GameCard gameCard:handCards){
             handCardObj.add(gameCard.toJsonObject());
@@ -159,12 +132,14 @@ public class Player {
         die = true;
         messageService.broadcastPlayerDie(game, this);
         game.onPlayerDie(this);
-
     }
 
-    public void lossTheGame() {
-        loss = true;
-        messageService.broadcastPlayerLoss(game, this);
+    public void loseTheGame() {
+        lose = true;
+        messageService.broadcastPlayerLose(game, this);
     }
 
+    public void changeStatusToNormal() {
+        this.status = PlayerStatus.Normal;
+    }
 }

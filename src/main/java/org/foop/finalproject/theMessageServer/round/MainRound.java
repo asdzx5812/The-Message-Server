@@ -49,7 +49,7 @@ public class MainRound extends Round {
         if(childRound instanceof GameCardRound){
             //還有沒有手牌能夠打出當情報
             if(currentPlayer.hasNoHandcard()){
-                currentPlayer.lossTheGame();
+                currentPlayer.loseTheGame();
                 onTurnEnd();
             }
             else {

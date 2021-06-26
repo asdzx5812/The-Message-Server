@@ -9,8 +9,8 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 public class TheMessageServerApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
-		System.out.println(Utility.generateRoomId());
-//		SpringApplication.run(TheMessageServerApplication.class, args);
+//		System.out.println(Utility.generateRoomId());
+		SpringApplication.run(TheMessageServerApplication.class, args);
 	}
 
 }

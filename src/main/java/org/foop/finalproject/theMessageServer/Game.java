@@ -48,6 +48,7 @@ public class Game{
             Character character = new fakeCharacter();
             players.add(new Player(this, camps.get(i), character, users.get(i)));
             players.get(i).drawInitialCards();
+            messageService.informPlayerInformation(this, players.get(i));
         }
 
         messageService.broadcastPlayerInformation(this, players);

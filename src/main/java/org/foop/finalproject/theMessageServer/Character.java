@@ -33,7 +33,7 @@ public class Character {
     public boolean isMale(){return this.gender.isMale();}
     public boolean isFemale(){return this.gender.isFemale();}
 
-    protected void Uncover(){
+    protected void uncover(){
         if(!this.hidden){
             throw new RuntimeException("This card is not covered.");
         }
