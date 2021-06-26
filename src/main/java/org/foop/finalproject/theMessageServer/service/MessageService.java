@@ -13,8 +13,8 @@ import javax.websocket.*;
 
 @Service
 public class MessageService{
-    @Autowired
-    private JsonService jsonService;
+
+    private JsonService jsonService = new JsonService();
 
     private ArrayList<Session> getAllSessionsFromGame(Game game){
         ArrayList<Player> players = game.getPlayers();
@@ -80,16 +80,21 @@ public class MessageService{
     //TYPE:BROADCAST_ROUND_START_MESSAGE
     //廣播每種回合開始的訊息（-----XXXXX回合 開始-----）
     public void broadcastRoundStartMessage(Game game) {
+        System.out.println("broadcastRoundStartMessage before getbody");
         JSONObject body = getBody(null, "--- " + game.getRound().getName() + " start ---", MessageType.BROADCAST_ROUND_START_MESSAGE);
+        System.out.println("broadcastRoundStartMessage after getBody.");
         broadcastMessage(body, game);
     }
     //TYPE:BROADCAST_TURN_START_MESSAGE
     //廣播每個Turn開始的訊息（MainRound:『玩家』負責派情報 or IntelligenceRound: 情報抵達『玩家』面前）
     public void broadcastTurnStartMessage(Game game, Player currentPlayer) {
         JSONObject payload = new JSONObject();
+        System.out.println("broadcastTurnStartMessage start");
         payload.put("player", currentPlayer.getId());
+        System.out.println("broadcastTurnStartMessage player id get");
         JSONObject body = getBody(payload, "", MessageType.BROADCAST_TURN_START_MESSAGE);
         broadcastMessage(body, game);
+
     }
     //TYPE:INFORM_PLAYER_SELECT_ACTION_MESSAGE
     //告知Player選要做的行為（打功能牌|Pass|接情報|派情報）（這邊會傳給client可以打的牌）
@@ -132,15 +137,10 @@ public class MessageService{
     //一開始初始化後，告知玩家『詳細』資訊
     public void informPlayerInformation(Game game, Player player){
         JSONObject payload = new JSONObject();
-        System.out.println("send player information! 1");
         payload.put("playerId", player.getId());
-        System.out.println("send player information! 2");
         payload.put("handcardsNumber", player.getHandcardsNum());
-        System.out.println("send player information! 3");
         payload.put("player", player.toJsonObject());
-        System.out.println("send player information! 4");
         JSONObject body = getBody(payload, "", MessageType.INFORM_PLAYER_INFORMATION);
-        System.out.println("send player information! 5");
         sendMessage(body, player.getUser().getSession());
     }
     //TYPE:BROADCAST_PLAYER_CARDNUM_INFORMATION

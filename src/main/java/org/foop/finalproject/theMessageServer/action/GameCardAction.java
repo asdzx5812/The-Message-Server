@@ -18,8 +18,12 @@ public class GameCardAction extends Action {
     }
 
     @Override
-    public void execute() throws Exception {
-        card.perform(performer, playerTarget, game);
+    public void execute() {
+        try {
+            card.perform(performer, playerTarget, game);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

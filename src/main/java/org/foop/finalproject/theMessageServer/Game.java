@@ -17,7 +17,6 @@ import javax.websocket.EncodeException;
 
 public class Game{
 
-    @Autowired
     private MessageService messageService;
 
     private int playerNum;
@@ -51,20 +50,21 @@ public class Game{
         System.out.println("Initialize Stage start.");
         initializeDeck();
         createGameCard(6, "BurnDown");
-        createGameCard(27, "Counteract");
-        createGameCard(9, "Decode");
+        createGameCard(14, "Counteract");
+        createGameCard(6, "Decode");
         createGameCard(3, "Distribute");
-        createGameCard(6, "Intercept");
-        createGameCard(18, "LockOn");
-        createGameCard(9, "Prove");
-        createGameCard(6, "Return");
-        createGameCard(12, "Trap");
+        createGameCard(8, "Intercept");
+        createGameCard(12, "LockOn");
+        createGameCard(18, "Prove");
+        createGameCard(8, "Return");
+        createGameCard(6, "Trap");
         initializePlayers();
 
         System.out.println("Initialize Stage finish.");
         //exception below！！
         messageService.broadcastPlayerInformation(this, players);
-        System.out.println("Initialize Stage broadcast down.");
+        //exception above！！
+        System.out.println("Initialize Stage broadcast done.");
     }
 
     public void initializeDeck(){
@@ -123,7 +123,7 @@ public class Game{
         }
     }
 
-    public void start() throws Exception {
+    public void start() {
         messageService.broadCastGameStartMessage(this);
         round = new MainRound(players.get(0), this);
         round.onRoundStart();
@@ -158,7 +158,7 @@ public class Game{
         // Check blue camp win
     }
 
-    public void onGameOver() throws Exception {
+    public void onGameOver() {
         gameOver = true;
         messageService.broadcastGameOverMessage(this);
     }
@@ -208,7 +208,7 @@ public class Game{
         return initialCamp;
     }
 
-    public void placeGameCardActionOnBoard(GameCardAction action) throws Exception{
+    public void placeGameCardActionOnBoard(GameCardAction action) {
         this.currentActionsOnBoard.push(action);
         messageService.broadcastActionBeenPlayedMessage(this, action);
     }
@@ -220,7 +220,7 @@ public class Game{
         this.round = round;
     }
 
-    public void leaveRound() throws Exception {
+    public void leaveRound() {
         if(round instanceof MainRound){
             onGameOver();
         }
@@ -234,10 +234,14 @@ public class Game{
         return currentActionsOnBoard;
     }
 
-    public void takeActionOnBoard() throws Exception {
+    public void takeActionOnBoard() {
         while(currentActionsOnBoard.size() > 0){
             GameCardAction action = currentActionsOnBoard.pop();
-            action.execute();
+            try {
+                action.execute();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
     }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class MainRound extends Round {
     boolean intelligenceHasSent;
 
-    public MainRound(Player player, Game game) throws Exception {
+    public MainRound(Player player, Game game) {
         super(player, game);
         endPlayer = null;
         name = "Main Round";
@@ -17,14 +17,15 @@ public class MainRound extends Round {
     }
 
     @Override
-    public void onRoundStart() throws Exception {
+    public void onRoundStart() {
         System.out.println("--------遊戲開始--------");
         onTurnStart();
 
     }
 
     @Override
-    public void onTurnStart() throws Exception{
+    public void onTurnStart() {
+        System.out.println("MainRound: onTurnStart start");
         // TODO: 廣播誰負責派情報，並且廣播開始功能牌階段
         intelligenceHasSent = false;
         messageService.broadcastTurnStartMessage(game, currentPlayer);
@@ -32,10 +33,12 @@ public class MainRound extends Round {
         childRound = new GameCardRound(currentPlayer, this);
         game.setRound(childRound);
         childRound.onRoundStart();
+        System.out.println("MainRound: onTurnStart end");
     }
 
     @Override
-    public void onTurnProgressing(Action action) throws Exception {
+    public void onTurnProgressing(Action action) {
+        System.out.println("MainRound: onTurnProgressing");
         // TODO: 派情報
         // action為收到的情報
         game.setPassingCard(action.getCard());
@@ -45,7 +48,8 @@ public class MainRound extends Round {
     }
 
     @Override
-    public void doWhenLeaveChildRound() throws Exception {
+    public void doWhenLeaveChildRound() {
+        System.out.println("MainRound: doWhenLeaveChildRound");
         if(childRound instanceof GameCardRound){
             //還有沒有手牌能夠打出當情報
             if(currentPlayer.hasNoHandcard()){
@@ -62,7 +66,8 @@ public class MainRound extends Round {
     }
 
     @Override
-    public void onTurnEnd() throws Exception {
+    public void onTurnEnd() {
+        System.out.println("MainRound: onTurnEnd");
         if(satisfyRoundEndCondition()){
             onRoundEnd();
         }
@@ -73,7 +78,8 @@ public class MainRound extends Round {
     }
 
     @Override
-    public void onRoundEnd() throws Exception {
+    public void onRoundEnd() {
+        System.out.println("MainRound: onRoundEnd");
         // TODO: Game over
         game.leaveRound();
         // inform a player to play a card
@@ -85,6 +91,7 @@ public class MainRound extends Round {
 
     @Override
     public boolean satisfyRoundEndCondition() {
+        System.out.println("MainRound: SatisfyRoundEndCondition");
         ArrayList<Player> players = game.getPlayers();
         // check if only same camp player alive (red and blue)
         // ArrayList<Boolean> camps = new ArrayList<>(Collections.nCopies(3, false)); // 0:red 1:blue

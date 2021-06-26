@@ -2,10 +2,7 @@ package org.foop.finalproject.theMessageServer;
 
 import org.foop.finalproject.theMessageServer.service.GameService;
 import org.foop.finalproject.theMessageServer.service.MessageService;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.websocket.EncodeException;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public abstract class Round {
@@ -17,9 +14,7 @@ public abstract class Round {
     protected int direction;
     protected Game game;
     protected String name;
-    @Autowired
     protected MessageService messageService;
-    @Autowired
     protected GameService gameService;
     public Round(Player startPlayer, Game game){
         this.startPlayer = startPlayer;
@@ -27,6 +22,8 @@ public abstract class Round {
         this.game = game;
         this.parentRound = null;
         this.direction = 1;
+        this.messageService = new MessageService();
+        this.gameService = new GameService();
     }
 
     public Round(Player startPlayer, Round parentRound){
@@ -35,7 +32,8 @@ public abstract class Round {
         this.game = parentRound.getGame();
         this.parentRound = parentRound;
         this.direction = 1;
-
+        this.messageService = new MessageService();
+        this.gameService = new GameService();
     }
 
     public void setEndPlayer(Player endPlayer) {
@@ -67,26 +65,26 @@ public abstract class Round {
         }
         int nextPlayerId = (currentPlayerId + direction + players.size()) % players.size();
         Player nextPlayer = players.get(nextPlayerId);
-        while( nextPlayer.isDead() || nextPlayer.isLosed() ){
+        while( nextPlayer.isDead() || nextPlayer.isLose() ){
             nextPlayerId = (nextPlayerId + direction + players.size()) % players.size();
             nextPlayer = players.get(nextPlayerId);
         }
         return nextPlayer;
     }
 
-    abstract public void onRoundStart() throws Exception;
+    abstract public void onRoundStart();
 
-    abstract public void onTurnStart() throws Exception;
+    abstract public void onTurnStart();
 
-    abstract public void onTurnProgressing(Action action) throws Exception;
+    abstract public void onTurnProgressing(Action action);
 
-    abstract public void doWhenLeaveChildRound() throws Exception;
+    abstract public void doWhenLeaveChildRound();
 
-    abstract public void onTurnEnd() throws Exception;
+    abstract public void onTurnEnd();
 
-    abstract public void onRoundEnd() throws Exception;
+    abstract public void onRoundEnd();
 
     abstract public boolean satisfyRoundEndCondition();
 
-    public String getName(){return name;};
+    public String getName(){ return name; };
 }

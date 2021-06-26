@@ -24,7 +24,7 @@ public abstract class Action {
         this.playerTarget = playerTarget;
     }
 
-    abstract public void execute() throws Exception;
+    abstract public void execute() ;
     public Game getGame(){
         return game;
     }

@@ -25,6 +25,7 @@ public abstract class GameCard {
 
     protected GameCard(){
         this.color = GameCardColor.BLACK;
+        this.intelligenceType = IntelligenceType.ENCRYPTED_MSG;
         playOnRoundStart = false;
         playOnPlayerTurn = false;
         playWhenOtherCardPlayed = false;
@@ -65,20 +66,13 @@ public abstract class GameCard {
     public JSONObject toJsonObject(){
         JSONObject handCardObj = new JSONObject();
         handCardObj.put("name", name);
-        System.out.println("send player information! 0");
         handCardObj.put("timingdescription", timingDescription);
-        System.out.println("send player information! 2");
         handCardObj.put("effectDescription", effectDescription);
-        System.out.println("send player information! 3");
 
-        handCardObj.put("color", color.toString());
-        System.out.println("send player information! 4");
-        handCardObj.put("type", intelligenceType.toString());
-        System.out.println("send player information! 5");
+        handCardObj.put("color", color.name);
+        handCardObj.put("type", intelligenceType.name);
         handCardObj.put("needTarget", needTarget);
-        System.out.println("send player information! 6");
         handCardObj.put("isValid", isValid());
-        System.out.println("send player information! 7");
         return handCardObj;
     }
 }

@@ -55,7 +55,7 @@ public class Room {
 
     public Player getPlayer(String playerId) throws Exception {
         if (!isPlaying) {
-            throw new Exception("No playing game.");
+            throw new Exception("This room is not playing game.");
         }
         try {
             return Utility.findInArrayList(game.players, player -> player.id.equals(playerId));

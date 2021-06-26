@@ -27,7 +27,7 @@ public class GameCardTargetSelectRound extends Round {
     }
 
     @Override
-    public void onTurnProgressing(Action action) throws Exception {
+    public void onTurnProgressing(Action action)  {
         Player playerTarget = action.getPlayerTarget();
         this.action.setPlayerTarget(playerTarget);
         onTurnEnd();
@@ -37,10 +37,10 @@ public class GameCardTargetSelectRound extends Round {
     public void doWhenLeaveChildRound() { }
 
     @Override
-    public void onTurnEnd() throws Exception { onRoundEnd(); }
+    public void onTurnEnd()  { onRoundEnd(); }
 
     @Override
-    public void onRoundEnd() throws Exception {
+    public void onRoundEnd() {
         game.leaveRound();
 
     }

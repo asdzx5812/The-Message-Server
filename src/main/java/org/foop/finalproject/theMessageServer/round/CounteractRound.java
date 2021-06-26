@@ -26,7 +26,7 @@ public class CounteractRound extends Round {
 
 
     @Override
-    public void onTurnProgressing(Action action) throws Exception {
+    public void onTurnProgressing(Action action) {
         if(action instanceof GameCardAction){
             if(((GameCardAction)action).getCard() instanceof Counteract){
                 game.placeGameCardActionOnBoard((GameCardAction)action);
@@ -42,7 +42,7 @@ public class CounteractRound extends Round {
     }
 
     @Override
-    public void onTurnEnd() throws Exception{
+    public void onTurnEnd()  {
         // 判斷是否結束
         if(satisfyRoundEndCondition()){
             onRoundEnd();
@@ -55,7 +55,7 @@ public class CounteractRound extends Round {
     }
 
     @Override
-    public void onRoundEnd() throws Exception {
+    public void onRoundEnd() {
         game.leaveRound();
     }
 

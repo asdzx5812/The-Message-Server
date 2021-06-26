@@ -3,16 +3,17 @@ package org.foop.finalproject.theMessageServer.service;
 import org.foop.finalproject.theMessageServer.Main;
 import org.foop.finalproject.theMessageServer.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 
+@Component
 @ServerEndpoint(value = "/websocket")    //宣告這是一個Socket服務 ws://localhost:8080/websocket
 public class WebSocketService {
     @Autowired
     private JsonService jsonService;
-    @Autowired
-    private MessageService messageService;
+
     /**
      * 連線建立成功呼叫的方法
      *
@@ -22,6 +23,7 @@ public class WebSocketService {
     @OnOpen
     public void onOpen(Session session) {
         // Main.openSession(session);
+        System.out.println("有人連線websocket");
     }
 
     /**
@@ -55,6 +57,7 @@ public class WebSocketService {
      */
     @OnMessage
     public void onMessage(String message, Session session) {
+        MessageService messageService = new MessageService();
         System.out.println(message);
         if (message != null) {
             String[] messages = message.split("-", 2);

@@ -7,6 +7,7 @@ import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
 import org.foop.finalproject.theMessageServer.action.PassAction;
 import org.foop.finalproject.theMessageServer.action.ReceiveAction;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
+import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
 
 import java.util.ArrayList;
 
@@ -50,7 +51,7 @@ public class IntelligenceRound extends Round {
     }
 
     @Override
-    public void onRoundStart() throws Exception{
+    public void onRoundStart() {
         this.currentPlayer = getNextPlayer();
         this.currentPlayer.lockOn();
         messageService.broadcastRoundStartMessage(game);
@@ -59,7 +60,7 @@ public class IntelligenceRound extends Round {
     }
 
     @Override
-    public void onTurnStart() throws Exception{
+    public void onTurnStart()  {
         messageService.broadcastTurnStartMessage(game, currentPlayer);
         childRound = new GameCardRound(currentPlayer, this);
         game.setRound(childRound);
@@ -67,7 +68,7 @@ public class IntelligenceRound extends Round {
     }
 
     @Override
-    public void onTurnProgressing(Action action) throws Exception {
+    public void onTurnProgressing(Action action) {
         if(action instanceof ReceiveAction){
             //接收情報
             messageService.broadcastActionBeenPlayedMessage(game, action);
@@ -85,26 +86,28 @@ public class IntelligenceRound extends Round {
     }
 
     @Override
-    public void doWhenLeaveChildRound() throws Exception{
+    public void doWhenLeaveChildRound() {
         // 詢問接收
         messageService.informPlayerToSelectAction(game, currentPlayer);
     }
 
 
     @Override
-    public void onTurnEnd() throws Exception {
+    public void onTurnEnd() {
         this.currentPlayer = getNextPlayer();
         onTurnStart();
     }
 
     @Override
-    public void onRoundEnd() throws Exception {
+    public void onRoundEnd() {
         refreshAllPlayerStatus();
         game.leaveRound();
     }
     private void refreshAllPlayerStatus(){
         for(Player player: game.getPlayers()){
-            player.changeStatusToNormal();
+            if(player.getStatus() == PlayerStatus.LockOn || player.getStatus() == PlayerStatus.Trap) {
+                player.changeStatusToNormal();
+            }
         }
     }
     @Override

@@ -47,7 +47,7 @@ public class RoomController {
     }
 
     @DeleteMapping("/{roomId}")
-    public ResponseEntity leaveRoom(@PathVariable String userId, @PathVariable String roomId) throws Exception {
+    public ResponseEntity leaveRoom(@PathVariable String userId, @PathVariable String roomId)  {
         User user = Main.getUser(userId);
         roomService.leaveRoom(roomId, userId);
         System.out.println(user.getName() + " leave room "+ roomId +" successfully.");

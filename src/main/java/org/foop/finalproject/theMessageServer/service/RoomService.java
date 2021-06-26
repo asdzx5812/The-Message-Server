@@ -34,7 +34,7 @@ public class RoomService {
         room.startGame();
     }
 
-    public void leaveRoom(String roomId, String userId) throws Exception{
+    public void leaveRoom(String roomId, String userId) {
         Room room = Main.getRoom(roomId);
         User user = Main.getUser(userId);
         room.deleteUser(user);

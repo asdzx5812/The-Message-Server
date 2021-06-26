@@ -15,18 +15,21 @@ public class GameCardRound extends Round {
     }
 
     @Override
-    public void onRoundStart() throws Exception {
+    public void onRoundStart() {
+        System.out.println("GameCardRound: onRoundStart");
         messageService.broadcastRoundStartMessage(game);
     }
 
     @Override
-    public void onTurnStart() throws Exception{
+    public void onTurnStart() {
+        System.out.println("GameCardRound: onTurnStart");
         messageService.broadcastTurnStartMessage(game, currentPlayer);
         messageService.informPlayerToSelectAction(game, currentPlayer);
     }
 
     @Override
-    public void onTurnProgressing(Action action) throws Exception {
+    public void onTurnProgressing(Action action) {
+        System.out.println("GameCardRound: onTurnProgressing");
         currentAction = action;
         // When receive a action game card from currentPlayer
         // start a counteract round
@@ -61,6 +64,7 @@ public class GameCardRound extends Round {
     }
 
     private boolean checkIfCounteract(Action action) {
+        System.out.println("GameCardRound: checkIfCounteract");
         if( action.getCard() instanceof Counteract){
             return true;
         }
@@ -68,7 +72,8 @@ public class GameCardRound extends Round {
     }
 
     @Override
-    public void onTurnEnd() throws Exception {
+    public void onTurnEnd() {
+        System.out.println("GameCardRound: onTurnEnd");
         game.takeActionOnBoard();
 
         if(satisfyRoundEndCondition()){
@@ -81,13 +86,15 @@ public class GameCardRound extends Round {
         onTurnStart();
     }
 
-    public void doWhenLeaveChildRound() throws Exception {
+    public void doWhenLeaveChildRound() {
+        System.out.println("GameCardRound: doWhenLeaveChild");
         setChildRound(null);
         onTurnEnd();
     }
 
     @Override
-    public void onRoundEnd() throws Exception {
+    public void onRoundEnd() {
+        System.out.println("GameCardRound: onRoundEnd");
         // round的層級做事
         // 暫時沒事
         // game的層級做事

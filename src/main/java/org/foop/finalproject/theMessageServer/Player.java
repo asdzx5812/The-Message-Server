@@ -18,7 +18,6 @@ public class Player {
     protected Camp camp;
     protected boolean die;
     protected boolean lose;
-    @Autowired
     protected MessageService messageService;
 
     protected PlayerStatus status;
@@ -37,6 +36,7 @@ public class Player {
         this.user = user;
         die = false;
         lose = false;
+        messageService = new MessageService();
     }
 
     public User getUser(){ return user; }
@@ -71,17 +71,18 @@ public class Player {
 
     public boolean isDead() { return die; }
 
-    public boolean isLosed() { return lose; }
+    public boolean isLose() { return lose; }
 
     public void drawInitialCards() { handCards.addAll(game.drawCards(3)); }
 
-    public void drawCards() throws Exception{
+    public void drawCards() {
+        System.out.println("Player draw cards start");
         handCards.addAll(game.drawCards(2));
         // Todo
         // Notify client
         messageService.informPlayerCardInformation(game, this);
         messageService.BroadcastPlayerCardNumInformation(game, this);
-
+        System.out.println("Player draw cards end");
     }
 
     public GameCard getCardByIndex(int idx) throws Exception {
@@ -106,18 +107,13 @@ public class Player {
     public JSONObject toJsonObject(){
         JSONObject playerObj = new JSONObject();
         playerObj.put("userId", user.getId());
-        System.out.println("send player information! 1");
         playerObj.put("playerId", getId());
-        System.out.println("send player information! 2");
         playerObj.put("name", user.getName());
-        System.out.println("send player information! 3");
         playerObj.put("handcardsNum", handCards.size());
-        System.out.println("send player information! 4");
         ArrayList<JSONObject> handCardObj = new ArrayList<>();
         for(GameCard gameCard:handCards){
             handCardObj.add(gameCard.toJsonObject());
         }
-        System.out.println("send player information! 5");
         playerObj.put("handcards", handCardObj);
         playerObj.put("camp", camp);
         playerObj.put("character", character);
@@ -135,13 +131,13 @@ public class Player {
         return handCards.size() > 0;
     }
 
-    public void die() throws Exception{ // Todo
+    public void die() { // Todo
         status = PlayerStatus.Dead;
         messageService.broadcastPlayerStateChangeMessage(game, this);
         game.onPlayerDie(this);
     }
 
-    public void loseTheGame() throws Exception{
+    public void loseTheGame() {
         status = PlayerStatus.Lose;
         messageService.broadcastPlayerStateChangeMessage(game, this);
     }
