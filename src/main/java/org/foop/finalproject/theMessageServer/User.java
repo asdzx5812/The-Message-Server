@@ -11,6 +11,7 @@ public class User {
     public User(String name, Session session) {
         this.name = name;
         this.id = generateUserId();
+        System.out.println("name:" + name + " id:" + id);
         this.currentRoom = null;
         this.session = session;
     }

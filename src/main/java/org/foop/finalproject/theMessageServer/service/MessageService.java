@@ -1,79 +1,20 @@
 package org.foop.finalproject.theMessageServer.service;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.foop.finalproject.theMessageServer.*;
-import org.foop.finalproject.theMessageServer.action.GameCardAction;
-import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
 import org.foop.finalproject.theMessageServer.enums.MessageType;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.web.socket.server.standard.SpringConfigurator;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.websocket.*;
-import javax.websocket.server.ServerEndpoint;
 
-@Component
-@ServerEndpoint(value = "/websocket")    //宣告這是一個Socket服務 ws://localhost:8080/websocket
+@Service
 public class MessageService{
     @Autowired
     private JsonService jsonService;
-    /**
-     * 連線建立成功呼叫的方法
-     * @param session  可選的引數
-     * @throws Exception
-     */
-    @OnOpen
-    public void onOpen(Session session){
-        // Main.openSession(session);
-    }
-    /**
-     * 連線關閉呼叫的方法
-     * @throws Exception
-     */
-    @OnClose
-    public void onClose(){
-        // Main.closeSessions();
-    }
-    /**
-     * 發生錯誤時呼叫
-     * @param session
-     * @param error
-     */
-    @OnError
-    public void onError(Session session, Throwable error) {
-        error.printStackTrace();
-    }
-
-    /**
-     * 收到訊息後呼叫的方法
-     * @param message 客戶端傳送過來的訊息
-     * @param session 可選的引數
-     * @throws Exception
-     */
-    @OnMessage
-    public void onMessage(String message, Session session) {
-        System.out.println(message);
-        if (message != null){
-            String[] messages = message.split("-",2);
-            switch (messages[0]) {
-                case "start": //Todo 創建user start-{username}
-                    User user = new User(messages[1], session);
-                    Main.addUser(user);
-                    // Todo 看之後怎麼接
-                    informUserId(user);
-                    System.out.println("receive start and sent userId!!");
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-
 
     private ArrayList<Session> getAllSessionsFromGame(Game game){
         ArrayList<Player> players = game.getPlayers();
@@ -83,12 +24,6 @@ public class MessageService{
         }
         return sessions;
     }
-
-    /**
-     * 傳送訊息方法。
-     * @param body
-     * @throws IOException
-     */
 
     public void sendMessage(JSONObject body, Session session) {
         try {
@@ -115,7 +50,7 @@ public class MessageService{
     }
 
     // type:INFORM_USER_ID
-    private void informUserId(User user) {
+    public void informUserId(User user) {
         JSONObject payload = new JSONObject();
         payload.put("userId", user.getId());
         JSONObject body = getBody(payload, "", MessageType.INFORM_USER_ID);
@@ -197,10 +132,15 @@ public class MessageService{
     //一開始初始化後，告知玩家『詳細』資訊
     public void informPlayerInformation(Game game, Player player){
         JSONObject payload = new JSONObject();
+        System.out.println("send player information! 1");
         payload.put("playerId", player.getId());
+        System.out.println("send player information! 2");
         payload.put("handcardsNumber", player.getHandcardsNum());
+        System.out.println("send player information! 3");
         payload.put("player", player.toJsonObject());
+        System.out.println("send player information! 4");
         JSONObject body = getBody(payload, "", MessageType.INFORM_PLAYER_INFORMATION);
+        System.out.println("send player information! 5");
         sendMessage(body, player.getUser().getSession());
     }
     //TYPE:BROADCAST_PLAYER_CARDNUM_INFORMATION

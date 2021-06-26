@@ -106,13 +106,18 @@ public class Player {
     public JSONObject toJsonObject(){
         JSONObject playerObj = new JSONObject();
         playerObj.put("userId", user.getId());
+        System.out.println("send player information! 1");
         playerObj.put("playerId", getId());
+        System.out.println("send player information! 2");
         playerObj.put("name", user.getName());
+        System.out.println("send player information! 3");
         playerObj.put("handcardsNum", handCards.size());
-        ArrayList<JSONObject> handCardObj = new ArrayList();
+        System.out.println("send player information! 4");
+        ArrayList<JSONObject> handCardObj = new ArrayList<>();
         for(GameCard gameCard:handCards){
             handCardObj.add(gameCard.toJsonObject());
         }
+        System.out.println("send player information! 5");
         playerObj.put("handcards", handCardObj);
         playerObj.put("camp", camp);
         playerObj.put("character", character);

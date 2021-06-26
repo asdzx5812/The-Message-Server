@@ -16,8 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.websocket.EncodeException;
 
 public class Game{
+
     @Autowired
     private MessageService messageService;
+
     private int playerNum;
     protected ArrayList<Character> characterCards;
     protected ArrayList<Player> players;
@@ -34,7 +36,7 @@ public class Game{
     public Game(ArrayList<User> users) {
         this.playerNum = users.size();
         this.users = users;
-
+        messageService = new MessageService();
     }
 
     public ArrayList<Player> getPlayers(){
@@ -60,6 +62,7 @@ public class Game{
         initializePlayers();
 
         System.out.println("Initialize Stage finish.");
+        //exception below！！
         messageService.broadcastPlayerInformation(this, players);
         System.out.println("Initialize Stage broadcast down.");
     }
@@ -115,6 +118,7 @@ public class Game{
             Character character = new fakeCharacter();
             players.add(new Player(this, camps.get(i), character, users.get(i)));
             players.get(i).drawInitialCards();
+            //exception below！！
             messageService.informPlayerInformation(this, players.get(i));
         }
     }
