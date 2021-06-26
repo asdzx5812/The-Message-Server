@@ -1,7 +1,6 @@
 package org.foop.finalproject.theMessageServer.restapi;
 
 import org.foop.finalproject.theMessageServer.*;
-import org.foop.finalproject.theMessageServer.enums.GameState;
 import org.foop.finalproject.theMessageServer.service.GameService;
 import org.foop.finalproject.theMessageServer.service.RoomService;
 import org.foop.finalproject.theMessageServer.action.*;

@@ -24,6 +24,7 @@ public abstract class GameCard {
     protected MessageService messageService;
 
     protected GameCard(){
+        this.color = GameCardColor.BLACK;
         playOnRoundStart = false;
         playOnPlayerTurn = false;
         playWhenOtherCardPlayed = false;

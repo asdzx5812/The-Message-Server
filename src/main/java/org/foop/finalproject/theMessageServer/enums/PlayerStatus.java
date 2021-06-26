@@ -1,9 +1,9 @@
 package org.foop.finalproject.theMessageServer.enums;
 
 public enum PlayerStatus {
-    // refresh when intelligence turn end
+    // TODO: refresh when intelligence turn end
     Normal("Normal"),
-    LockOn("Lock On"),
+    LockOn("LockOn"),
     Trap("Trap"),
     Dead("Dead"),
     Lose("lose");

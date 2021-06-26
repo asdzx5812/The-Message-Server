@@ -66,7 +66,7 @@ public class Room {
     }
     public boolean isFull(){
         // return true;
-        return users.size() >= maxPlayerNum? true:false;
+        return (users.size() >= maxPlayerNum)? true:false;
     }
     public Game getGame(){
         return game;

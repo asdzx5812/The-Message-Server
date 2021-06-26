@@ -136,13 +136,13 @@ public class Player {
     }
 
     public void die() throws Exception{ // Todo
-        die = true;
+        status = PlayerStatus.Dead;
         messageService.broadcastPlayerStateChangeMessage(game, this);
         game.onPlayerDie(this);
     }
 
     public void loseTheGame() throws Exception{
-        lose = true;
+        status = PlayerStatus.Lose;
         messageService.broadcastPlayerStateChangeMessage(game, this);
     }
     public PlayerStatus getStatus(){
