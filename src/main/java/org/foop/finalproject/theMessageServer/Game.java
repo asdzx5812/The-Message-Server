@@ -45,7 +45,8 @@ public class Game{
         return round;
     }
 
-    public void initializeStage() throws Exception {
+    public void initializeStage() {
+        System.out.println("Initialize Stage start.");
         initializeDeck();
         createGameCard(6, "BurnDown");
         createGameCard(27, "Counteract");
@@ -57,7 +58,10 @@ public class Game{
         createGameCard(6, "Return");
         createGameCard(12, "Trap");
         initializePlayers();
+
+        System.out.println("Initialize Stage finish.");
         messageService.broadcastPlayerInformation(this, players);
+        System.out.println("Initialize Stage broadcast down.");
     }
 
     public void initializeDeck(){
@@ -102,10 +106,11 @@ public class Game{
         }
     }
 
-    public void initializePlayers(){
+    public void initializePlayers() {
         ArrayList<Camp> camps = getInitialCampList();
         Collections.shuffle(users);
         Collections.shuffle(camps);
+        this.players = new ArrayList<>();
         for (int i = 0; i < playerNum; i++) {
             Character character = new fakeCharacter();
             players.add(new Player(this, camps.get(i), character, users.get(i)));
@@ -149,7 +154,7 @@ public class Game{
         // Check blue camp win
     }
 
-    public void onGameOver() {
+    public void onGameOver() throws Exception {
         gameOver = true;
         messageService.broadcastGameOverMessage(this);
     }
@@ -199,7 +204,7 @@ public class Game{
         return initialCamp;
     }
 
-    public void placeGameCardActionOnBoard(GameCardAction action){
+    public void placeGameCardActionOnBoard(GameCardAction action) throws Exception{
         this.currentActionsOnBoard.push(action);
         messageService.broadcastActionBeenPlayedMessage(this, action);
     }

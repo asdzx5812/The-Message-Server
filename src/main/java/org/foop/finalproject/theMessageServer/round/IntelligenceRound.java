@@ -85,7 +85,7 @@ public class IntelligenceRound extends Round {
     }
 
     @Override
-    public void doWhenLeaveChildRound() {
+    public void doWhenLeaveChildRound() throws Exception{
         // 詢問接收
         messageService.informPlayerToSelectAction(game, currentPlayer);
     }

@@ -13,7 +13,7 @@ public class CounteractRound extends Round {
     }
 
     @Override
-    public void onRoundStart() throws Exception {
+    public void onRoundStart() {
         messageService.broadcastRoundStartMessage(game);
         onTurnStart();
     }

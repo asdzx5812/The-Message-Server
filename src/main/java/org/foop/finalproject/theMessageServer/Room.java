@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Room {
     private String id;
     private ArrayList<User> users;
-    private int minPlayerNum = 2;
+    private int minPlayerNum = 3;
     private int maxPlayerNum = 9;
     private Game game;
     private boolean isPlaying = false;
@@ -18,6 +18,7 @@ public class Room {
         this.id = id;
         this.users = new ArrayList<>();
         this.users.add(creator);
+        creator.setCurrentRoom(this);
     }
 
     public void joinRoom(User user) throws Exception {
@@ -28,15 +29,16 @@ public class Room {
             throw new Exception(String.format("This room (id: %s) is full", id));
         } else {
             users.add(user);
+            user.setCurrentRoom(this);
         }
     }
 
     public void startGame() throws Exception {
         if (isPlaying) {
-            return;
+            throw new Exception("遊戲早就開始了");
         }
         if (users.size() < minPlayerNum) {
-            throw new Exception("There are not enough players. (At least 3)");
+            throw new Exception("房間人數不足（需要大於等於三人才可以開始）");
         } else {
             isPlaying = true;
             game = new Game(users);
@@ -62,12 +64,16 @@ public class Room {
             throw new Exception("Player not found");
         }
     }
-
+    public boolean isFull(){
+        // return true;
+        return users.size() >= maxPlayerNum? true:false;
+    }
     public Game getGame(){
         return game;
     }
 
-    public void onUserLeave(User user) {
+    public void deleteUser(User user) {
         users.remove(user);
     }
+
 }

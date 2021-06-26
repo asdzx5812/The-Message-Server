@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class MainController {
     // 用來開始執行程式 （用PostConstruct標記的方法會在一開始就執行）
     @PostConstruct

@@ -24,14 +24,20 @@ public class RoomService {
     }
 
     public void startGame(String roomId) throws Exception{
+        //若room不存在
         Room room = Main.getRoom(roomId);
-        Game game = room.getGame();
+        if(room == null) {
+            throw new Exception("當前房間不存在");
+        }
+         //Game game = room.getGame();
         //messageService.sendPlayerIdToAllUser(game);
         room.startGame();
     }
 
-    public void leaveRoom(String userId) throws Exception{
+    public void leaveRoom(String roomId, String userId) throws Exception{
+        Room room = Main.getRoom(roomId);
         User user = Main.getUser(userId);
+        room.deleteUser(user);
         user.leaveRoom();
     }
 }

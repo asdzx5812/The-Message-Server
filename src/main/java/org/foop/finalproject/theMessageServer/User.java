@@ -29,8 +29,11 @@ public class User {
         return currentRoom;
     }
 
+    public void setCurrentRoom(Room currentRoom){
+        this.currentRoom = currentRoom;
+    }
+
     public void leaveRoom() {
-        currentRoom.onUserLeave(this);
         currentRoom = null;
     }
 }

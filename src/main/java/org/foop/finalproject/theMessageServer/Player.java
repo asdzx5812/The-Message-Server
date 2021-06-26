@@ -51,6 +51,8 @@ public class Player {
 
     public Camp getCamp() {return camp;}
 
+    public int getHandcardsNum(){ return handCards.size();}
+
     public void removeHandCardByIndex(int idx) {
         handCards.remove(idx);
     }
@@ -73,7 +75,7 @@ public class Player {
 
     public void drawInitialCards() { handCards.addAll(game.drawCards(3)); }
 
-    public void drawCards() {
+    public void drawCards() throws Exception{
         handCards.addAll(game.drawCards(2));
         // Todo
         // Notify client
@@ -128,17 +130,19 @@ public class Player {
         return handCards.size() > 0;
     }
 
-    public void die() { // Todo
+    public void die() throws Exception{ // Todo
         die = true;
-        messageService.broadcastPlayerDie(game, this);
+        messageService.broadcastPlayerStateChangeMessage(game, this);
         game.onPlayerDie(this);
     }
 
-    public void loseTheGame() {
+    public void loseTheGame() throws Exception{
         lose = true;
-        messageService.broadcastPlayerLose(game, this);
+        messageService.broadcastPlayerStateChangeMessage(game, this);
     }
-
+    public PlayerStatus getStatus(){
+        return this.status;
+    }
     public void changeStatusToNormal() {
         this.status = PlayerStatus.Normal;
     }

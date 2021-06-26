@@ -9,6 +9,10 @@ public class Main {
     static public ArrayList<Room> rooms = new ArrayList<>();
     static public ArrayList<User> users = new ArrayList<>();
 
+    public Main() {
+        rooms.add(new Room("123456", new User("EG", null)));
+    }
+
     static public void addUser(User user){
         users.add(user);
     }
@@ -25,17 +29,19 @@ public class Main {
     static public void joinRoom(String roomId, User user) throws Exception {
         Room roomToJoin = Utility.findInArrayList(rooms, room -> room.getId().equals(roomId));
         if (roomToJoin == null) {
-            throw new Exception("Room not found.");
+            throw new Exception("房間不存在");
+        }
+        else if(roomToJoin.isFull()){
+            throw new Exception("房間滿了");
         }
         roomToJoin.joinRoom(user);
     }
 
-    static public Room getRoom(String roomId) throws Exception {
+    static public Room getRoom(String roomId)  {
         return Utility.findInArrayList(rooms, room -> room.getId().equals(roomId));
-
     }
 
-    static public User getUser(String userId) throws Exception {
+    static public User getUser(String userId)  {
         return Utility.findInArrayList(users, user -> user.getId().equals(userId));
     }
 

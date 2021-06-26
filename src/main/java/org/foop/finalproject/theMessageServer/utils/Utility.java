@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 
 public class Utility {
     static public <T> T findInArrayList(ArrayList<T> arrayList, Predicate<T> filter) {
-        return arrayList.stream().filter(filter).findFirst().orElseThrow();
+        return arrayList.stream().filter(filter).findFirst().orElse(null);
     }
 
     static public String generateRoomId() {

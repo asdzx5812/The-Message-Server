@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/room/{roomId}/game/player/{playerId}")
+@CrossOrigin(origins = "http://localhost:3000")
 public class PlayerController {
 
     @Autowired
