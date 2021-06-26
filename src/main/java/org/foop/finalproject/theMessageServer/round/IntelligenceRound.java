@@ -102,7 +102,6 @@ public class IntelligenceRound extends Round {
         refreshAllPlayerStatus();
         game.leaveRound();
     }
-
     private void refreshAllPlayerStatus(){
         for(Player player: game.getPlayers()){
             player.changeStatusToNormal();

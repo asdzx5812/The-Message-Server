@@ -8,7 +8,8 @@ import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import java.util.ArrayList;
 
 public class BurnDown extends GameCard {
-    BurnDown(){
+    public BurnDown(){
+        super();
         name = "BURN DOWN"; // 燒毀
         timingDescription = "You can play this card at anytime.";
         effectDescription = "Burn down one fake intelligence in front of any player.";

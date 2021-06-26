@@ -5,7 +5,8 @@ import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
 
 public class Trap extends GameCard {
-    public void Trap() {
+    public Trap() {
+        super();
         name = "Trap"; // 調虎離山
         timingDescription = "Play when message transmitting.";
         effectDescription = "Another player becomes [Trap Status] (Player in [Lock On Status] cn not be affected by this)";

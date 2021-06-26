@@ -8,9 +8,11 @@ import javax.websocket.Session;
 public class Main {
     static public ArrayList<Room> rooms = new ArrayList<>();
     static public ArrayList<User> users = new ArrayList<>();
+
     static public void addUser(User user){
         users.add(user);
     }
+
     static public String createRoom(User user) {
         String roomId;
         do {
@@ -29,29 +31,17 @@ public class Main {
     }
 
     static public Room getRoom(String roomId) throws Exception {
-        try {
-            return Utility.findInArrayList(rooms, room -> room.getId().equals(roomId));
-        } catch (Exception e) {
-            throw new Exception("Room not found.");
-        }
+        return Utility.findInArrayList(rooms, room -> room.getId().equals(roomId));
+
     }
 
     static public User getUser(String userId) throws Exception {
-        try {
-            return Utility.findInArrayList(users, user -> user.getId().equals(userId));
-        } catch (Exception e) {
-            throw new Exception("User not found.");
-        }
+        return Utility.findInArrayList(users, user -> user.getId().equals(userId));
     }
 
     static public Player getPlayer(String roomId, String playerId) throws Exception {
         Room room;
-        try {
-            room = Utility.findInArrayList(rooms, r -> r.getId().equals(roomId));
-        } catch (Exception e) {
-            throw new Exception("Room not found.");
-        }
-
+        room = Utility.findInArrayList(rooms, r -> r.getId().equals(roomId));
         return room.getPlayer(playerId);
     }
 
