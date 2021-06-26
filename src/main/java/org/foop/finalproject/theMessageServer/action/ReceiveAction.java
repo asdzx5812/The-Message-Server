@@ -14,13 +14,15 @@ public class ReceiveAction extends Action {
     }
 
     @Override
-    public void execute() throws EncodeException, IOException {
-        throw new IOException("");
+    public void execute() throws Exception {
+        throw new Exception("");
     }
 
     @Override
     public JSONObject toJsonObject() {
-        // TODO:
-        return null;
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("playerId", performer.getId());
+        jsonObject.put("action", "receive");
+        return jsonObject;
     }
 }

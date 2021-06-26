@@ -5,7 +5,8 @@ import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.action.GameCardAction;
 
 public class Counteract extends GameCard {
-    public void Counteract(){
+    public Counteract(){
+        super();
         name = "COUNTERACT"; // 識破
         needTarget = false;
         timingDescription = "Play when effect card is used.";

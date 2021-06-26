@@ -26,12 +26,12 @@ public class GameCardAction extends Action {
     public JSONObject toJsonObject() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("playerId", performer.getId());
+        jsonObject.put("action", "playGameCard");
         jsonObject.put("gameCard", card.toJsonObject());
         if(playerTarget != null){
             jsonObject.put("targetId", playerTarget.getId());
         }
         return jsonObject;
     }
-
 
 }

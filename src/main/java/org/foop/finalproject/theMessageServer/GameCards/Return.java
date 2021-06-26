@@ -6,7 +6,8 @@ import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.round.IntelligenceRound;
 
 public class Return extends GameCard {
-    Return(){
+    public Return(){
+        super();
         name = "RETURN"; // 退回
         timingDescription = "Play when message comes to you in other players' turn. Player in [Lock On Status] will not affect by this card";
         effectDescription = "The intelligence will be transmitted in another direction.";

@@ -18,12 +18,18 @@ public class IntelligenceAction extends Action {
     public IntelligenceType getType(){ return this.card.getIntelligenceType(); }
 
     @Override
-    public void execute() throws EncodeException, IOException {
+    public void execute() {
         System.out.println("This should not occur since an intelligence will not be executed.");
     }
     @Override
     public JSONObject toJsonObject() {
-        // TODO:
-        return null;
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("playerId", performer.getId());
+        jsonObject.put("action", "sendIntelligence");
+        jsonObject.put("gameCard", card.toJsonObject());
+        if(playerTarget != null){
+            jsonObject.put("targetId", playerTarget.getId());
+        }
+        return jsonObject;
     }
 }

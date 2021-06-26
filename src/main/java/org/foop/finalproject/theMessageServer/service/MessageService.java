@@ -60,7 +60,7 @@ public class MessageService{
                     User user = new User(messages[1], session);
                     Main.addUser(user);
                     // Todo 看之後怎麼接
-                    sendMessage(null, "userId:" + user.getId(), session);
+                    sendMessage(null, "userId:" + user.getId(), "",session);
                     break;
                 default:
                     break;
@@ -82,11 +82,12 @@ public class MessageService{
      * @throws IOException
      */
 
-    public void sendMessage(JSONObject jsonObject, String message, Session session) throws Exception {
+    public void sendMessage(JSONObject jsonObject, String message, String type, Session session) throws Exception {
         if(jsonObject == null){
             jsonObject = new JSONObject();
         }
         jsonObject.put("Message", message);
+        jsonObject.put("Type", type);
         session.getBasicRemote().sendObject(jsonObject);   //向客戶端傳送資料
     }
 
@@ -103,7 +104,7 @@ public class MessageService{
 
     public void sendIntelligenceInformationToPlayer(GameCard gameCard, Player player) throws Exception {
         //Todo gameCard.toJsonObject()
-        sendMessage(gameCard.toJsonObject(), "", getPlayerSessionFromGame(player));
+        sendMessage(gameCard.toJsonObject(), "", "IntelligenceInformation", getPlayerSessionFromGame(player));
     }
 
     private Session getPlayerSessionFromGame(Player player){

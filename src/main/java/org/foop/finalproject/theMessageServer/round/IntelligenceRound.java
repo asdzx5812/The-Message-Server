@@ -99,9 +99,14 @@ public class IntelligenceRound extends Round {
 
     @Override
     public void onRoundEnd() throws Exception {
+        refreshAllPlayerStatus();
         game.leaveRound();
     }
-
+    private void refreshAllPlayerStatus(){
+        for(Player player: game.getPlayers()){
+            player.changeStatusToNormal();
+        }
+    }
     @Override
     public boolean satisfyRoundEndCondition() {
         return false;

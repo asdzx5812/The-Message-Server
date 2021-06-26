@@ -167,4 +167,7 @@ public class Player {
         messageService.broadcastPlayerLoss(game, this);
     }
 
+    public void changeStatusToNormal() {
+        this.status = PlayerStatus.Normal;
+    }
 }

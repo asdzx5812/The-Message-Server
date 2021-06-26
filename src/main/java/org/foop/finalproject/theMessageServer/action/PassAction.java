@@ -14,12 +14,14 @@ public class PassAction extends Action{
     }
 
     @Override
-    public void execute() throws EncodeException, IOException {
-        throw new IOException("");
+    public void execute() throws Exception {
+        throw new Exception("");
     }
     @Override
     public JSONObject toJsonObject() {
-        // TODO:
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("playerId", performer.getId());
+        jsonObject.put("action", "Pass");
         return null;
     }
 }
