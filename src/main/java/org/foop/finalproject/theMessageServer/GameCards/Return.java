@@ -3,6 +3,7 @@ package org.foop.finalproject.theMessageServer.GameCards;
 import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Player;
+import org.foop.finalproject.theMessageServer.round.IntelligenceRound;
 
 public class Return extends GameCard {
     Return(){
@@ -14,6 +15,6 @@ public class Return extends GameCard {
     }
     @Override
     public void perform(Player performer, Player playerTarget, Game game) {
-        game.changePassingDirection();
+        ((IntelligenceRound)game.getRound()).changeDirection();
     }
 }

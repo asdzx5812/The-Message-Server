@@ -1,6 +1,7 @@
 package org.foop.finalproject.theMessageServer;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
+import org.foop.finalproject.theMessageServer.service.MessageService;
 import org.json.JSONObject;
 
 import javax.websocket.EncodeException;
@@ -20,6 +21,7 @@ public abstract class GameCard {
     protected boolean playOnWhenIntelligencePassingInFrontOfPlayer;         // 燒毀、鎖定、破譯、調虎離山
     protected boolean playOnWhenIntelligenceSendByPlayer;                   // 燒毀、鎖定、
     protected boolean playOnWhenIntelligenceSendByOthers;                    // 燒毀、鎖定、
+    protected MessageService messageService;
 
     protected GameCard(){
         playOnRoundStart = false;

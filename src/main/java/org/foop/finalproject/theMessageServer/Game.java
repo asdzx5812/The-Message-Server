@@ -177,7 +177,7 @@ public class Game{
         return currentActionsOnBoard;
     }
 
-    public void takeActionOnBoard() throws EncodeException, IOException {
+    public void takeActionOnBoard() throws Exception {
         while(currentActionsOnBoard.size() > 0){
             GameCardAction action = currentActionsOnBoard.pop();
             action.execute();

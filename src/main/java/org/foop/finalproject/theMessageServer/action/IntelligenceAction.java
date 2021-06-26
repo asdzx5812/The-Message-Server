@@ -5,6 +5,7 @@ import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
+import org.json.JSONObject;
 
 import javax.websocket.EncodeException;
 import java.io.IOException;
@@ -19,5 +20,10 @@ public class IntelligenceAction extends Action {
     @Override
     public void execute() throws EncodeException, IOException {
         System.out.println("This should not occur since an intelligence will not be executed.");
+    }
+    @Override
+    public JSONObject toJsonObject() {
+        // TODO:
+        return null;
     }
 }

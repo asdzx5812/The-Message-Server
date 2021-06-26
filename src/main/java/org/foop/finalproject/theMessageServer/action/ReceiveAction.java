@@ -3,6 +3,7 @@ package org.foop.finalproject.theMessageServer.action;
 import org.foop.finalproject.theMessageServer.Action;
 import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.Player;
+import org.json.JSONObject;
 
 import javax.websocket.EncodeException;
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class ReceiveAction extends Action {
     }
 
     @Override
-    public String toJsonObject() {
+    public JSONObject toJsonObject() {
         // TODO:
         return null;
     }

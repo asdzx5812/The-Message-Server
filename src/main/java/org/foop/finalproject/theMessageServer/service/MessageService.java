@@ -56,7 +56,7 @@ public class MessageService{
         if (message != null){
             String[] messages = message.split("-",1);
             switch (messages[0]) {
-                case "start": //Todo 創建user
+                case "start": //Todo 創建user start-{username}
                     User user = new User(messages[1], session);
                     Main.addUser(user);
                     // Todo 看之後怎麼接
@@ -129,6 +129,7 @@ public class MessageService{
     }
 
     public void broadcastPlayerDie(Game game, Player player) {
+
     }
 
     public void broadcastPlayerLoss(Game game, Player player) {

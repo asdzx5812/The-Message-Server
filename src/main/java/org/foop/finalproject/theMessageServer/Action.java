@@ -1,5 +1,7 @@
 package org.foop.finalproject.theMessageServer;
 
+import org.json.JSONObject;
+
 import javax.websocket.EncodeException;
 import java.io.IOException;
 
@@ -22,7 +24,7 @@ public abstract class Action {
         this.playerTarget = playerTarget;
     }
 
-    abstract public void execute() throws EncodeException, IOException;
+    abstract public void execute() throws Exception;
     public Game getGame(){
         return game;
     }
@@ -47,5 +49,5 @@ public abstract class Action {
         return this.card.getNeedTarget();
     }
     //Todo
-    public abstract String toJsonObject();
+    public abstract JSONObject toJsonObject();
 }
