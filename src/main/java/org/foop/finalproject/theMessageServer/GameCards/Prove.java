@@ -41,7 +41,6 @@ public class Prove extends GameCard {
 
     public String getDescriptionAccordingToIdentity(){
         if(proveType){
-            ㄋ
             return "";
         }else{
             return "";

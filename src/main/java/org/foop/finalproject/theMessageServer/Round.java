@@ -23,6 +23,7 @@ public abstract class Round {
     public Round(Player startPlayer, Game game){
         this.startPlayer = startPlayer;
         this.currentPlayer = startPlayer;
+        this.endPlayer = startPlayer;
         this.game = game;
         this.parentRound = null;
         this.direction = 1;
@@ -33,6 +34,7 @@ public abstract class Round {
     public Round(Player startPlayer, Round parentRound){
         this.startPlayer = startPlayer;
         this.currentPlayer = startPlayer;
+        this.endPlayer = startPlayer;
         this.game = parentRound.getGame();
         this.parentRound = parentRound;
         this.direction = 1;
@@ -75,10 +77,28 @@ public abstract class Round {
         }
         return nextPlayer;
     }
+    public Player getPreviousPlayer() {
+        ArrayList<Player> players = game.getPlayers();
+        int currentPlayerId = -1;
+        for(int i = 0; i < players.size(); i++){
+            if(players.get(i) == currentPlayer){
+                currentPlayerId = i;
+                break;
+            }
+        }
+        int prevPlayerId = (currentPlayerId - direction + players.size()) % players.size();
+        Player prevPlayer = players.get(prevPlayerId);
+        while( prevPlayer.isDead() || prevPlayer.isLose() ){
+            prevPlayerId = (prevPlayerId + direction + players.size()) % players.size();
+            prevPlayer = players.get(prevPlayerId);
+        }
+        return prevPlayer;
+    }
 
-    abstract public void onRoundStart();
 
-    abstract public void onTurnStart();
+abstract public void onRoundStart();
+
+abstract public void onTurnStart();
 
     abstract public void onTurnProgressing(Action action);
 

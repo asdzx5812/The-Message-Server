@@ -160,13 +160,11 @@ public class MessageService {
             payload.put("availableIntelligencesId", currentPlayer.getValidIntelligence());
         }
         else if(messageType == MessageType.BROADCAST_PLAYER_START_SELECTING_RECEIVE){
-            boolean receive = true;
             boolean pass = true;
             if(currentPlayer.isLockOn()){
                 pass = false;
             }
-            payload.put("receive",receive);
-            payload.put("pass",pass);
+            payload.put("canPass",pass);
         }
         else{
             System.out.println("no such type in broadcast select action");

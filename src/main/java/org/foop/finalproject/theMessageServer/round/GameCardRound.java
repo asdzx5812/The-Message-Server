@@ -12,6 +12,7 @@ public class GameCardRound extends Round {
 
     GameCardRound(Player startPlayer, Round round){
         super(startPlayer, round);
+        setEndPlayer(getPreviousPlayer());
         name = "Game Card Round";
     }
 
@@ -54,6 +55,7 @@ public class GameCardRound extends Round {
                 game.placeGameCardActionOnBoard((GameCardAction)action);
             }
             childRound.onRoundStart();
+
 
         }//打pass
         else if(action instanceof PassAction){
@@ -107,13 +109,7 @@ public class GameCardRound extends Round {
 
     @Override
     public boolean satisfyRoundEndCondition() {
-        if(endPlayer == currentPlayer && currentAction instanceof PassAction){
-            return true;
-        }
-        //if(endPlayer == getNextPlayer()){
-        // return true;
-        //}
-        return false;
+        return endPlayer == currentPlayer && currentAction instanceof PassAction;
     }
 
 }

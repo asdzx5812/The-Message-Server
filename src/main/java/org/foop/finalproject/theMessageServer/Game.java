@@ -213,8 +213,11 @@ public class Game{
             }
             refreshGameCardsDeck();
         }
+        System.out.print("抽到");
+
         for (int i = 0; i < num; i++) {
             cards.add(gameCardsDeck.pop());
+            System.out.print(cards.get(i).getId());
         }
         return cards;
     }

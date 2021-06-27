@@ -57,10 +57,6 @@ public class Player {
 
     public int getHandcardsNum(){ return handCards.size();}
 
-    public void removeCardFromHandCards(GameCard card) {
-        handCards.remove(card);
-    }
-
     public ArrayList<ArrayList<GameCard>> getIntelligences(){
         return intelligences;
     }
@@ -82,11 +78,22 @@ public class Player {
     public void drawCards() {
         System.out.println("Player draw cards start");
         handCards.addAll(game.drawCards(2));
+        // ArrayList<Player> players = new ArrayList<>();
+        // players.add(this);
+        messageService.broadcastPlayerInformation(game, game.getPlayers());
+        System.out.println("");
         // Todo
         // Notify client
-        messageService.informPlayerCardInformation(game, this);
-        messageService.BroadcastPlayerCardNumInformation(game, this);
+        //messageService.informPlayerCardInformation(game, this);
+        //messageService.BroadcastPlayerCardNumInformation(game, this);
         System.out.println("Player draw cards end");
+    }
+
+    public void removeCardFromHandCards(GameCard card) {
+        handCards.remove(card);
+        // ArrayList<Player> players = new ArrayList<>();
+        // players.add(this);
+        messageService.broadcastPlayerInformation(game, game.getPlayers());
     }
 
     public GameCard getCardByIndex(int idx) throws Exception {
