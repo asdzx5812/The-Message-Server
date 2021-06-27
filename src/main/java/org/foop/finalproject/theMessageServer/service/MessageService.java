@@ -8,19 +8,29 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import javax.websocket.*;
 
 @Service
-public class MessageService{
+public class MessageService {
 
     private JsonService jsonService = new JsonService();
 
-    private ArrayList<Session> getAllSessionsFromGame(Game game){
+    private ArrayList<Session> getAllSessionsFromGame(Game game) {
         ArrayList<Player> players = game.getPlayers();
         ArrayList<Session> sessions = new ArrayList<>();
-        for(Player player:players){
+        for (Player player : players) {
             sessions.add(player.getUser().getSession());
+        }
+        return sessions;
+    }
+
+    private ArrayList<Session> getAllSessionsFromRoom(Room room) {
+        ArrayList<User> users = room.getUsers();
+        ArrayList<Session> sessions = new ArrayList<>();
+        for (User user : users) {
+            sessions.add(user.getSession());
         }
         return sessions;
     }
@@ -28,20 +38,27 @@ public class MessageService{
     public void sendMessage(JSONObject body, Session session) {
         try {
             session.getBasicRemote().sendText(body.toString());   //向客戶端傳送資料
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Exception: "+e);
+            System.out.println("Exception: " + e);
         }
     }
 
     public void broadcastMessage(JSONObject body, Game game) {
         ArrayList<Session> sessions = getAllSessionsFromGame(game);
-        for(Session session:sessions){
+        for (Session session : sessions) {
             sendMessage(body, session);    //向客戶端傳送資料
         }
     }
 
-    public JSONObject getBody(JSONObject payload, String message, MessageType type){
+    public void broadcastMessage(JSONObject body, Room room) {
+        ArrayList<Session> sessions = getAllSessionsFromRoom(room);
+        for (Session session : sessions) {
+            sendMessage(body, session);    //向客戶端傳送資料
+        }
+    }
+
+    public JSONObject getBody(JSONObject payload, String message, MessageType type) {
         JSONObject body = new JSONObject();
         body.put("payload", payload);
         body.put("message", message);
@@ -57,34 +74,48 @@ public class MessageService{
         sendMessage(body, user.getSession());
     }
 
+    // type: BROADCAST_ROOM_MEMBER_CHANGE
+    public void broadcastRoomMemberChange(Room room) {
+        ArrayList<User> users = room.getUsers();
+        JSONObject payload = new JSONObject();
+        payload.put("users", users.stream().map(User::toJsonObject).collect(Collectors.toList()));
+        JSONObject body = getBody(payload, "", MessageType.BROADCAST_ROOM_MEMBER_CHANGE);
+        broadcastMessage(body, room);
+    }
+
     //type:INFORM_INTELLIGENCE_INFORMATION
     //破譯用 告知單位player情報資訊
     public void sendIntelligenceInformationToPlayer(GameCard gameCard, Player player) {
-        //Todo gameCard.toJsonObject()
+    //Todo gameCard.toJsonObject()
         JSONObject body = getBody(gameCard.toJsonObject(), "", MessageType.INFORM_INTELLIGENCE_INFORMATION);
-        sendMessage(body , getPlayerSessionFromGame(player));
+        sendMessage(body, getPlayerSessionFromGame(player));
     }
-    private Session getPlayerSessionFromGame(Player player){
+
+    private Session getPlayerSessionFromGame(Player player) {
         return player.getUser().getSession();
     }
 
-    //TYPE:BROADCAST_PLAYER_INFORMATION
-    //初始化Game時，廣播所有人的手牌數量...等簡化的資訊給所有人
+
+
+
+    //TYPE:BROADCAST_ALL_PLAYERS_INFO
+    //初始化Game時，廣播所有人的手牌/手牌數量/陣營資訊給所有人
     public void broadcastPlayerInformation(Game game, ArrayList<Player> players) {
         JSONObject payload = new JSONObject();
         payload.put("players", jsonService.getPlayersInformationObj(players));
-        JSONObject body = getBody(payload, "", MessageType.BROADCAST_PLAYER_INFORMATION);
+        JSONObject body = getBody(payload, "", MessageType.BROADCAST_ALL_PLAYERS_INFO);
         broadcastMessage(body, game);
     }
 
     //TYPE:BROADCAST_ROUND_START_MESSAGE
-    //廣播每種回合開始的訊息（-----XXXXX回合 開始-----）
+    //廣播每種回合開始的訊息（-----XXXXX回合 開始-----）目前只給MainRound
     public void broadcastRoundStartMessage(Game game) {
         System.out.println("broadcastRoundStartMessage before getbody");
         JSONObject body = getBody(null, "--- " + game.getRound().getName() + " start ---", MessageType.BROADCAST_ROUND_START_MESSAGE);
         System.out.println("broadcastRoundStartMessage after getBody.");
         broadcastMessage(body, game);
     }
+
     //TYPE:BROADCAST_TURN_START_MESSAGE
     //廣播每個Turn開始的訊息（MainRound:『玩家』負責派情報 or IntelligenceRound: 情報抵達『玩家』面前）
     public void broadcastTurnStartMessage(Game game, Player currentPlayer) {
@@ -94,21 +125,44 @@ public class MessageService{
         System.out.println("broadcastTurnStartMessage player id get");
         JSONObject body = getBody(payload, "", MessageType.BROADCAST_TURN_START_MESSAGE);
         broadcastMessage(body, game);
-
     }
-    //TYPE:INFORM_PLAYER_SELECT_ACTION_MESSAGE
-    //告知Player選要做的行為（打功能牌|Pass|接情報|派情報）（這邊會傳給client可以打的牌）
-    public void informPlayerToSelectAction(Game game, Player currentPlayer) {
+
+    //TYPE:BROADCAST_PLAYER_ON_INTELLIGENCE_IN_FRONT
+    //廣播 IntelligenceRound: 情報抵達『玩家』面前 (從TurnStart抽離出來)
+    public void broadcastPlayerOnIntelligenceInFront(Game game, Player currentPlayer) {
         JSONObject payload = new JSONObject();
-        // get can play cards
-        JSONObject body = getBody(payload, "", MessageType.INFORM_PLAYER_SELECT_ACTION_MESSAGE);
+        System.out.println("broadcastPlayerOnIntelligenceInFront start");
+        payload.put("player", currentPlayer.getId());
+        System.out.println("broadcastPlayerOnIntelligenceInFront player id get");
+        JSONObject body = getBody(payload, "", MessageType.BROADCAST_PLAYER_ON_INTELLIGENCE_IN_FRONT);
         broadcastMessage(body, game);
     }
-    //TYPE:BROADCAST_ACTION_BEEN_PLAYED_MESSAGE
+
+    //TYPE:BROADCAST_PLAYER_START_SELECTING_GAMECARD_TO_PLAY
+    //TYPE:BROADCAST_PLAYER_START_SELECTING_GAMECARD_TO_DISCARD
+    //TYPE:BROADCAST_PLAYER_START_SELECTING_INTELLIGENCE
+    //告知Player選要做的行為（打功能牌|Pass|接情報|派情報）（這邊會傳給client可以打的牌）
+    public void broadcastPlayerToSelectAction(Game game, Player currentPlayer, MessageType type) {
+        JSONObject payload = new JSONObject();
+        // get can play cards
+        // TODO type記得傳
+        JSONObject body = getBody(payload, "", type);
+        broadcastMessage(body, game);
+    }
+
+    //TYPE:INFORM_PLAYER_START_SELECTING_TARGET
+    public void informPlayerStartSelectTarget(Game game, Player currentPlayer) {
+        //Todo
+    }
+
+    //TYPE:BROADCAST_GAMECARD_PLAYED
+    //TYPE:BROADCAST_PLAYER_PASSED
+    //TYPE:BROADCAST_INTELLIGENCE_SENT
+    //TYPE:BROADCAST_INTELLIGENCE_RECEIVED
     //廣播『玩家』做了什麼行為(XXX選擇PASS, xxx選擇接收)
-    public void broadcastActionBeenPlayedMessage(Game game, Action action) {
+    public void broadcastActionBeenPlayedMessage(Game game, Action action, MessageType messageType) {
         JSONObject payload = action.toJsonObject();
-        JSONObject body = getBody(payload, "", MessageType.BROADCAST_ACTION_BEEN_PLAYED_MESSAGE);
+        JSONObject body = getBody(payload, "", messageType);
         broadcastMessage(body, game);
     }
     //TYPE:BROADCAST_PLAYER_STATE_CHANGE_MESSAGE
@@ -120,12 +174,18 @@ public class MessageService{
         JSONObject body = getBody(payload, "", MessageType.BROADCAST_PLAYER_STATUS_CHANGE_MESSAGE);
         broadcastMessage(body, game);
     }
-    //TYPE:BROADCAST_GAME_START_MESSAGE
+
+    //TYPE:BROADCAST_GAME_START
     //廣播遊戲開始的訊息
     public void broadCastGameStartMessage(Game game) {
-        JSONObject body = getBody(null, "--- Game Start ---", MessageType.BROADCAST_PLAYER_STATUS_CHANGE_MESSAGE);
+        System.out.println("broadcastGameStartMessage start!!!!");
+        ArrayList<Player> players = game.getPlayers();
+        JSONObject payload = new JSONObject();
+        payload.put("players", jsonService.getPlayersInformationObj(players));
+        JSONObject body = getBody(payload, "--- Game Start ---", MessageType.BROADCAST_GAME_START);
         broadcastMessage(body, game);
     }
+
     //TYPE:BROADCAST_GAME_OVER_MESSAGE
     //廣播遊戲結束
     public void broadcastGameOverMessage(Game game) {
@@ -135,7 +195,7 @@ public class MessageService{
 
     //TYPE:INFORM_PLAYER_INFORMATION
     //一開始初始化後，告知玩家『詳細』資訊
-    public void informPlayerInformation(Game game, Player player){
+    public void informPlayerInformation(Game game, Player player) {
         JSONObject payload = new JSONObject();
         payload.put("playerId", player.getId());
         payload.put("handcardsNumber", player.getHandcardsNum());
@@ -143,6 +203,7 @@ public class MessageService{
         JSONObject body = getBody(payload, "", MessageType.INFORM_PLAYER_INFORMATION);
         sendMessage(body, player.getUser().getSession());
     }
+
     //TYPE:BROADCAST_PLAYER_CARDNUM_INFORMATION
     //每位玩家抽牌後，廣播這位player目前手牌數
     public void BroadcastPlayerCardNumInformation(Game game, Player player) {
@@ -152,9 +213,15 @@ public class MessageService{
 
 
     }
+
     //TYPE:INFORM_PLAYER_CARD_INFORMATION
     //抽玩牌，通知player目前手牌
     public void informPlayerCardInformation(Game game, Player player) {
+
+    }
+    //TYPE:BROADCAST_ACTION_PERFORMED
+    public void broadcastActionPerformed(Game game, String message){
+        //TODO
 
     }
 }

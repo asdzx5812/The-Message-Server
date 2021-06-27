@@ -2,6 +2,7 @@ package org.foop.finalproject.theMessageServer.round;
 
 import org.foop.finalproject.theMessageServer.*;
 import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
+import org.foop.finalproject.theMessageServer.enums.MessageType;
 
 import java.util.ArrayList;
 
@@ -19,6 +20,7 @@ public class MainRound extends Round {
     @Override
     public void onRoundStart() {
         System.out.println("--------遊戲開始--------");
+        messageService.broadCastGameStartMessage(game);
         onTurnStart();
 
     }
@@ -57,7 +59,8 @@ public class MainRound extends Round {
                 onTurnEnd();
             }
             else {
-                messageService.informPlayerToSelectAction(game, currentPlayer);
+                //Todo
+                messageService.broadcastPlayerToSelectAction(game, currentPlayer, MessageType.BROADCAST_PLAYER_START_SELECTING_INTELLIGENCE);
             }
         }else{
             // end Round

@@ -62,5 +62,8 @@ public class Main {
         return false;
     }
 
+    public static void removeRoom(Room room) {
+        rooms.remove(room);
+    }
 }
 

@@ -7,6 +7,7 @@ import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
 import org.foop.finalproject.theMessageServer.action.PassAction;
 import org.foop.finalproject.theMessageServer.action.ReceiveAction;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
+import org.foop.finalproject.theMessageServer.enums.MessageType;
 import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
 
 import java.util.ArrayList;
@@ -71,13 +72,13 @@ public class IntelligenceRound extends Round {
     public void onTurnProgressing(Action action) {
         if(action instanceof ReceiveAction){
             //接收情報
-            messageService.broadcastActionBeenPlayedMessage(game, action);
+            messageService.broadcastActionBeenPlayedMessage(game, action, MessageType.BROADCAST_INTELLIGENCE_RECEIVED);
             currentPlayer.receiveIntelligence(intelligence);
             onRoundEnd();
         }
         else if(action instanceof PassAction){
             //Pass情報
-            messageService.broadcastActionBeenPlayedMessage(game, action);
+            messageService.broadcastActionBeenPlayedMessage(game, action, MessageType.BROADCAST_PLAYER_PASSED);
             onTurnEnd();
         }
         else{
@@ -88,7 +89,7 @@ public class IntelligenceRound extends Round {
     @Override
     public void doWhenLeaveChildRound() {
         // 詢問接收
-        messageService.informPlayerToSelectAction(game, currentPlayer);
+        messageService.broadcastPlayerToSelectAction(game, currentPlayer, MessageType.BROADCAST_PLAYER_START_SELECTING_RECEIVE);
     }
 
 

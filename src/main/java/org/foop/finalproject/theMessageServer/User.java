@@ -1,4 +1,6 @@
 package org.foop.finalproject.theMessageServer;
+import org.json.JSONObject;
+
 import javax.websocket.Session;
 
 import static org.foop.finalproject.theMessageServer.utils.Utility.generateUserId;
@@ -36,5 +38,12 @@ public class User {
 
     public void leaveRoom() {
         currentRoom = null;
+    }
+
+    public JSONObject toJsonObject () {
+        JSONObject userObject = new JSONObject();
+        userObject.put("name", name);
+        userObject.put("id", id);
+        return userObject;
     }
 }

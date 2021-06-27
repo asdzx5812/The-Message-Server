@@ -7,6 +7,9 @@ import java.util.Stack;
 
 import org.foop.finalproject.theMessageServer.GameCards.*;
 import org.foop.finalproject.theMessageServer.action.GameCardAction;
+import org.foop.finalproject.theMessageServer.enums.GameCardColor;
+import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
+import org.foop.finalproject.theMessageServer.enums.MessageType;
 import org.foop.finalproject.theMessageServer.round.MainRound;
 import org.foop.finalproject.theMessageServer.service.MessageService;
 import org.foop.finalproject.theMessageServer.characters.fakeCharacter;
@@ -49,22 +52,12 @@ public class Game{
     public void initializeStage() {
         System.out.println("Initialize Stage start.");
         initializeDeck();
-        createGameCard(6, "BurnDown");
-        createGameCard(14, "Counteract");
-        createGameCard(6, "Decode");
-        createGameCard(3, "Distribute");
-        createGameCard(8, "Intercept");
-        createGameCard(12, "LockOn");
-        createGameCard(18, "Prove");
-        createGameCard(8, "Return");
-        createGameCard(6, "Trap");
+        createDeck();
         initializePlayers();
-
         System.out.println("Initialize Stage finish.");
-        //exception below！！
-        messageService.broadcastPlayerInformation(this, players);
+        //messageService.broadcastPlayerInformation(this, players);
         //exception above！！
-        System.out.println("Initialize Stage broadcast done.");
+        //System.out.println("Initialize Stage broadcast done.");
     }
 
     public void initializeDeck(){
@@ -73,35 +66,65 @@ public class Game{
         currentActionsOnBoard = new Stack<>();
     }
 
-    public void createGameCard(int num, String type){
+    public void createDeck(){
+        createGameCard(3, "LockOn", GameCardColor.RED, IntelligenceType.ENCRYPTED_MSG);
+        createGameCard(3, "LockOn", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
+        createGameCard(6, "LockOn", GameCardColor.BLACK, IntelligenceType.ENCRYPTED_MSG);
+        createGameCard(2, "Trap", GameCardColor.RED, IntelligenceType.ENCRYPTED_MSG);
+        createGameCard(2, "Trap", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
+        createGameCard(2, "Trap", GameCardColor.BLACK, IntelligenceType.ENCRYPTED_MSG);
+        createGameCard(3, "Return", GameCardColor.RED, IntelligenceType.CORPUS_MSG);
+        createGameCard(3, "Return", GameCardColor.BLUE, IntelligenceType.CORPUS_MSG);
+        createGameCard(2, "Return", GameCardColor.BLACK, IntelligenceType.CORPUS_MSG);
+        createGameCard(1, "Intercept", GameCardColor.RED, IntelligenceType.DIRECT_MSG);
+        createGameCard(1, "Intercept", GameCardColor.BLUE, IntelligenceType.DIRECT_MSG);
+        createGameCard(6, "Intercept", GameCardColor.BLACK, IntelligenceType.DIRECT_MSG);
+        createGameCard(2, "Decode", GameCardColor.RED, IntelligenceType.ENCRYPTED_MSG);
+        createGameCard(2, "Decode", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
+        createGameCard(2, "Decode", GameCardColor.BLACK, IntelligenceType.ENCRYPTED_MSG);
+        createGameCard(2, "BurnDown", GameCardColor.RED, IntelligenceType.DIRECT_MSG);
+        createGameCard(2, "BurnDown", GameCardColor.BLUE, IntelligenceType.DIRECT_MSG);
+        createGameCard(2, "BurnDown", GameCardColor.BLACK, IntelligenceType.DIRECT_MSG);
+        createGameCard(5, "Counteract", GameCardColor.RED, IntelligenceType.DIRECT_MSG);
+        createGameCard(5, "Counteract", GameCardColor.BLUE, IntelligenceType.DIRECT_MSG);
+        createGameCard(4, "Counteract", GameCardColor.BLACK, IntelligenceType.DIRECT_MSG);
+        createGameCard(6, "Prove", GameCardColor.RED, IntelligenceType.ENCRYPTED_MSG);
+        createGameCard(6, "Prove", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
+        createGameCard(6, "Prove", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
+        createGameCard(1, "Distribute", GameCardColor.RED, IntelligenceType.CORPUS_MSG);
+        createGameCard(1, "Distribute", GameCardColor.BLUE, IntelligenceType.CORPUS_MSG);
+        createGameCard(1, "Distribute", GameCardColor.BLACK, IntelligenceType.CORPUS_MSG);
+    }
+
+    public void createGameCard(int num, String type, GameCardColor gameCardColor, IntelligenceType intelligenceType){
         for(int i = 0; i < num; i++){
             switch (type){
                 case "BurnDown":
-                    gameCardsDeck.add(new BurnDown());
+                    gameCardsDeck.add(new BurnDown(gameCardColor, intelligenceType));
                     break;
                 case "Counteract":
-                    gameCardsDeck.add(new Counteract());
+                    gameCardsDeck.add(new Counteract(gameCardColor, intelligenceType));
                     break;
                 case "Decode":
-                    gameCardsDeck.add(new Decode());
+                    gameCardsDeck.add(new Decode(gameCardColor, intelligenceType));
                     break;
                 case "Distribute":
-                    gameCardsDeck.add(new Distribute());
+                    gameCardsDeck.add(new Distribute(gameCardColor, intelligenceType));
                     break;
                 case "Intercept":
-                    gameCardsDeck.add(new Intercept());
+                    gameCardsDeck.add(new Intercept(gameCardColor, intelligenceType));
                     break;
                 case "LockOn":
-                    gameCardsDeck.add(new LockOn());
+                    gameCardsDeck.add(new LockOn(gameCardColor, intelligenceType));
                     break;
                 case "Prove":
-                    gameCardsDeck.add(new Prove());
+                    gameCardsDeck.add(new Prove(gameCardColor, intelligenceType, false, Camp.BLUE));
                     break;
                 case "Return":
-                    gameCardsDeck.add(new Return());
+                    gameCardsDeck.add(new Return(gameCardColor, intelligenceType));
                     break;
                 case "Trap":
-                    gameCardsDeck.add(new Trap());
+                    gameCardsDeck.add(new Trap(gameCardColor, intelligenceType));
                     break;
                 default:
                     System.out.println("This should not happen.");
@@ -118,13 +141,12 @@ public class Game{
             Character character = new fakeCharacter();
             players.add(new Player(this, camps.get(i), character, users.get(i)));
             players.get(i).drawInitialCards();
-            //exception below！！
-            messageService.informPlayerInformation(this, players.get(i));
+            //messageService.informPlayerInformation(this, players.get(i));
         }
     }
 
     public void start() {
-        messageService.broadCastGameStartMessage(this);
+        //messageService.broadCastGameStartMessage(this);
         round = new MainRound(players.get(0), this);
         round.onRoundStart();
     }
@@ -210,7 +232,7 @@ public class Game{
 
     public void placeGameCardActionOnBoard(GameCardAction action) {
         this.currentActionsOnBoard.push(action);
-        messageService.broadcastActionBeenPlayedMessage(this, action);
+        messageService.broadcastActionBeenPlayedMessage(this, action, MessageType.BROADCAST_ACTION_BEEN_PLAYED_MESSAGE);
     }
 
     public void dispatchSelectingActions() {
@@ -239,6 +261,8 @@ public class Game{
             GameCardAction action = currentActionsOnBoard.pop();
             try {
                 action.execute();
+                //TODO
+                //messageService.broadcastActionPerformed(this, message);
             } catch (Exception e) {
                 e.printStackTrace();
             }

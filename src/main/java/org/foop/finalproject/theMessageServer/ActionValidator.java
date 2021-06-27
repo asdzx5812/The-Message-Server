@@ -2,7 +2,7 @@ package org.foop.finalproject.theMessageServer;
 import java.util.ArrayList;
 
 public class ActionValidator {
-    public ArrayList<GameCard> filterOnRoundStart(Player currentPlayer){
+    /*public ArrayList<GameCard> filterOnRoundStart(Player currentPlayer){
         ArrayList<GameCard> validCards = new ArrayList<>();
         for(GameCard card:currentPlayer.handCards){
             if(card.canPlayOnRoundStart()){
@@ -10,7 +10,7 @@ public class ActionValidator {
             }
         }
         return validCards;
-    }
+    }*/
     public ArrayList<GameCard> filterOnPlayerTurn(Player currentPlayer){
         ArrayList<GameCard> validCards = new ArrayList<>();
         for(GameCard card:currentPlayer.handCards){

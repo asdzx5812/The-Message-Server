@@ -5,6 +5,7 @@ import org.foop.finalproject.theMessageServer.GameCards.Counteract;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
 import org.foop.finalproject.theMessageServer.action.*;
+import org.foop.finalproject.theMessageServer.enums.MessageType;
 
 public class GameCardRound extends Round {
     Action currentAction;
@@ -17,14 +18,14 @@ public class GameCardRound extends Round {
     @Override
     public void onRoundStart() {
         System.out.println("GameCardRound: onRoundStart");
-        messageService.broadcastRoundStartMessage(game);
+        //messageService.broadcastRoundStartMessage(game);
     }
 
     @Override
     public void onTurnStart() {
         System.out.println("GameCardRound: onTurnStart");
-        messageService.broadcastTurnStartMessage(game, currentPlayer);
-        messageService.informPlayerToSelectAction(game, currentPlayer);
+        //messageService.broadcastTurnStartMessage(game, currentPlayer);
+        messageService.broadcastPlayerToSelectAction(game, currentPlayer, MessageType.BROADCAST_PLAYER_START_SELECTING_GAMECARD);
     }
 
     @Override

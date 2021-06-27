@@ -4,17 +4,15 @@ import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.foop.finalproject.theMessageServer.service.MessageService;
 import org.json.JSONObject;
 
-import javax.websocket.EncodeException;
-import java.io.IOException;
-
 public abstract class GameCard {
     protected GameCardColor color;
+    protected String id;
     protected String name;
     protected String timingDescription;
     protected String effectDescription;
     protected IntelligenceType intelligenceType;
     protected boolean needTarget;
-    protected boolean playOnRoundStart;                                     // 燒毀
+    // protected boolean playOnPlayersGameCardRound;                           // 燒毀
     protected boolean playWhenOtherCardPlayed;                              // 識破
     protected boolean playOnPlayerTurn;                                     // 試探、真偽莫辨、鎖定
     protected boolean playOnWhenIntelligencePassingInFrontOfOthers;         // 燒毀、鎖定、截獲、退回、調虎離山
@@ -23,10 +21,10 @@ public abstract class GameCard {
     protected boolean playOnWhenIntelligenceSendByOthers;                    // 燒毀、鎖定、
     protected MessageService messageService;
 
-    protected GameCard(){
-        this.color = GameCardColor.BLACK;
-        this.intelligenceType = IntelligenceType.ENCRYPTED_MSG;
-        playOnRoundStart = false;
+    protected GameCard(GameCardColor gameCardColor, IntelligenceType intelligenceType){
+        this.color = gameCardColor;
+        this.intelligenceType = intelligenceType;
+        //playOnPlayersGameCardRound = false;
         playOnPlayerTurn = false;
         playWhenOtherCardPlayed = false;
         playOnWhenIntelligencePassingInFrontOfOthers = false;
@@ -41,7 +39,7 @@ public abstract class GameCard {
     }
     public abstract void perform(Player performer, Player playerTarget, Game game) throws Exception;
     // 回合開始
-    public boolean canPlayOnRoundStart(){ return playOnRoundStart; }
+    //public boolean canPlayOnRoundStart(){ return playOnPlayersGameCardRound; }
     public boolean canPlayWhenOtherCardPlayed(){ return playWhenOtherCardPlayed; }
     public boolean canPlayOnPlayerTurn(){ return playOnPlayerTurn; }
     public boolean canPlayOnWhenIntelligencePassingInFrontOfOthers(){ return playOnWhenIntelligencePassingInFrontOfOthers; }
@@ -75,4 +73,6 @@ public abstract class GameCard {
         handCardObj.put("isValid", isValid());
         return handCardObj;
     }
+
+
 }

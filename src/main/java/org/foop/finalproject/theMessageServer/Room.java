@@ -76,4 +76,11 @@ public class Room {
         users.remove(user);
     }
 
+    public ArrayList<User> getUsers() {
+        return users;
+    }
+
+    public boolean isEmpty() {
+        return users.isEmpty();
+    }
 }

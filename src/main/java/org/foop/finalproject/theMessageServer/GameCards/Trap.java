@@ -2,14 +2,19 @@ package org.foop.finalproject.theMessageServer.GameCards;
 import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Player;
+import org.foop.finalproject.theMessageServer.enums.GameCardColor;
+import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
 
 public class Trap extends GameCard {
-    public Trap() {
-        super();
-        name = "Trap"; // 調虎離山
-        timingDescription = "Play when message transmitting.";
-        effectDescription = "Another player becomes [Trap Status] (Player in [Lock On Status] cn not be affected by this)";
+    public Trap(GameCardColor gameCardColor, IntelligenceType intelligenceType) {
+        super(gameCardColor, intelligenceType);
+        /// name = "Trap"; // 調虎離山
+        // timingDescription = "Play when message transmitting.";
+        // effectDescription = "Another player becomes [Trap Status] (Player in [Lock On Status] cn not be affected by this)";
+        name = "調虎離山"; // 調虎離山
+        timingDescription = "當情報開始傳遞後使用。";
+        effectDescription = "指定一位玩家不參與本次的情報傳遞。（不能指定傳出情報者和被鎖定的玩家）";
         playOnWhenIntelligencePassingInFrontOfPlayer = true;
         playOnWhenIntelligencePassingInFrontOfOthers = true;
         playOnWhenIntelligenceSendByPlayer = true;

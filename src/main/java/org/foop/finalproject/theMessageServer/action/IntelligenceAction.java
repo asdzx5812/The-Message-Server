@@ -1,9 +1,6 @@
 package org.foop.finalproject.theMessageServer.action;
 
-import org.foop.finalproject.theMessageServer.Action;
-import org.foop.finalproject.theMessageServer.Game;
-import org.foop.finalproject.theMessageServer.GameCard;
-import org.foop.finalproject.theMessageServer.Player;
+import org.foop.finalproject.theMessageServer.*;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.json.JSONObject;
 
