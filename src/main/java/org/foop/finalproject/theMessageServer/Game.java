@@ -1,6 +1,5 @@
 package org.foop.finalproject.theMessageServer;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
@@ -14,17 +13,15 @@ import org.foop.finalproject.theMessageServer.round.MainRound;
 import org.foop.finalproject.theMessageServer.service.MessageService;
 import org.foop.finalproject.theMessageServer.characters.fakeCharacter;
 import org.foop.finalproject.theMessageServer.enums.Camp;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.websocket.EncodeException;
 
 public class Game{
 
     private MessageService messageService;
-
+    private int readyNum;
     private int playerNum;
     protected ArrayList<Character> characterCards;
     protected ArrayList<Player> players;
+    protected ArrayList<Player> readyPlayers;
     protected ArrayList<User> users;
     protected Round round;
     protected Stack<GameCard> gameCardsDeck;
@@ -39,6 +36,8 @@ public class Game{
         this.playerNum = users.size();
         this.users = users;
         messageService = new MessageService();
+        this.readyNum=0;
+        this.readyPlayers = new ArrayList<>();
     }
 
     public ArrayList<Player> getPlayers(){
@@ -55,6 +54,7 @@ public class Game{
         createDeck();
         initializePlayers();
         System.out.println("Initialize Stage finish.");
+        messageService.broadCastGameStartMessage(this);
         //messageService.broadcastPlayerInformation(this, players);
         //exception above！！
         //System.out.println("Initialize Stage broadcast done.");
@@ -67,64 +67,117 @@ public class Game{
     }
 
     public void createDeck(){
-        createGameCard(3, "LockOn", GameCardColor.RED, IntelligenceType.ENCRYPTED_MSG);
-        createGameCard(3, "LockOn", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
-        createGameCard(6, "LockOn", GameCardColor.BLACK, IntelligenceType.ENCRYPTED_MSG);
-        createGameCard(2, "Trap", GameCardColor.RED, IntelligenceType.ENCRYPTED_MSG);
-        createGameCard(2, "Trap", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
-        createGameCard(2, "Trap", GameCardColor.BLACK, IntelligenceType.ENCRYPTED_MSG);
-        createGameCard(3, "Return", GameCardColor.RED, IntelligenceType.CORPUS_MSG);
-        createGameCard(3, "Return", GameCardColor.BLUE, IntelligenceType.CORPUS_MSG);
-        createGameCard(2, "Return", GameCardColor.BLACK, IntelligenceType.CORPUS_MSG);
-        createGameCard(1, "Intercept", GameCardColor.RED, IntelligenceType.DIRECT_MSG);
-        createGameCard(1, "Intercept", GameCardColor.BLUE, IntelligenceType.DIRECT_MSG);
-        createGameCard(6, "Intercept", GameCardColor.BLACK, IntelligenceType.DIRECT_MSG);
-        createGameCard(2, "Decode", GameCardColor.RED, IntelligenceType.ENCRYPTED_MSG);
-        createGameCard(2, "Decode", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
-        createGameCard(2, "Decode", GameCardColor.BLACK, IntelligenceType.ENCRYPTED_MSG);
-        createGameCard(2, "BurnDown", GameCardColor.RED, IntelligenceType.DIRECT_MSG);
-        createGameCard(2, "BurnDown", GameCardColor.BLUE, IntelligenceType.DIRECT_MSG);
-        createGameCard(2, "BurnDown", GameCardColor.BLACK, IntelligenceType.DIRECT_MSG);
-        createGameCard(5, "Counteract", GameCardColor.RED, IntelligenceType.DIRECT_MSG);
-        createGameCard(5, "Counteract", GameCardColor.BLUE, IntelligenceType.DIRECT_MSG);
-        createGameCard(4, "Counteract", GameCardColor.BLACK, IntelligenceType.DIRECT_MSG);
-        createGameCard(6, "Prove", GameCardColor.RED, IntelligenceType.ENCRYPTED_MSG);
-        createGameCard(6, "Prove", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
-        createGameCard(6, "Prove", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
-        createGameCard(1, "Distribute", GameCardColor.RED, IntelligenceType.CORPUS_MSG);
-        createGameCard(1, "Distribute", GameCardColor.BLUE, IntelligenceType.CORPUS_MSG);
-        createGameCard(1, "Distribute", GameCardColor.BLACK, IntelligenceType.CORPUS_MSG);
+        createGameCardExceptsForProve(3, "LockOn", GameCardColor.RED, IntelligenceType.ENCRYPTED_MSG);
+        createGameCardExceptsForProve(3, "LockOn", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
+        createGameCardExceptsForProve(6, "LockOn", GameCardColor.BLACK, IntelligenceType.ENCRYPTED_MSG);
+        createGameCardExceptsForProve(2, "Trap", GameCardColor.RED, IntelligenceType.ENCRYPTED_MSG);
+        createGameCardExceptsForProve(2, "Trap", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
+        createGameCardExceptsForProve(2, "Trap", GameCardColor.BLACK, IntelligenceType.ENCRYPTED_MSG);
+        createGameCardExceptsForProve(3, "Return", GameCardColor.RED, IntelligenceType.CORPUS_MSG);
+        createGameCardExceptsForProve(3, "Return", GameCardColor.BLUE, IntelligenceType.CORPUS_MSG);
+        createGameCardExceptsForProve(2, "Return", GameCardColor.BLACK, IntelligenceType.CORPUS_MSG);
+        createGameCardExceptsForProve(1, "Intercept", GameCardColor.RED, IntelligenceType.DIRECT_MSG);
+        createGameCardExceptsForProve(1, "Intercept", GameCardColor.BLUE, IntelligenceType.DIRECT_MSG);
+        createGameCardExceptsForProve(6, "Intercept", GameCardColor.BLACK, IntelligenceType.DIRECT_MSG);
+        createGameCardExceptsForProve(2, "Decode", GameCardColor.RED, IntelligenceType.ENCRYPTED_MSG);
+        createGameCardExceptsForProve(2, "Decode", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
+        createGameCardExceptsForProve(2, "Decode", GameCardColor.BLACK, IntelligenceType.ENCRYPTED_MSG);
+        createGameCardExceptsForProve(2, "BurnDown", GameCardColor.RED, IntelligenceType.DIRECT_MSG);
+        createGameCardExceptsForProve(2, "BurnDown", GameCardColor.BLUE, IntelligenceType.DIRECT_MSG);
+        createGameCardExceptsForProve(2, "BurnDown", GameCardColor.BLACK, IntelligenceType.DIRECT_MSG);
+        createGameCardExceptsForProve(5, "Counteract", GameCardColor.RED, IntelligenceType.DIRECT_MSG);
+        createGameCardExceptsForProve(5, "Counteract", GameCardColor.BLUE, IntelligenceType.DIRECT_MSG);
+        createGameCardExceptsForProve(4, "Counteract", GameCardColor.BLACK, IntelligenceType.DIRECT_MSG);
+        // TODO
+        createProves();
+        //createProve(6, "Prove", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
+        //createProve(6, "Prove", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
+        createGameCardExceptsForProve(1, "Distribute", GameCardColor.RED, IntelligenceType.CORPUS_MSG);
+        createGameCardExceptsForProve(1, "Distribute", GameCardColor.BLUE, IntelligenceType.CORPUS_MSG);
+        createGameCardExceptsForProve(1, "Distribute", GameCardColor.BLACK, IntelligenceType.CORPUS_MSG);
+        Collections.shuffle(gameCardsDeck);
     }
 
-    public void createGameCard(int num, String type, GameCardColor gameCardColor, IntelligenceType intelligenceType){
-        for(int i = 0; i < num; i++){
+    public void createProves(){
+        GameCardColor gameCardColor = GameCardColor.RED;
+        Camp camp = Camp.RED;
+        Boolean proveType = false;
+        for(int colorType = 0; colorType < 3; colorType++){
+            int order = 0;
+            switch(colorType){
+                case 0:
+                    gameCardColor = GameCardColor.RED;
+                    break;
+                case 1:
+                    gameCardColor = GameCardColor.BLUE;
+                    break;
+                case 2:
+                    gameCardColor = GameCardColor.BLACK;
+                    break;
+                default:
+                    break;
+            }
+            for(int campType = 0; campType < 3; campType++){
+                switch(campType){
+                    case 0:
+                        camp = Camp.RED;
+                        break;
+                    case 1:
+                        camp = Camp.BLUE;
+                        break;
+                    case 2:
+                        camp = Camp.GREEN;
+                        break;
+                    default:
+                        break;
+                }
+                for(int proofTypeCount = 0; proofTypeCount < 2; proofTypeCount ++){
+                    switch(proofTypeCount){
+                        case 0:
+                            proveType = false;
+                            break;
+                        case 1:
+                            proveType = true;
+                            break;
+                        default:
+                            break;
+                    }
+                    createProve(gameCardColor, proveType, camp, order);
+                    order ++;
+                }
+            }
+        }
+    }
+
+    public void createProve(GameCardColor gameCardColor, Boolean proveType, Camp specialCamp, int order){
+        gameCardsDeck.add(new Prove(gameCardColor, IntelligenceType.ENCRYPTED_MSG, proveType, specialCamp, order));
+    };
+    public void createGameCardExceptsForProve(int num, String type, GameCardColor gameCardColor, IntelligenceType intelligenceType){
+        for(int i = 1; i <= num; i++){
             switch (type){
                 case "BurnDown":
-                    gameCardsDeck.add(new BurnDown(gameCardColor, intelligenceType));
+                    gameCardsDeck.add(new BurnDown(gameCardColor, intelligenceType, i));
                     break;
                 case "Counteract":
-                    gameCardsDeck.add(new Counteract(gameCardColor, intelligenceType));
+                    gameCardsDeck.add(new Counteract(gameCardColor, intelligenceType, i));
                     break;
                 case "Decode":
-                    gameCardsDeck.add(new Decode(gameCardColor, intelligenceType));
+                    gameCardsDeck.add(new Decode(gameCardColor, intelligenceType, i));
                     break;
                 case "Distribute":
-                    gameCardsDeck.add(new Distribute(gameCardColor, intelligenceType));
+                    gameCardsDeck.add(new Distribute(gameCardColor, intelligenceType, i));
                     break;
                 case "Intercept":
-                    gameCardsDeck.add(new Intercept(gameCardColor, intelligenceType));
+                    gameCardsDeck.add(new Intercept(gameCardColor, intelligenceType, i));
                     break;
                 case "LockOn":
-                    gameCardsDeck.add(new LockOn(gameCardColor, intelligenceType));
-                    break;
-                case "Prove":
-                    gameCardsDeck.add(new Prove(gameCardColor, intelligenceType, false, Camp.BLUE));
+                    gameCardsDeck.add(new LockOn(gameCardColor, intelligenceType, i));
                     break;
                 case "Return":
-                    gameCardsDeck.add(new Return(gameCardColor, intelligenceType));
+                    gameCardsDeck.add(new Return(gameCardColor, intelligenceType, i));
                     break;
                 case "Trap":
-                    gameCardsDeck.add(new Trap(gameCardColor, intelligenceType));
+                    gameCardsDeck.add(new Trap(gameCardColor, intelligenceType, i));
                     break;
                 default:
                     System.out.println("This should not happen.");
@@ -148,7 +201,7 @@ public class Game{
     public void start() {
         //messageService.broadCastGameStartMessage(this);
         round = new MainRound(players.get(0), this);
-        round.onRoundStart();
+        //round.onRoundStart();
     }
 
     public ArrayList<GameCard> drawCards(int num) {
@@ -261,6 +314,10 @@ public class Game{
             GameCardAction action = currentActionsOnBoard.pop();
             try {
                 action.execute();
+                GameCard gamecard = action.getCard();
+                if(!(gamecard instanceof Counteract)) {
+                    playedCards.add(gamecard);
+                }
                 //TODO
                 //messageService.broadcastActionPerformed(this, message);
             } catch (Exception e) {
@@ -272,5 +329,29 @@ public class Game{
 
     public void setPassingCard(GameCard passingCard) {
         this.passingCard = passingCard;
+    }
+    public GameCard getPassingCard() { return this.passingCard;}
+    public void addReadyPlayer(Player player) {
+        if(readyPlayers.indexOf(player) == -1){
+            readyPlayers.add(player);
+            System.out.println(player.getUser().getName() + "準備好了！！");
+            tryGameStart();
+        }
+    }
+
+    private void tryGameStart() {
+        if (readyPlayers.size() == playerNum){
+            readyPlayers = null;
+            round.onRoundStart();
+        }
+    }
+    public ArrayList<String> getTargetList(Player currentPlayer){
+        ArrayList<String> targetList = new ArrayList<>();
+        for(Player player:players){
+            if(player != currentPlayer){
+                targetList.add(player.getId());
+            }
+        }
+        return targetList;
     }
 }

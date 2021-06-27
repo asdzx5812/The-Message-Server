@@ -53,16 +53,16 @@ public class IntelligenceRound extends Round {
 
     @Override
     public void onRoundStart() {
+        this.currentPlayer.beLockOn();
         this.currentPlayer = getNextPlayer();
-        this.currentPlayer.lockOn();
-        messageService.broadcastRoundStartMessage(game);
+        //messageService.broadcastRoundStartMessage(game);
         //廣播誰打出情報
         onTurnStart();
     }
 
     @Override
     public void onTurnStart()  {
-        messageService.broadcastTurnStartMessage(game, currentPlayer);
+        messageService.broadcastPlayerOnIntelligenceInFront(game, currentPlayer);
         childRound = new GameCardRound(currentPlayer, this);
         game.setRound(childRound);
         childRound.onRoundStart();

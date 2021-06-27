@@ -8,19 +8,17 @@ import java.util.ArrayList;
 
 public class MainRound extends Round {
     boolean intelligenceHasSent;
-
+    Action currentAction;
     public MainRound(Player player, Game game) {
         super(player, game);
         endPlayer = null;
         name = "Main Round";
         intelligenceHasSent = false;
-        onRoundStart();
     }
 
     @Override
     public void onRoundStart() {
         System.out.println("--------遊戲開始--------");
-        messageService.broadCastGameStartMessage(game);
         onTurnStart();
 
     }
@@ -34,8 +32,8 @@ public class MainRound extends Round {
         currentPlayer.drawCards();
         childRound = new GameCardRound(currentPlayer, this);
         game.setRound(childRound);
-        childRound.onRoundStart();
         System.out.println("MainRound: onTurnStart end");
+        childRound.onRoundStart();
     }
 
     @Override
@@ -44,6 +42,20 @@ public class MainRound extends Round {
         // TODO: 派情報
         // action為收到的情報
         game.setPassingCard(action.getCard());
+
+        if(action.getCard().isDirectMessage()){
+            ChooseDirectMessageTarget(action);
+        } else{
+            SendIntelligence(action);
+        }
+    }
+    public void ChooseDirectMessageTarget(Action action){
+        currentAction = action;
+        childRound = new TargetSelectRound(currentPlayer, this, action);
+        game.setRound(childRound);
+        childRound.onRoundStart();
+    }
+    public void SendIntelligence(Action action){
         childRound = new IntelligenceRound(currentPlayer, this, (IntelligenceAction)action);
         game.setRound(childRound);
         childRound.onRoundStart();
@@ -61,8 +73,11 @@ public class MainRound extends Round {
             else {
                 //Todo
                 messageService.broadcastPlayerToSelectAction(game, currentPlayer, MessageType.BROADCAST_PLAYER_START_SELECTING_INTELLIGENCE);
+
             }
-        }else{
+        } else if(childRound instanceof TargetSelectRound){
+            SendIntelligence(currentAction);
+        } else {
             // end Round
             onTurnEnd();
         }

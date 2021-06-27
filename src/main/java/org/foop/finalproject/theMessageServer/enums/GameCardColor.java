@@ -8,9 +8,4 @@ public enum GameCardColor {
         this.type = type;
         this.name = name;
     }
-
-    @Override
-    public String toString(){
-        return name;
-    }
 }

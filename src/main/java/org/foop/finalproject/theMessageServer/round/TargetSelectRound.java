@@ -1,6 +1,7 @@
 package org.foop.finalproject.theMessageServer.round;
 
 import org.foop.finalproject.theMessageServer.Action;
+import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
 import org.foop.finalproject.theMessageServer.action.GameCardAction;
@@ -8,22 +9,22 @@ import org.foop.finalproject.theMessageServer.action.GameCardAction;
 import javax.websocket.EncodeException;
 import java.io.IOException;
 
-public class GameCardTargetSelectRound extends Round {
+public class TargetSelectRound extends Round {
     Action action;
-    public GameCardTargetSelectRound(Player startPlayer, Round parentRound, Action action) {
+    public TargetSelectRound(Player startPlayer, Round parentRound, Action action) {
         super(startPlayer, parentRound);
         this.action = action;
-        this.name = "GameCard Target Select Round";
+        this.name = "Target Select Round";
     }
 
     @Override
     public void onRoundStart() {
-
+        onTurnStart();
     }
 
     @Override
     public void onTurnStart() {
-
+        messageService.informPlayerStartSelectTarget(game, currentPlayer);
     }
 
     @Override

@@ -1,6 +1,10 @@
 package org.foop.finalproject.theMessageServer.service;
 
 import org.foop.finalproject.theMessageServer.*;
+import org.foop.finalproject.theMessageServer.action.GameCardAction;
+import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
+import org.foop.finalproject.theMessageServer.action.PassAction;
+import org.foop.finalproject.theMessageServer.action.ReceiveAction;
 import org.foop.finalproject.theMessageServer.enums.MessageType;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,8 +125,7 @@ public class MessageService {
     public void broadcastTurnStartMessage(Game game, Player currentPlayer) {
         JSONObject payload = new JSONObject();
         System.out.println("broadcastTurnStartMessage start");
-        payload.put("player", currentPlayer.getId());
-        System.out.println("broadcastTurnStartMessage player id get");
+        payload.put("player", currentPlayer.toJsonObject());
         JSONObject body = getBody(payload, "", MessageType.BROADCAST_TURN_START_MESSAGE);
         broadcastMessage(body, game);
     }
@@ -132,8 +135,7 @@ public class MessageService {
     public void broadcastPlayerOnIntelligenceInFront(Game game, Player currentPlayer) {
         JSONObject payload = new JSONObject();
         System.out.println("broadcastPlayerOnIntelligenceInFront start");
-        payload.put("player", currentPlayer.getId());
-        System.out.println("broadcastPlayerOnIntelligenceInFront player id get");
+        payload.put("playerId", currentPlayer.getId());
         JSONObject body = getBody(payload, "", MessageType.BROADCAST_PLAYER_ON_INTELLIGENCE_IN_FRONT);
         broadcastMessage(body, game);
     }
@@ -142,17 +144,47 @@ public class MessageService {
     //TYPE:BROADCAST_PLAYER_START_SELECTING_GAMECARD_TO_DISCARD
     //TYPE:BROADCAST_PLAYER_START_SELECTING_INTELLIGENCE
     //告知Player選要做的行為（打功能牌|Pass|接情報|派情報）（這邊會傳給client可以打的牌）
-    public void broadcastPlayerToSelectAction(Game game, Player currentPlayer, MessageType type) {
+    //payload: {
+    //        playerId,
+    //        availableGamecardsId: []
+    //    }
+    public void broadcastPlayerToSelectAction(Game game, Player currentPlayer, MessageType messageType) {
+        System.out.println("輪到"+ currentPlayer.getUser().getName() + "選擇行為" + messageType);
         JSONObject payload = new JSONObject();
-        // get can play cards
+        payload.put("playerId", currentPlayer.getId());
         // TODO type記得傳
-        JSONObject body = getBody(payload, "", type);
+        if(messageType == MessageType.BROADCAST_PLAYER_START_SELECTING_GAMECARD) {
+            payload.put("availableGamecardsId", currentPlayer.getValidCardIndices(game));
+        }
+        else if(messageType == MessageType.BROADCAST_PLAYER_START_SELECTING_INTELLIGENCE){
+            payload.put("availableIntelligencesId", currentPlayer.getValidIntelligence());
+        }
+        else if(messageType == MessageType.BROADCAST_PLAYER_START_SELECTING_RECEIVE){
+            boolean receive = true;
+            boolean pass = true;
+            if(currentPlayer.isLockOn()){
+                pass = false;
+            }
+            payload.put("receive",receive);
+            payload.put("pass",pass);
+        }
+        else{
+            System.out.println("no such type in broadcast select action");
+        }
+        JSONObject body = getBody(payload, "", messageType);
         broadcastMessage(body, game);
     }
 
     //TYPE:INFORM_PLAYER_START_SELECTING_TARGET
     public void informPlayerStartSelectTarget(Game game, Player currentPlayer) {
         //Todo
+        System.out.println("開始通知player選target");
+        JSONObject payload = new JSONObject();
+        payload.put("playerId", currentPlayer.getId());
+        payload.put("availableTargetsId", game.getTargetList(currentPlayer));
+        System.out.println(currentPlayer.getUser().getName() + "得到availableTargetsId:" + game.getTargetList(currentPlayer));
+        JSONObject body = getBody(payload, "",MessageType.INFORM_PLAYER_START_SELECTING_TARGET);
+        sendMessage(body, currentPlayer.getUser().getSession());
     }
 
     //TYPE:BROADCAST_GAMECARD_PLAYED
@@ -161,6 +193,23 @@ public class MessageService {
     //TYPE:BROADCAST_INTELLIGENCE_RECEIVED
     //廣播『玩家』做了什麼行為(XXX選擇PASS, xxx選擇接收)
     public void broadcastActionBeenPlayedMessage(Game game, Action action, MessageType messageType) {
+        System.out.println(action.getPerformer().getUser().getName() + "做了" + action.toJsonObject().toString());
+        if(action instanceof GameCardAction){
+            messageType = MessageType.BROADCAST_GAMECARD_PLAYED;
+        }
+        else if(action instanceof PassAction){
+            messageType = MessageType.BROADCAST_PLAYER_PASSED;
+        }
+        else if(action instanceof IntelligenceAction){
+            messageType = MessageType.BROADCAST_INTELLIGENCE_SENT;
+        }
+        else if(action instanceof ReceiveAction){
+            messageType = MessageType.BROADCAST_INTELLIGENCE_RECEIVED;
+        }
+        else{
+            System.out.print("No such type action in broadcastActionBeenPlayedMessage");
+            return;
+        }
         JSONObject payload = action.toJsonObject();
         JSONObject body = getBody(payload, "", messageType);
         broadcastMessage(body, game);

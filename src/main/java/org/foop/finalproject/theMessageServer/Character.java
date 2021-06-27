@@ -1,7 +1,9 @@
 package org.foop.finalproject.theMessageServer;
 
 import org.foop.finalproject.theMessageServer.missions.emptyMission;
-import org.foop.finalproject.theMessageServer.skills.emptySkill;
+import org.foop.finalproject.theMessageServer.enums.Gender;
+import org.json.JSONObject;
+
 
 public class Character {
     protected String name;
@@ -44,6 +46,13 @@ public class Character {
         return mission.isCompleted();
     }
 
+    public JSONObject toJsonObject() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", name);
+        jsonObject.put("Skill", skill.getDescription());
+        jsonObject.put("Mission", mission.getDescription());
+        return jsonObject;
+    }
 }
 
 

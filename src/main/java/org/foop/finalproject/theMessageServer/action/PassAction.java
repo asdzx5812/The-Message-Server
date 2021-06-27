@@ -4,8 +4,6 @@ import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.Player;
 import org.json.JSONObject;
 
-import javax.websocket.EncodeException;
-import java.io.IOException;
 
 
 public class PassAction extends Action{
@@ -21,7 +19,7 @@ public class PassAction extends Action{
     public JSONObject toJsonObject() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("playerId", performer.getId());
-        jsonObject.put("action", "Pass");
+        jsonObject.put("action", "pass");
         return null;
     }
 }

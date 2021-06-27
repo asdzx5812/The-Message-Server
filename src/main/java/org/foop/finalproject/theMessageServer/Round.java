@@ -1,5 +1,9 @@
 package org.foop.finalproject.theMessageServer;
 
+import org.foop.finalproject.theMessageServer.round.MainRound;
+import org.foop.finalproject.theMessageServer.round.GameCardRound;
+import org.foop.finalproject.theMessageServer.round.IntelligenceRound;
+import org.foop.finalproject.theMessageServer.round.CounteractRound;
 import org.foop.finalproject.theMessageServer.service.GameService;
 import org.foop.finalproject.theMessageServer.service.MessageService;
 
@@ -86,5 +90,21 @@ public abstract class Round {
 
     abstract public boolean satisfyRoundEndCondition();
 
-    public String getName(){ return name; };
+    public String getName(){ return name; }
+
+    public boolean isMainRound(){ return this instanceof MainRound; }
+    public boolean isGameCardRound(){ return this instanceof GameCardRound; }
+    public boolean isIntelligenceRound(){ return this instanceof IntelligenceRound; }
+    public boolean isCounteractRound(){ return this instanceof CounteractRound; }
+
+    public boolean parentRoundIsMainRound(){ return parentRound instanceof MainRound; }
+    public boolean parentRoundIsIntelligenceRound(){ return parentRound instanceof IntelligenceRound; }
+
+    public boolean playerIsOwnerOfCurrentRound(Player player){ return player == startPlayer;}
+    public boolean playerIsOwnerOfParentRound(Player player){ return player == parentRound.startPlayer; }
+    public boolean playerIsCurrentPlayerOfParentRound(Player player) { return player == parentRound.currentPlayer; }
+
+    public boolean cardNeedTarget(GameCard card){
+        return (this instanceof GameCardRound && card.getNeedTarget()) || (this instanceof IntelligenceRound && card.isDirectMessage());
+    }
 }

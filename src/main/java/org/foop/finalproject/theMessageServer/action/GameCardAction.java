@@ -3,8 +3,6 @@ package org.foop.finalproject.theMessageServer.action;
 import org.foop.finalproject.theMessageServer.*;
 import org.json.JSONObject;
 
-import javax.websocket.EncodeException;
-import java.io.IOException;
 
 public class GameCardAction extends Action {
 

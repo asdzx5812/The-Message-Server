@@ -2,12 +2,12 @@ package org.foop.finalproject.theMessageServer;
 
 import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
 import org.foop.finalproject.theMessageServer.enums.Camp;
-import org.foop.finalproject.theMessageServer.enums.GameCardColor;
+import org.foop.finalproject.theMessageServer.enums.Gender;
 import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
+import org.foop.finalproject.theMessageServer.service.JsonService;
 import org.foop.finalproject.theMessageServer.service.MessageService;
 import org.foop.finalproject.theMessageServer.utils.Utility;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 
@@ -19,10 +19,10 @@ public class Player {
     protected boolean die;
     protected boolean lose;
     protected MessageService messageService;
-
+    protected JsonService jsonService = new JsonService();
     protected PlayerStatus status;
     protected ArrayList<GameCard> handCards;
-    protected ArrayList<ArrayList<GameCard>> intelligences = new ArrayList<>(3); // 0 -> RED, 1 -> BLUE, 2 -> BLACK
+    protected ArrayList<ArrayList<GameCard>> intelligences; // 0 -> RED, 1 -> BLUE, 2 -> BLACK
     protected Action actionToPerform;
     protected User user;
 
@@ -34,6 +34,10 @@ public class Player {
         this.status = PlayerStatus.Normal;
         this.handCards = new ArrayList<>();
         this.user = user;
+        this.intelligences = new ArrayList<>();
+        for(int i = 0; i < 3; i ++){
+            intelligences.add(new ArrayList<>());
+        }
         die = false;
         lose = false;
         messageService = new MessageService();
@@ -43,18 +47,18 @@ public class Player {
 
     public String getId(){ return id; }
 
-    public Character getCharacter(){ return character; }
+    // public Character getCharacter(){ return character; }
 
-    public void setCharacter(Character character) {
-        this.character = character;
-    }
+    // public void setCharacter(Character character) {
+    //     this.character = character;
+    // }
 
     public Camp getCamp() {return camp;}
 
     public int getHandcardsNum(){ return handCards.size();}
 
-    public void removeHandCardByIndex(int idx) {
-        handCards.remove(idx);
+    public void removeCardFromHandCards(GameCard card) {
+        handCards.remove(card);
     }
 
     public ArrayList<ArrayList<GameCard>> getIntelligences(){
@@ -110,25 +114,26 @@ public class Player {
         playerObj.put("playerId", getId());
         playerObj.put("name", user.getName());
         playerObj.put("handcardsNum", handCards.size());
-        ArrayList<JSONObject> handCardObj = new ArrayList<>();
-        for(GameCard gameCard:handCards){
-            handCardObj.add(gameCard.toJsonObject());
-        }
-        playerObj.put("handcards", handCardObj);
-        playerObj.put("camp", camp);
-        playerObj.put("character", character);
+        playerObj.put("handcards", jsonService.getHandCardsObjs(handCards));
+        playerObj.put("intelligences", jsonService.getIntelligencesObjs(intelligences));
+        playerObj.put("camp", camp.name);
+        playerObj.put("character", character.toJsonObject());
         return playerObj;
     }
 
-    public void lockOn() {
+    public void beLockOn() {
         this.status = PlayerStatus.LockOn;
     }
     public boolean isLockOn(){
         return this.status == PlayerStatus.LockOn? true : false;
     }
+    public void beTrap() { this.status = PlayerStatus.Trap; }
+    public boolean isTrapped(){
+        return this.status == PlayerStatus.Trap? true : false;
+    }
 
     public boolean hasNoHandcard() {
-        return handCards.size() > 0;
+        return handCards.isEmpty();
     }
 
     public void die() { // Todo
@@ -146,5 +151,40 @@ public class Player {
     }
     public void changeStatusToNormal() {
         this.status = PlayerStatus.Normal;
+    }
+
+    // 會進來只會是 GameCard Round 或 Counteract Round or Intelligence Round?
+    // 要看parentRound 才知道現在傳情報了沒以及現在的情報是誰傳的
+    public ArrayList<String> getValidCardIndices(Game game){
+        ArrayList<String> validCardIndices = new ArrayList<>();
+        for(GameCard currentCard: handCards){
+            if(currentCard.isValid(game.getRound(), this)){
+                validCardIndices.add(currentCard.getId());
+            }
+        }
+        return validCardIndices;
+    }
+
+    public GameCard getCardById(String gameCardId) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.user.getName() + "的目前手牌:");
+        for(GameCard gameCard:handCards){
+            stringBuilder.append(gameCard.getId() + ",");
+        }
+        System.out.println(stringBuilder.toString());
+        for(GameCard gameCard:handCards){
+            if(gameCard.getId().equals(gameCardId)){
+                return gameCard;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<String> getValidIntelligence() {
+        ArrayList<String> validCardIndices = new ArrayList<>();
+        for(GameCard currentCard: handCards){
+            validCardIndices.add(currentCard.getId());
+        }
+        return validCardIndices;
     }
 }

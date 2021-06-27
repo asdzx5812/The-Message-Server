@@ -14,7 +14,9 @@ public class RoomService {
 
     public String createRoom(String userId) throws Exception {
         User user = Main.getUser(userId);
-        return Main.createRoom(user);
+        String roomId = Main.createRoom(user);
+        messageService.broadcastRoomMemberChange(Main.getRoom(roomId));
+        return roomId;
     }
 
     public void joinRoom(String roomId, String userId) throws Exception {
@@ -48,4 +50,6 @@ public class RoomService {
             Main.removeRoom(room);
         }
     }
+
+
 }

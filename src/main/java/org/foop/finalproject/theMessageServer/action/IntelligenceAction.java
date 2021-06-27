@@ -4,9 +4,6 @@ import org.foop.finalproject.theMessageServer.*;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.json.JSONObject;
 
-import javax.websocket.EncodeException;
-import java.io.IOException;
-
 public class IntelligenceAction extends Action {
     public IntelligenceAction(Game game, Player performer, GameCard card, Player playerTarget) {
         super(game, performer, card, playerTarget);

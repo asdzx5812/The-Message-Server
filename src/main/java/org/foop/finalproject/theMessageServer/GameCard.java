@@ -4,56 +4,37 @@ import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.foop.finalproject.theMessageServer.service.MessageService;
 import org.json.JSONObject;
 
+import java.util.Locale;
+
 public abstract class GameCard {
     protected GameCardColor color;
     protected String id;
+    protected int order;
     protected String name;
     protected String timingDescription;
     protected String effectDescription;
     protected IntelligenceType intelligenceType;
     protected boolean needTarget;
-    // protected boolean playOnPlayersGameCardRound;                           // 燒毀
-    protected boolean playWhenOtherCardPlayed;                              // 識破
-    protected boolean playOnPlayerTurn;                                     // 試探、真偽莫辨、鎖定
-    protected boolean playOnWhenIntelligencePassingInFrontOfOthers;         // 燒毀、鎖定、截獲、退回、調虎離山
-    protected boolean playOnWhenIntelligencePassingInFrontOfPlayer;         // 燒毀、鎖定、破譯、調虎離山
-    protected boolean playOnWhenIntelligenceSendByPlayer;                   // 燒毀、鎖定、
-    protected boolean playOnWhenIntelligenceSendByOthers;                    // 燒毀、鎖定、
     protected MessageService messageService;
 
-    protected GameCard(GameCardColor gameCardColor, IntelligenceType intelligenceType){
+    protected GameCard(GameCardColor gameCardColor, IntelligenceType intelligenceType, int order){
         this.color = gameCardColor;
         this.intelligenceType = intelligenceType;
-        //playOnPlayersGameCardRound = false;
-        playOnPlayerTurn = false;
-        playWhenOtherCardPlayed = false;
-        playOnWhenIntelligencePassingInFrontOfOthers = false;
-        playOnWhenIntelligencePassingInFrontOfPlayer = false;
-        playOnWhenIntelligenceSendByPlayer = false;
-        playOnWhenIntelligenceSendByOthers = false;
+        this.order = order;
+        this.needTarget = false;
+        this.messageService = new MessageService();
     }
 
-    // TODO run validator
-    public boolean isValid(){
-        return true;
-    }
+    public abstract boolean isValid(Round currentRound, Player owner);
     public abstract void perform(Player performer, Player playerTarget, Game game) throws Exception;
-    // 回合開始
-    //public boolean canPlayOnRoundStart(){ return playOnPlayersGameCardRound; }
-    public boolean canPlayWhenOtherCardPlayed(){ return playWhenOtherCardPlayed; }
-    public boolean canPlayOnPlayerTurn(){ return playOnPlayerTurn; }
-    public boolean canPlayOnWhenIntelligencePassingInFrontOfOthers(){ return playOnWhenIntelligencePassingInFrontOfOthers; }
-    public boolean canPlayOnWhenIntelligencePassingInFrontOfPlayer(){ return playOnWhenIntelligencePassingInFrontOfPlayer; }
-    public boolean canPlayOnWhenIntelligenceSendByPlayer(){ return playOnWhenIntelligenceSendByPlayer; }
-    public boolean canPlayOnWhenIntelligenceSendByOthers(){ return playOnWhenIntelligenceSendByOthers; }
 
+    // public String getTimingDescription(){
+    //     return timingDescription;
+    // }
+    // public String getEffectDescription(){
+    //     return effectDescription;
+    // }
 
-    public String getTimingDescription(){
-        return timingDescription;
-    }
-    public String getEffectDescription(){
-        return effectDescription;
-    }
     public boolean getNeedTarget(){return needTarget;}
     public GameCardColor getColor(){
         return color;
@@ -61,18 +42,25 @@ public abstract class GameCard {
     public IntelligenceType getIntelligenceType() {
         return intelligenceType;
     }
+
     public JSONObject toJsonObject(){
         JSONObject handCardObj = new JSONObject();
         handCardObj.put("name", name);
-        handCardObj.put("timingdescription", timingDescription);
+        handCardObj.put("timingDescription", timingDescription);
         handCardObj.put("effectDescription", effectDescription);
-
-        handCardObj.put("color", color.name);
+        handCardObj.put("id",id);
+        handCardObj.put("color", color.name.toLowerCase());
         handCardObj.put("type", intelligenceType.name);
         handCardObj.put("needTarget", needTarget);
-        handCardObj.put("isValid", isValid());
         return handCardObj;
     }
 
+    public void setId(String name){
+        this.id = this.color.name.toLowerCase() + "-" + name + "-" + this.intelligenceType.name + "-" + order;
+    }
+    public String getId() {
+        return id;
+    }
+    public boolean isDirectMessage(){ return this.intelligenceType == IntelligenceType.DIRECT_MSG;}
 
 }

@@ -1,6 +1,5 @@
 package org.foop.finalproject.theMessageServer;
 
-import org.foop.finalproject.theMessageServer.utils.Utility;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
