@@ -13,11 +13,12 @@ public class GameCardAction extends Action {
     }
 
     @Override
-    public void execute() {
+    public String execute() {
         try {
-            card.perform(performer, playerTarget, game);
+            return card.perform(performer, playerTarget, game);
         } catch (Exception e) {
             e.printStackTrace();
+            return "";
         }
     }
 

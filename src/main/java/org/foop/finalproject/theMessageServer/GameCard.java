@@ -26,7 +26,7 @@ public abstract class GameCard {
     }
 
     public abstract boolean isValid(Round currentRound, Player owner);
-    public abstract void perform(Player performer, Player playerTarget, Game game) throws Exception;
+    public abstract String perform(Player performer, Player playerTarget, Game game) throws Exception;
 
     // public String getTimingDescription(){
     //     return timingDescription;

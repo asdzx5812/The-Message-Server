@@ -20,7 +20,7 @@ public class Intercept extends GameCard {
 
 
     @Override
-    public void perform(Player performer, Player playerTarget, Game game) {
+    public String perform(Player performer, Player playerTarget, Game game) {
         // currentRound -> parentRound : intelligence Round
         game.getRound().getParentRound().setCurrentPlayer(performer);
         messageService.broadcastPlayerOnIntelligenceInFront(game, performer);

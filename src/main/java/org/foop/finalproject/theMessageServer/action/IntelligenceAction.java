@@ -12,7 +12,7 @@ public class IntelligenceAction extends Action {
     public IntelligenceType getType(){ return this.card.getIntelligenceType(); }
 
     @Override
-    public void execute() {
+    public String execute() {
         System.out.println("This should not occur since an intelligence will not be executed.");
     }
     @Override

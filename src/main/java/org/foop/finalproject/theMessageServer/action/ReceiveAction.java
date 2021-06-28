@@ -14,7 +14,7 @@ public class ReceiveAction extends Action {
     }
 
     @Override
-    public void execute() {
+    public String execute() {
         System.out.println("A pass should not be execute, so this should not happen ...");
     }
 

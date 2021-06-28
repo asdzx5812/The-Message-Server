@@ -20,7 +20,7 @@ public class Return extends GameCard {
         setId(name);
     }
     @Override
-    public void perform(Player performer, Player playerTarget, Game game) {
+    public String perform(Player performer, Player playerTarget, Game game) {
         ((IntelligenceRound)game.getRound().getParentRound()).changeDirection();
     }
     @Override

@@ -27,7 +27,7 @@ public class Prove extends GameCard {
     }
 
     @Override
-    public void perform(Player performer, Player playerTarget, Game game) {
+    public String perform(Player performer, Player playerTarget, Game game) {
         // TODO
         if (proveType == false) {
             // type true: draw 2 cards or say 我是臥底

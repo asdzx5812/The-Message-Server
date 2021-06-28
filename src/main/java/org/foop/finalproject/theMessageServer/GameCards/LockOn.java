@@ -21,7 +21,7 @@ public class LockOn extends GameCard{
     }
 
     @Override
-    public void perform(Player performer, Player playerTarget, Game game) {
+    public String perform(Player performer, Player playerTarget, Game game) {
         playerTarget.changeStatus(PlayerStatus.LockOn);
     }
     @Override
