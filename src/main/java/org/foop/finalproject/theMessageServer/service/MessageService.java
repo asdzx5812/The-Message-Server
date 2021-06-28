@@ -190,8 +190,9 @@ public class MessageService {
     //TYPE:BROADCAST_INTELLIGENCE_SENT
     //TYPE:BROADCAST_INTELLIGENCE_RECEIVED
     //廣播『玩家』做了什麼行為(XXX選擇PASS, xxx選擇接收)
-    public void broadcastActionBeenPlayedMessage(Game game, Action action, MessageType messageType) {
+    public void broadcastActionBeenPlayedMessage(Game game, Action action) {
         System.out.println(action.getPerformer().getUser().getName() + "做了" + action.toJsonObject().toString());
+        MessageType messageType;
         if(action instanceof GameCardAction){
             messageType = MessageType.BROADCAST_GAMECARD_PLAYED;
         }

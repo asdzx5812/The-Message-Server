@@ -288,7 +288,7 @@ public class Game{
 
     public void placeGameCardActionOnBoard(GameCardAction action) {
         this.currentActionsOnBoard.push(action);
-        messageService.broadcastActionBeenPlayedMessage(this, action, MessageType.BROADCAST_ACTION_BEEN_PLAYED_MESSAGE);
+        messageService.broadcastActionBeenPlayedMessage(this, action);
     }
 
     public void dispatchSelectingActions() {

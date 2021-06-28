@@ -72,13 +72,13 @@ public class IntelligenceRound extends Round {
     public void onTurnProgressing(Action action) {
         if(action instanceof ReceiveAction){
             //接收情報
-            messageService.broadcastActionBeenPlayedMessage(game, action, MessageType.BROADCAST_INTELLIGENCE_RECEIVED);
+            messageService.broadcastActionBeenPlayedMessage(game, action);
             currentPlayer.receiveIntelligence(intelligence);
             onRoundEnd();
         }
         else if(action instanceof PassAction){
             //Pass情報
-            messageService.broadcastActionBeenPlayedMessage(game, action, MessageType.BROADCAST_PLAYER_PASSED);
+            messageService.broadcastActionBeenPlayedMessage(game, action);
             onTurnEnd();
         }
         else{

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/room/{roomId}/game/")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class GameController {
     @Autowired
     private GameService gameService;
@@ -67,6 +67,7 @@ public class GameController {
         Player targetPlayer;
         if (targetPlayerId.equals(null)) {
             targetPlayer = null;
+            return ResponseEntity.status(403).body("no this targetPlayerId");
         } else {
             targetPlayer = Main.getPlayer(roomId, targetPlayerId);
         }
