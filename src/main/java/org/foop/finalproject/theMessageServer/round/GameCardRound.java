@@ -78,7 +78,9 @@ public class GameCardRound extends Round {
     @Override
     public void onTurnEnd() {
         System.out.println("GameCardRound: onTurnEnd start.");
-        game.takeActionOnBoard();
+
+        //這個takeActionOnBoard 移到doWhenLeaveChildRound
+        //game.takeActionOnBoard();
 
         if(satisfyRoundEndCondition()){
             onRoundEnd();
@@ -93,7 +95,9 @@ public class GameCardRound extends Round {
     public void doWhenLeaveChildRound() {
         System.out.println("GameCardRound: doWhenLeaveChild start.");
         setChildRound(null);
-        onTurnEnd();
+        //被移到這裡
+        game.takeActionOnBoard();
+        //onTurnEnd(); 這個移到takeActionOnBoard裡做掉了（因為要判prove）
         System.out.println("GameCardRound: doWhenLeaveChild end.");
     }
 

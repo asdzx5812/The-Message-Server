@@ -2,7 +2,6 @@ package org.foop.finalproject.theMessageServer;
 
 import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
 import org.foop.finalproject.theMessageServer.enums.Camp;
-import org.foop.finalproject.theMessageServer.enums.Gender;
 import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
 import org.foop.finalproject.theMessageServer.service.JsonService;
 import org.foop.finalproject.theMessageServer.service.MessageService;
@@ -65,7 +64,7 @@ public class Player {
         if (camp == Camp.RED || camp == Camp.BLUE)
             return intelligences.get(camp.type).size() >= 3;
         else if (camp == Camp.GREEN)
-            return character.mission.isCompleted();
+            return character.mission.isCompleted(game, this);
         return false;
     }
 
@@ -75,25 +74,20 @@ public class Player {
 
     public void drawInitialCards() { handCards.addAll(game.drawCards(3)); }
 
-    public void drawCards() {
+    public void drawCards(int num) {
+        drawCards_wo_broadcast(num);
+        messageService.broadcastGameInformation(game, game.getPlayers());
+    }
+    public void drawCards_wo_broadcast(int num) {
         System.out.println("Player draw cards start");
-        handCards.addAll(game.drawCards(2));
-        // ArrayList<Player> players = new ArrayList<>();
-        // players.add(this);
-        messageService.broadcastPlayerInformation(game, game.getPlayers());
-        System.out.println("");
-        // Todo
-        // Notify client
-        //messageService.informPlayerCardInformation(game, this);
-        //messageService.BroadcastPlayerCardNumInformation(game, this);
+        handCards.addAll(game.drawCards(num));
         System.out.println("Player draw cards end");
     }
-
     public void removeCardFromHandCards(GameCard card) {
         handCards.remove(card);
         // ArrayList<Player> players = new ArrayList<>();
         // players.add(this);
-        messageService.broadcastPlayerInformation(game, game.getPlayers());
+        messageService.broadcastGameInformation(game, game.getPlayers());
     }
 
     public GameCard getCardByIndex(int idx) throws Exception {
@@ -195,4 +189,8 @@ public class Player {
         return validCardIndices;
     }
 
+    @Override
+    public String toString(){
+        return getUser().getName();
+    }
 }

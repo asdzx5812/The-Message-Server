@@ -103,7 +103,7 @@ public class Game{
         Camp camp = Camp.RED;
         Boolean proveType = false;
         for(int colorType = 0; colorType < 3; colorType++){
-            int order = 0;
+            int order = 1;
             switch(colorType){
                 case 0:
                     gameCardColor = GameCardColor.RED;
@@ -205,7 +205,12 @@ public class Game{
     }
 
     public ArrayList<GameCard> drawCards(int num) {
+
         ArrayList<GameCard> cards = new ArrayList<>();
+        if(num > (gameCardsDeck.size() + playedCards.size())){
+            System.out.println("牌庫+棄牌堆沒牌了，無法抽牌");
+            return cards;
+        }
         if (num >= gameCardsDeck.size()) {
             num -= gameCardsDeck.size();
             for (int i = 0; i < gameCardsDeck.size(); i++) {
@@ -312,18 +317,26 @@ public class Game{
         return currentActionsOnBoard;
     }
 
+    public Stack<GameCard> getGameCardsDeck(){ return gameCardsDeck;}
+
+    public ArrayList<GameCard> getPlayedCards(){ return playedCards;}
+
     public void takeActionOnBoard() {
         while(currentActionsOnBoard.size() > 0){
             GameCardAction action = currentActionsOnBoard.pop();
             try {
-                action.execute();
+
                 GameCard gamecard = action.getCard();
-                if(!(gamecard instanceof Counteract)) {
+
+                if(!(gamecard instanceof Prove)) {
+                    //非prove 不需要等待詢問 直接下一個turn
+                    action.execute();
+                    // TODO
+                    String message = action.getGameMessage();
+                    messageService.broadcastActionPerformed(this, message);
                     playedCards.add(gamecard);
+                    round.onTurnEnd();
                 }
-                //TODO
-                message = action.getGameMessage();
-                //messageService.broadcastActionPerformed(this, message);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -336,7 +349,7 @@ public class Game{
     }
     public GameCard getPassingCard() { return this.passingCard;}
     public void addReadyPlayer(Player player) {
-        if(readyPlayers.indexOf(player) == -1){
+        if(readyPlayers != null && readyPlayers.indexOf(player) == -1){
             readyPlayers.add(player);
             System.out.println(player.getUser().getName() + "準備好了！！");
             tryGameStart();

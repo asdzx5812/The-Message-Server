@@ -5,7 +5,7 @@ import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
-
+import java.util.ArrayList;
 public class Distribute extends GameCard {
     public Distribute(GameCardColor gameCardColor, IntelligenceType intelligenceType, int order) {
         super(gameCardColor, intelligenceType, order);
@@ -20,6 +20,20 @@ public class Distribute extends GameCard {
 
     @Override
     public void perform(Player performer, Player playerTarget, Game game) {
+        ArrayList<Player> players = game.getPlayers();
+        int currentPlayerIdx = players.indexOf(performer);
+        for(int i = 0; i < players.size(); i++){
+            int turnPlayerIdx = (currentPlayerIdx + i) % players.size();
+            players.get(turnPlayerIdx).drawCards_wo_broadcast(1);
+            //TODO 要做真偽莫辨的動畫可以在這廣播
+            //
+            //
+        }
+        messageService.broadcastGameInformation(game, players);
+    }
+
+    @Override
+    public String getGameMessage(Player performer, Player playerTarget, Game game) {
         return "";
     }
 

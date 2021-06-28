@@ -12,7 +12,7 @@ public class IntelligenceAction extends Action {
     public IntelligenceType getType(){ return this.card.getIntelligenceType(); }
 
     @Override
-    public String execute() {
+    public void execute() {
         System.out.println("This should not occur since an intelligence will not be executed.");
     }
     @Override
@@ -25,5 +25,10 @@ public class IntelligenceAction extends Action {
             jsonObject.put("targetId", playerTarget.getId());
         }
         return jsonObject;
+    }
+    @Override
+    public String getGameMessage(){
+        System.out.println("This should not occur since an intelligence will not be executed.");
+        return "";
     }
 }

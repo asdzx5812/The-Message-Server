@@ -1,9 +1,13 @@
 package org.foop.finalproject.theMessageServer.restapi;
 
 import org.foop.finalproject.theMessageServer.*;
+import org.foop.finalproject.theMessageServer.GameCards.Prove;
 import org.foop.finalproject.theMessageServer.service.GameService;
 import org.foop.finalproject.theMessageServer.service.RoomService;
+import org.foop.finalproject.theMessageServer.service.MessageService;
 import org.foop.finalproject.theMessageServer.action.*;
+
+import org.foop.finalproject.theMessageServer.round.GameCardRound;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +21,8 @@ public class GameController {
     private GameService gameService;
     @Autowired
     private RoomService roomService;
-
+    @Autowired
+    private MessageService messageService;
     @PostMapping("/player/{playerId}/skip")
     public ResponseEntity receivePass(@PathVariable String roomId, @PathVariable String playerId) throws Exception {
         Game game;
@@ -27,7 +32,7 @@ public class GameController {
         } catch (Exception e) {
             throw new Exception("Room not found.");
         }
-        System.out.println("接到" + player.getId() + "pass");
+        System.out.println("接到" + player.getUser().getName() + "pass");
         Action pass = new PassAction(game, player);
         gameService.onReceiveAction(pass);
 
@@ -50,7 +55,7 @@ public class GameController {
         }
         player.removeCardFromHandCards(gameCard);
         Action action = new GameCardAction(game, player, gameCard, null);
-        System.out.println("接到" + player.getId() + gameCardId);
+        System.out.println("接到" + player.getUser().getName() + gameCardId);
         gameService.onReceiveAction(action);
         return ResponseEntity.ok().build();
     }
@@ -123,5 +128,21 @@ public class GameController {
         json.put("color", gameCard.getColor().name);
         gameService.onReceiveAction(action);
         return ResponseEntity.ok().body(json.toString());
+    }
+    @PostMapping("/player/{playerId}/proofchose")
+    public ResponseEntity playerToChooseOnProve(@PathVariable String roomId,
+                                                @PathVariable String playerId) throws Exception {
+        Game game = Main.getRoom(roomId).getGame();
+        Player player = Main.getPlayer(roomId, playerId);
+        if (player == null) {
+            throw new Exception("Performer player not found");
+        }
+        GameCard gameCard = game.getCurrentActionsOnBoard().get(0).getCard();
+        Round round = game.getRound();
+        if(round instanceof GameCardRound && gameCard instanceof Prove) {
+            messageService.broadcastPlayerChooseOfProof();
+            round.onTurnEnd();
+        }
+        return ResponseEntity.ok().build();
     }
 }

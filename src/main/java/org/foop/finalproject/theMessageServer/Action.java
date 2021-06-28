@@ -24,7 +24,7 @@ public abstract class Action {
         this.playerTarget = playerTarget;
     }
 
-    abstract public String execute() ;
+    abstract public void execute() ;
     public Game getGame(){
         return game;
     }
@@ -50,4 +50,6 @@ public abstract class Action {
     }
     //Todo
     public abstract JSONObject toJsonObject();
+
+    public abstract String getGameMessage();
 }

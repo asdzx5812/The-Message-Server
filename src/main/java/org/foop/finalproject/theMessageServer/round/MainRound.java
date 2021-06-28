@@ -28,7 +28,7 @@ public class MainRound extends Round {
         System.out.println("MainRound: onTurnStart start");
         // TODO: 廣播誰負責派情報，並且廣播開始功能牌階段
         intelligenceHasSent = false;
-        currentPlayer.drawCards();
+        currentPlayer.drawCards(2);
         messageService.broadcastTurnStartMessage(game, currentPlayer);
         childRound = new GameCardRound(currentPlayer, this);
         game.setRound(childRound);

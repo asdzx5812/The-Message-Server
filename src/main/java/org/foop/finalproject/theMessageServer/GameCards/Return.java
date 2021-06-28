@@ -23,6 +23,12 @@ public class Return extends GameCard {
     public void perform(Player performer, Player playerTarget, Game game) {
         ((IntelligenceRound)game.getRound().getParentRound()).changeDirection();
     }
+
+    @Override
+    public String getGameMessage(Player performer, Player playerTarget, Game game) {
+        return "";
+    }
+
     @Override
     public boolean isValid(Round currentRound, Player owner) {
         return currentRound.isGameCardRound() && currentRound.parentRoundIsIntelligenceRound() && currentRound.playerIsCurrentPlayerOfParentRound(owner);

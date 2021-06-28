@@ -14,7 +14,7 @@ public class ReceiveAction extends Action {
     }
 
     @Override
-    public String execute() {
+    public void execute() {
         System.out.println("A pass should not be execute, so this should not happen ...");
     }
 
@@ -24,5 +24,10 @@ public class ReceiveAction extends Action {
         jsonObject.put("playerId", performer.getId());
         jsonObject.put("action", "receive");
         return jsonObject;
+    }
+    @Override
+    public String getGameMessage(){
+        System.out.println("This should not occur since an intelligence will not be executed.");
+        return "";
     }
 }

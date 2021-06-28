@@ -32,7 +32,9 @@ public class Room {
             user.setCurrentRoom(this);
         }
     }
-
+    public boolean getIsPlaying(){
+        return isPlaying;
+    }
     public void startGame() throws Exception {
         if (isPlaying) {
             throw new Exception("遊戲早就開始了");

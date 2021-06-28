@@ -6,6 +6,8 @@ import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
 import org.foop.finalproject.theMessageServer.action.PassAction;
 import org.foop.finalproject.theMessageServer.action.ReceiveAction;
 import org.foop.finalproject.theMessageServer.enums.MessageType;
+import org.foop.finalproject.theMessageServer.round.CounteractRound;
+import org.foop.finalproject.theMessageServer.round.GameCardRound;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -103,10 +105,11 @@ public class MessageService {
 
 
     //TYPE:BROADCAST_ALL_PLAYERS_INFO
-    //初始化Game時，廣播所有人的手牌/手牌數量/陣營資訊給所有人
-    public void broadcastPlayerInformation(Game game, ArrayList<Player> players) {
+    //初始化 抽牌、棄牌才會用
+    public void broadcastGameInformation(Game game, ArrayList<Player> players) {
         JSONObject payload = new JSONObject();
         payload.put("players", jsonService.getPlayersInformationObj(players));
+        payload.put("gamecardsOnBoard", jsonService.getActionsOnBoardInformationObj(game.getCurrentActionsOnBoard()));
         JSONObject body = getBody(payload, "", MessageType.BROADCAST_ALL_PLAYERS_INFO);
         broadcastMessage(body, game);
     }
@@ -155,6 +158,7 @@ public class MessageService {
         // TODO type記得傳
         if(messageType == MessageType.BROADCAST_PLAYER_START_SELECTING_GAMECARD) {
             payload.put("availableGamecardsId", currentPlayer.getValidCardIndices(game));
+            payload.put("isCounteract", game.getRound() instanceof CounteractRound);
         }
         else if(messageType == MessageType.BROADCAST_PLAYER_START_SELECTING_INTELLIGENCE){
             payload.put("availableIntelligencesId", currentPlayer.getValidIntelligence());
@@ -262,6 +266,11 @@ public class MessageService {
 
     }
 
+    //TYPE:INFORM_PLAYER_ON_PROOF
+    //抽玩牌，通知players
+    public void informPlayerOnProve(Game game, Player player) {
+
+    }
     //TYPE:INFORM_PLAYER_CARD_INFORMATION
     //抽玩牌，通知player目前手牌
     public void informPlayerCardInformation(Game game, Player player) {
@@ -271,5 +280,8 @@ public class MessageService {
     public void broadcastActionPerformed(Game game, String message){
         //TODO
 
+    }
+
+    public void broadcastPlayerChooseOfProof() {
     }
 }

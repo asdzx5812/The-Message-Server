@@ -24,6 +24,11 @@ public class Decode extends GameCard {
         IntelligenceRound intelligenceRound =  (IntelligenceRound) game.getRound().getParentRound();
         GameCard intelligenceCard = intelligenceRound.getIntelligence().getCard();
         messageService.sendIntelligenceInformationToPlayer(intelligenceCard, playerTarget);
+
+    }
+
+    @Override
+    public String getGameMessage(Player performer, Player playerTarget, Game game) {
         return "";
     }
 

@@ -23,9 +23,16 @@ public class Intercept extends GameCard {
     public void perform(Player performer, Player playerTarget, Game game) {
         // currentRound -> parentRound : intelligence Round
         game.getRound().getParentRound().setCurrentPlayer(performer);
+        performer.beLockOn();
         messageService.broadcastPlayerOnIntelligenceInFront(game, performer);
+
+    }
+
+    @Override
+    public String getGameMessage(Player performer, Player playerTarget, Game game) {
         return "";
     }
+
     @Override
     public boolean isValid(Round currentRound, Player owner) {
         return currentRound.isGameCardRound() && currentRound.parentRoundIsIntelligenceRound() && !currentRound.playerIsOwnerOfParentRound(owner);

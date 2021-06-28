@@ -13,15 +13,17 @@ public class GameCardAction extends Action {
     }
 
     @Override
-    public String execute() {
+    public void execute() {
         try {
-            return card.perform(performer, playerTarget, game);
+            card.perform(performer, playerTarget, game);
         } catch (Exception e) {
             e.printStackTrace();
-            return "";
         }
     }
-
+    @Override
+    public String getGameMessage(){
+        return card.getGameMessage(performer, playerTarget, game);
+    }
     @Override
     public JSONObject toJsonObject() {
         JSONObject jsonObject = new JSONObject();

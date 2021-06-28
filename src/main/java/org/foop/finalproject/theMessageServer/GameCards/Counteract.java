@@ -22,7 +22,12 @@ public class Counteract extends GameCard {
     public void perform(Player performer, Player playerTarget, Game game) {
         // TODO: perform message
         GameCardAction action = game.getCurrentActionsOnBoard().pop();
-        return "";
+
+    }
+
+    @Override
+    public String getGameMessage(Player performer, Player playerTarget, Game game) {
+        return performer + "識破了" + playerTarget + "打的牌";
     }
 
     @Override

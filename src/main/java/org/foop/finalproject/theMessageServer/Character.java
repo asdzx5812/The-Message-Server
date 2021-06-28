@@ -5,7 +5,7 @@ import org.foop.finalproject.theMessageServer.enums.Gender;
 import org.json.JSONObject;
 
 
-public class Character {
+public abstract class Character {
     protected String name;
     protected Gender gender;
     protected Mission mission;
@@ -19,8 +19,6 @@ public class Character {
         this.skill = skill;
         this.hidden = hidden;
     }
-
-
 
     public String getMissionDescription(){
         if(this.hidden)
@@ -42,9 +40,10 @@ public class Character {
         this.hidden = false;
     }
 
-    public boolean isWin(){
-        return mission.isCompleted();
-    }
+
+    public boolean missionComplete(Game game, Player player){
+        return mission.isCompleted(game, player);
+    };
 
     public JSONObject toJsonObject() {
         JSONObject jsonObject = new JSONObject();

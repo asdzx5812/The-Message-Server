@@ -23,8 +23,13 @@ public class LockOn extends GameCard{
     @Override
     public void perform(Player performer, Player playerTarget, Game game) {
         playerTarget.changeStatus(PlayerStatus.LockOn);
+    }
+
+    @Override
+    public String getGameMessage(Player performer, Player playerTarget, Game game) {
         return "";
     }
+
     @Override
     public boolean isValid(Round currentRound, Player owner) {
         // 傳遞情報前的功能牌階段，當回合派發情報者可以使用

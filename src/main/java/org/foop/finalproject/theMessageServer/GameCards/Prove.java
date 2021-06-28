@@ -8,6 +8,7 @@ import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.foop.finalproject.theMessageServer.enums.MessageType;
 import org.foop.finalproject.theMessageServer.round.GameCardRound;
+import org.json.JSONObject;
 
 public class Prove extends GameCard {
     boolean proveType;
@@ -29,14 +30,20 @@ public class Prove extends GameCard {
     @Override
     public void perform(Player performer, Player playerTarget, Game game) {
         // TODO
+        //JSONObject
         if (proveType == false) {
             // type true: draw 2 cards or say 我是臥底
-
+            //messageService.informPlayerOnProve(playerTarget);
         }
         else{
             // type false: discard 1 card or say 我是好人
-            messageService.broadcastPlayerToSelectAction(game, playerTarget, MessageType.BROADCAST_PLAYER_START_SELECTING_GAMECARD);
+            //messageService.informPlayerOnProve(game, playerTarget);
+            //messageService.broadcastPlayerToSelectAction(game, playerTarget, MessageType.BROADCAST_PLAYER_START_SELECTING_GAMECARD);
         }
+    }
+
+    @Override
+    public String getGameMessage(Player performer, Player playerTarget, Game game) {
         return "";
     }
 

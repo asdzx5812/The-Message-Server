@@ -2,12 +2,13 @@ package org.foop.finalproject.theMessageServer.service;
 
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.GameCard;
+import org.foop.finalproject.theMessageServer.action.GameCardAction;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Stack;
 
 @Service
 public class JsonService {
@@ -36,4 +37,21 @@ public class JsonService {
         jsonObject.put("red", intelligences.get(GameCardColor.RED.type).size());
         return jsonObject;
     }
+
+
+    public ArrayList<JSONObject> getActionsOnBoardInformationObj(Stack<GameCardAction> ActionsOnBoard) {
+        ArrayList<JSONObject> BoardCardsObjs = new ArrayList<>();
+        for(GameCardAction action:ActionsOnBoard){
+            BoardCardsObjs.add(action.getCard().toJsonObject());
+        }
+        return BoardCardsObjs;
+    }
+    /*
+    public ArrayList<JSONObject> getBoardInformationObj(ArrayList<GameCard> BoardCards) {
+        ArrayList<JSONObject> BoardCardsObjs = new ArrayList<>();
+        for(GameCard gameCard:BoardCards){
+            BoardCardsObjs.add(gameCard.toJsonObject());
+        }
+        return BoardCardsObjs;
+    }*/
 }

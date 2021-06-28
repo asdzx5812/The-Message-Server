@@ -23,9 +23,12 @@ public class Trap extends GameCard {
     @Override
     public void perform(Player performer, Player playerTarget, Game game) {
         playerTarget.changeStatus(PlayerStatus.Trap);
-        return performer + "對" +
     }
 
+    @Override
+    public String getGameMessage(Player performer, Player playerTarget, Game game){
+        return "";
+    }
     @Override
     public boolean isValid(Round currentRound, Player owner){
         return currentRound.isGameCardRound() && currentRound.parentRoundIsIntelligenceRound();

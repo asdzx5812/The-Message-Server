@@ -31,6 +31,12 @@ public class BurnDown extends GameCard {
             blackIntelligences.remove(lastBlackIntelligence);
         }
     }
+
+    @Override
+    public String getGameMessage(Player performer, Player playerTarget, Game game) {
+        return performer + "燒毀了一張" + playerTarget + "的假情報";
+    }
+
     @Override
     public boolean isValid(Round currentRound, Player owner) {
         return currentRound.isGameCardRound();
