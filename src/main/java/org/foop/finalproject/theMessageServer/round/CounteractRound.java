@@ -8,8 +8,12 @@ import org.foop.finalproject.theMessageServer.action.GameCardAction;
 import org.foop.finalproject.theMessageServer.enums.MessageType;
 
 public class CounteractRound extends Round {
-    public CounteractRound(Player endPlayer, GameCardRound gameCardRound) {
-        super(endPlayer, gameCardRound);
+    public CounteractRound(Player creator, GameCardRound gameCardRound) {
+        super(gameCardRound);
+        this.creator = creator;
+        currentPlayer = creator;
+        currentPlayer = getNextPlayer();
+        endPlayer = creator;
         name = "Counteract Round";
     }
 
@@ -34,7 +38,7 @@ public class CounteractRound extends Round {
     public void onTurnProgressing(Action action) {
         System.out.println(name+": onTurnProgressing start.");
         if(action instanceof GameCardAction){
-            if((action).getCard() instanceof Counteract){
+            if(action.getCard() instanceof Counteract){
                 game.placeGameCardActionOnBoard((GameCardAction)action);
                 setEndPlayer(currentPlayer);
             }

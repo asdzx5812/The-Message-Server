@@ -10,5 +10,6 @@ import org.springframework.stereotype.Service;
 public class GameService {
     public void onReceiveAction(Action action) throws Exception{
         action.getGame().getRound().onTurnProgressing(action);
+
     }
 }

@@ -12,7 +12,7 @@ public class Trap extends GameCard {
         super(gameCardColor, intelligenceType, order);
         /// name = "Trap"; // 調虎離山
         // timingDescription = "Play when message transmitting.";
-        // effectDescription = "Another player becomes [Trap Status] (Player in [Lock On Status] cn not be affected by this)";
+        // effectDescription = "Another player becomes [Trap Status] (Player in [Lock On Status] can not be affected by this)";
         name = "調虎離山"; // 調虎離山
         timingDescription = "當情報開始傳遞後使用。";
         effectDescription = "指定一位玩家不參與本次的情報傳遞。（不能指定傳出情報者和被鎖定的玩家）";
@@ -22,7 +22,9 @@ public class Trap extends GameCard {
 
     @Override
     public void perform(Player performer, Player playerTarget, Game game) {
-        playerTarget.changeStatus(PlayerStatus.Trap);
+        if(playerTarget.getStatus() == PlayerStatus.Normal){
+            playerTarget.changeStatus(PlayerStatus.Trap);
+        }
     }
 
     @Override

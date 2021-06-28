@@ -9,8 +9,10 @@ import java.util.ArrayList;
 public class MainRound extends Round {
     boolean intelligenceHasSent;
     Action currentAction;
-    public MainRound(Player player, Game game) {
-        super(player, game);
+    public MainRound(Player creator, Game game) {
+        super(game);
+        this.creator = creator;
+        currentPlayer = creator;
         endPlayer = null;
         name = "Main Round";
         intelligenceHasSent = false;
@@ -56,6 +58,7 @@ public class MainRound extends Round {
         childRound.onRoundStart();
     }
     public void SendIntelligence(Action action){
+        messageService.broadcastActionBeenPlayedMessage(game, action);
         childRound = new IntelligenceRound(currentPlayer, this, (IntelligenceAction)action);
         game.setRound(childRound);
         childRound.onRoundStart();

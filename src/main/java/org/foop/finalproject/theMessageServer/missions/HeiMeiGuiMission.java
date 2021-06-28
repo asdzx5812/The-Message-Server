@@ -7,6 +7,7 @@ import org.foop.finalproject.theMessageServer.Player;
 public class HeiMeiGuiMission extends Mission {
     @Override
     protected boolean isCompleted(Game game, Player player) {
+        // TODO
         return false;
     }
 }

@@ -5,12 +5,12 @@ import org.foop.finalproject.theMessageServer.Mission;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 
-public class LaoCiangMission extends Mission {
-    public LaoCiangMission(){
-        description = "獲得三張或以上的紅色情報。";
+public class YiDianYuanMission extends Mission {
+    public YiDianYuanMission(){
+        description = "獲得三張或以上的藍情報。";
     }
     @Override
     protected boolean isCompleted(Game game, Player player) {
-        return player.getIntelligences().get(GameCardColor.RED.type).size() >= 3;
+        return player.getIntelligences().get(GameCardColor.BLUE.type).size() >= 3;
     }
 }

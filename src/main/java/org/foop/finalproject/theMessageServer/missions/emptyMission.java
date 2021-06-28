@@ -7,6 +7,6 @@ import org.foop.finalproject.theMessageServer.Player;
 public class emptyMission extends Mission {
     @Override
     protected boolean isCompleted(Game game, Player player) {
-        return true;
+        return false;
     }
 }

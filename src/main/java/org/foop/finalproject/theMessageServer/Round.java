@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public abstract class Round {
     protected Player endPlayer;
-    protected Player startPlayer;
+    protected Player creator;
     protected Player currentPlayer;
     protected Round parentRound;
     protected Round childRound;
@@ -20,10 +20,7 @@ public abstract class Round {
     protected String name;
     protected MessageService messageService;
     protected GameService gameService;
-    public Round(Player startPlayer, Game game){
-        this.startPlayer = startPlayer;
-        this.currentPlayer = startPlayer;
-        this.endPlayer = startPlayer;
+    public Round(Game game){
         this.game = game;
         this.parentRound = null;
         this.direction = 1;
@@ -31,10 +28,7 @@ public abstract class Round {
         this.gameService = new GameService();
     }
 
-    public Round(Player startPlayer, Round parentRound){
-        this.startPlayer = startPlayer;
-        this.currentPlayer = startPlayer;
-        this.endPlayer = startPlayer;
+    public Round(Round parentRound){
         this.game = parentRound.getGame();
         this.parentRound = parentRound;
         this.direction = 1;
@@ -120,8 +114,8 @@ abstract public void onTurnStart();
     public boolean parentRoundIsMainRound(){ return parentRound instanceof MainRound; }
     public boolean parentRoundIsIntelligenceRound(){ return parentRound instanceof IntelligenceRound; }
 
-    public boolean playerIsOwnerOfCurrentRound(Player player){ return player == startPlayer;}
-    public boolean playerIsOwnerOfParentRound(Player player){ return player == parentRound.startPlayer; }
+    public boolean playerIsOwnerOfCurrentRound(Player player){ return player == creator;}
+    public boolean playerIsOwnerOfParentRound(Player player){ return player == parentRound.creator; }
     public boolean playerIsCurrentPlayerOfParentRound(Player player) { return player == parentRound.currentPlayer; }
 
     public boolean cardNeedTarget(GameCard card){

@@ -46,6 +46,8 @@ public class Player {
 
     public String getId(){ return id; }
 
+    public ArrayList<GameCard> getHandCards(){ return handCards; }
+
     // public Character getCharacter(){ return character; }
 
     // public void setCharacter(Character character) {
@@ -65,6 +67,7 @@ public class Player {
             return intelligences.get(camp.type).size() >= 3;
         else if (camp == Camp.GREEN)
             return character.mission.isCompleted(game, this);
+        System.out.println("Which camp is this: " + camp.type + " ...");
         return false;
     }
 
@@ -76,7 +79,7 @@ public class Player {
 
     public void drawCards(int num) {
         drawCards_wo_broadcast(num);
-        messageService.broadcastGameInformation(game, game.getPlayers());
+        messageService.broadcastGameInformation(game);
     }
     public void drawCards_wo_broadcast(int num) {
         System.out.println("Player draw cards start");
@@ -87,7 +90,7 @@ public class Player {
         handCards.remove(card);
         // ArrayList<Player> players = new ArrayList<>();
         // players.add(this);
-        messageService.broadcastGameInformation(game, game.getPlayers());
+        // messageService.broadcastGameInformation(game, game.getPlayers());
     }
 
     public GameCard getCardByIndex(int idx) throws Exception {
@@ -113,6 +116,7 @@ public class Player {
         JSONObject playerObj = new JSONObject();
         playerObj.put("userId", user.getId());
         playerObj.put("playerId", getId());
+        playerObj.put("status", getStatus().status);
         playerObj.put("name", user.getName());
         playerObj.put("handcardsNum", handCards.size());
         playerObj.put("handcards", jsonService.getHandCardsObjs(handCards));

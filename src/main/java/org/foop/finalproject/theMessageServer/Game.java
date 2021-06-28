@@ -6,12 +6,14 @@ import java.util.Stack;
 
 import org.foop.finalproject.theMessageServer.GameCards.*;
 import org.foop.finalproject.theMessageServer.action.GameCardAction;
+import org.foop.finalproject.theMessageServer.characters.*;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.foop.finalproject.theMessageServer.enums.MessageType;
+import org.foop.finalproject.theMessageServer.missions.DaiLiMission;
+import org.foop.finalproject.theMessageServer.missions.JhihMingSiangShueiMission;
 import org.foop.finalproject.theMessageServer.round.MainRound;
 import org.foop.finalproject.theMessageServer.service.MessageService;
-import org.foop.finalproject.theMessageServer.characters.fakeCharacter;
 import org.foop.finalproject.theMessageServer.enums.Camp;
 
 public class Game{
@@ -19,12 +21,12 @@ public class Game{
     private MessageService messageService;
     private int readyNum;
     private int playerNum;
-    protected ArrayList<Character> characterCards;
     protected ArrayList<Player> players;
     protected ArrayList<Player> readyPlayers;
     protected ArrayList<User> users;
     protected Round round;
     protected Stack<GameCard> gameCardsDeck;
+    protected Stack<Character> characterCardDeck;
     protected ArrayList<GameCard> playedCards;
     protected Stack<GameCardAction> currentActionsOnBoard;
 
@@ -50,8 +52,9 @@ public class Game{
 
     public void initializeStage() {
         System.out.println("Initialize Stage start.");
-        initializeDeck();
-        createDeck();
+        initializeDecks();
+        createGameCardDeck();
+        createCharacterCardDeck();
         initializePlayers();
         System.out.println("Initialize Stage finish.");
         messageService.broadCastGameStartMessage(this);
@@ -60,13 +63,56 @@ public class Game{
         //System.out.println("Initialize Stage broadcast done.");
     }
 
-    public void initializeDeck(){
+    public void initializeDecks(){
         gameCardsDeck = new Stack<>();
         playedCards = new ArrayList<>();
         currentActionsOnBoard = new Stack<>();
+        characterCardDeck = new Stack<>();
     }
 
-    public void createDeck(){
+    public void createCharacterCardDeck(){
+        // 情報類
+        characterCardDeck.push(new ChingBaoChuJhang());
+        characterCardDeck.push(new CiBai());
+        characterCardDeck.push(new DaiLi());
+        characterCardDeck.push(new EMeiFong());
+        characterCardDeck.push(new LaoCiang());
+        characterCardDeck.push(new LiuJie());
+        characterCardDeck.push(new YiDianYuan());
+
+        // 手牌類
+        characterCardDeck.push(new BeiLeiMao());
+        characterCardDeck.push(new GangTieTeGong());
+        characterCardDeck.push(new GuaiDaoJiouJiou());
+        characterCardDeck.push(new Holmes());
+        characterCardDeck.push(new LaoJin());
+
+        // 玩家死亡數量類
+        characterCardDeck.push(new DaoFong());
+        characterCardDeck.push(new HuangChiue());
+        characterCardDeck.push(new SiaoMaGe());
+
+        // 玩家死亡順序類
+        // characterCardDeck.push(new FuPing());
+
+        // 其他
+        // 感覺較簡單
+        // characterCardDeck.push(new LaoGuei());
+        // characterCardDeck.push(new LiFuMengMianJen());
+        // 中間難度
+        // characterCardDeck.push(new professionalKiller());
+        // 感覺較難
+        // characterCardDeck.push(new DaMeiNyu());
+        // characterCardDeck.push(new FuShe());
+        // 只有mission無法
+        // characterCardDeck.push(new JhihMingSiangShuei());
+
+        // 我們沒有的牌
+        // characterCardDeck.push(new HeiMeiGui());
+        Collections.shuffle(characterCardDeck);
+    }
+
+    public void createGameCardDeck(){
         createGameCardExceptsForProve(3, "LockOn", GameCardColor.RED, IntelligenceType.ENCRYPTED_MSG);
         createGameCardExceptsForProve(3, "LockOn", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
         createGameCardExceptsForProve(6, "LockOn", GameCardColor.BLACK, IntelligenceType.ENCRYPTED_MSG);
@@ -191,8 +237,7 @@ public class Game{
         Collections.shuffle(camps);
         this.players = new ArrayList<>();
         for (int i = 0; i < playerNum; i++) {
-            Character character = new fakeCharacter();
-            players.add(new Player(this, camps.get(i), character, users.get(i)));
+            players.add(new Player(this, camps.get(i), characterCardDeck.pop(), users.get(i)));
             players.get(i).drawInitialCards();
             //messageService.informPlayerInformation(this, players.get(i));
         }
@@ -296,9 +341,6 @@ public class Game{
         messageService.broadcastActionBeenPlayedMessage(this, action);
     }
 
-    public void dispatchSelectingActions() {
-    }
-
     public void setRound(Round round) {
         this.round = round;
     }
@@ -325,9 +367,7 @@ public class Game{
         while(currentActionsOnBoard.size() > 0){
             GameCardAction action = currentActionsOnBoard.pop();
             try {
-
                 GameCard gamecard = action.getCard();
-
                 if(!(gamecard instanceof Prove)) {
                     //非prove 不需要等待詢問 直接下一個turn
                     action.execute();
@@ -335,19 +375,28 @@ public class Game{
                     String message = action.getGameMessage();
                     messageService.broadcastActionPerformed(this, message);
                     playedCards.add(gamecard);
+                    messageService.broadcastGameInformation(this);
                     round.onTurnEnd();
+                }
+                else if (gamecard instanceof Prove){
+                    //通知玩家二選一
+                    action.execute();
+                    messageService.informPlayerChooseOfProof();
+                }
+                else {
+                    System.out.println("Should not be called here!");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
     }
 
     public void setPassingCard(GameCard passingCard) {
         this.passingCard = passingCard;
     }
     public GameCard getPassingCard() { return this.passingCard;}
+
     public void addReadyPlayer(Player player) {
         if(readyPlayers != null && readyPlayers.indexOf(player) == -1){
             readyPlayers.add(player);
@@ -362,6 +411,7 @@ public class Game{
             round.onRoundStart();
         }
     }
+
     public ArrayList<String> getTargetList(Player currentPlayer){
         ArrayList<String> targetList = new ArrayList<>();
         for(Player player:players){
@@ -370,5 +420,17 @@ public class Game{
             }
         }
         return targetList;
+    }
+
+    // TODO
+    public void checkGameOver(){
+        for(Player player: getPlayers()){
+            if(player.isDead() || player.isLose()){
+                continue;
+            }
+            if(player.isWin()){
+                return;
+            }
+        }
     }
 }

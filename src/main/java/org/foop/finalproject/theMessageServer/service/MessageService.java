@@ -106,9 +106,9 @@ public class MessageService {
 
     //TYPE:BROADCAST_ALL_PLAYERS_INFO
     //初始化 抽牌、棄牌才會用
-    public void broadcastGameInformation(Game game, ArrayList<Player> players) {
+    public void broadcastGameInformation(Game game) {
         JSONObject payload = new JSONObject();
-        payload.put("players", jsonService.getPlayersInformationObj(players));
+        payload.put("players", jsonService.getPlayersInformationObj(game.getPlayers()));
         payload.put("gamecardsOnBoard", jsonService.getActionsOnBoardInformationObj(game.getCurrentActionsOnBoard()));
         JSONObject body = getBody(payload, "", MessageType.BROADCAST_ALL_PLAYERS_INFO);
         broadcastMessage(body, game);
@@ -165,9 +165,14 @@ public class MessageService {
         }
         else if(messageType == MessageType.BROADCAST_PLAYER_START_SELECTING_RECEIVE){
             boolean pass = true;
+            boolean receive = true;
             if(currentPlayer.isLockOn()){
                 pass = false;
             }
+            else if(currentPlayer.isTrapped()){
+                receive = false;
+            }
+            payload.put("canReceive", receive);
             payload.put("canPass",pass);
         }
         else{
@@ -201,7 +206,8 @@ public class MessageService {
             messageType = MessageType.BROADCAST_GAMECARD_PLAYED;
         }
         else if(action instanceof PassAction){
-            messageType = MessageType.BROADCAST_PLAYER_PASSED;
+            return;
+            //messageType = MessageType.BROADCAST_PLAYER_PASSED;
         }
         else if(action instanceof IntelligenceAction){
             messageType = MessageType.BROADCAST_INTELLIGENCE_SENT;
@@ -216,6 +222,8 @@ public class MessageService {
         JSONObject payload = action.toJsonObject();
         JSONObject body = getBody(payload, "", messageType);
         broadcastMessage(body, game);
+        broadcastGameInformation(game);
+
     }
     //TYPE:BROADCAST_PLAYER_STATE_CHANGE_MESSAGE
     //廣播誰死去
@@ -281,7 +289,17 @@ public class MessageService {
         //TODO
 
     }
-
+    //廣播誰選擇了什麼
     public void broadcastPlayerChooseOfProof() {
+    }
+    //通知玩家選試探
+    public void informPlayerChooseOfProof() {
+
+    }
+
+    public void informPlayerStartSelectActionForProve(Player currentPlayer, JSONObject jsonObject) {
+    }
+
+    public void informPlayerStartSelectGameCardTarget(Game game, Player currentPlayer) {
     }
 }

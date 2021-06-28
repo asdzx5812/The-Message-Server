@@ -3,11 +3,14 @@ import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
+import org.foop.finalproject.theMessageServer.action.GameCardAction;
 import org.foop.finalproject.theMessageServer.enums.Camp;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.foop.finalproject.theMessageServer.enums.MessageType;
 import org.foop.finalproject.theMessageServer.round.GameCardRound;
+import org.foop.finalproject.theMessageServer.round.ProveRound;
+import org.foop.finalproject.theMessageServer.service.JsonService;
 import org.json.JSONObject;
 
 public class Prove extends GameCard {
@@ -30,16 +33,29 @@ public class Prove extends GameCard {
     @Override
     public void perform(Player performer, Player playerTarget, Game game) {
         // TODO
-        //JSONObject
-        if (proveType == false) {
-            // type true: draw 2 cards or say 我是臥底
-            //messageService.informPlayerOnProve(playerTarget);
+        //JsonService jsonService = new JsonService();
+        //JSONObject jsonObj = jsonService.getProveObj(this, performer);
+        Round proveRound = new ProveRound(performer,game.getRound(),new GameCardAction(game,performer,this,playerTarget));
+        game.getRound().setChildRound(proveRound);
+        game.setRound(proveRound);
+        game.getRound().onRoundStart();
+        /*
+        if (proveType) {
+            // type true: draw 2 cards(target camp) or say 我是臥底(other camp)
+            // messageService.informPlayerOnProve(playerTarget);
+            if(playerTarget.getCamp() == targetCamp){
+                playerTarget.drawCards(2);
+            }
         }
         else{
-            // type false: discard 1 card or say 我是好人
+            if(playerTarget.getCamp() == targetCamp){
+                playerTarget.drawCards(2);
+            }
+            // type false: discard 1 card(target camp) or say 我是好人(other camp)
             //messageService.informPlayerOnProve(game, playerTarget);
             //messageService.broadcastPlayerToSelectAction(game, playerTarget, MessageType.BROADCAST_PLAYER_START_SELECTING_GAMECARD);
         }
+        */
     }
 
     @Override
@@ -54,11 +70,16 @@ public class Prove extends GameCard {
             return "";
         }
     }
-
+    public Camp getTargetCamp(){
+        return targetCamp;
+    }
     @Override
     public boolean isValid(Round currentRound, Player owner) {
         // 傳遞情報前的功能牌階段，當回合派發情報者可以使用
         return currentRound.isGameCardRound() && currentRound.parentRoundIsMainRound() && currentRound.playerIsCurrentPlayerOfParentRound(owner);
+    }
+    public boolean getProveType(){
+        return proveType;
     }
 
 }

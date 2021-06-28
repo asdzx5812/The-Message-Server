@@ -10,9 +10,11 @@ import org.foop.finalproject.theMessageServer.enums.MessageType;
 public class GameCardRound extends Round {
     Action currentAction;
 
-    GameCardRound(Player startPlayer, Round round){
-        super(startPlayer, round);
-        setEndPlayer(getPreviousPlayer());
+    GameCardRound(Player creator, Round round){
+        super(round);
+        this.creator = creator;
+        currentPlayer = creator;
+        endPlayer = getPreviousPlayer();
         name = "Game Card Round";
     }
 
@@ -50,9 +52,10 @@ public class GameCardRound extends Round {
             else {
                 //選完target or 一般gamecard 開啟識破round
                 System.out.println("選完target");
-                childRound = new CounteractRound(getNextPlayer(), this);
+                childRound = new CounteractRound(currentPlayer, this);
                 game.setRound(childRound);
                 game.placeGameCardActionOnBoard((GameCardAction)action);
+
             }
             childRound.onRoundStart();
 
@@ -86,17 +89,34 @@ public class GameCardRound extends Round {
             onRoundEnd();
             return;
         }
-
-        currentPlayer = getNextPlayer();
-        onTurnStart();
+        if(currentAction instanceof PassAction){
+            currentPlayer = getNextPlayer();
+        }
         System.out.println("GameCardRound: onTurnEnd end.");
+        onTurnStart();
     }
 
     public void doWhenLeaveChildRound() {
         System.out.println("GameCardRound: doWhenLeaveChild start.");
-        setChildRound(null);
-        //被移到這裡
-        game.takeActionOnBoard();
+
+        if(childRound instanceof TargetSelectRound) {
+            setChildRound(null);
+            onTurnProgressing(currentAction);
+            //onTurnEnd();
+        }
+        else if(childRound instanceof CounteractRound) {
+            setChildRound(null);
+            //被移到這裡
+            game.takeActionOnBoard();
+        }
+        else if(childRound instanceof ProveRound){
+            onRoundEnd();
+        }
+        else {
+            System.out.println("In GameCardRound no this type round!!!!");
+        }
+
+
         //onTurnEnd(); 這個移到takeActionOnBoard裡做掉了（因為要判prove）
         System.out.println("GameCardRound: doWhenLeaveChild end.");
     }

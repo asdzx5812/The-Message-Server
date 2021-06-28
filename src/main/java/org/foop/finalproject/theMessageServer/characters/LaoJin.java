@@ -8,7 +8,7 @@ import org.foop.finalproject.theMessageServer.missions.LaoJinMission;
 import org.foop.finalproject.theMessageServer.skills.emptySkill;
 
 public class LaoJin extends Character {
-    public LaoJin(String name, Gender gender, Mission mission, Skill skill, boolean hidden) {
+    public LaoJin() {
         super("老金", Gender.MAN, new LaoJinMission(), new emptySkill(), true);
     }
 }

@@ -20,7 +20,7 @@ public class PassAction extends Action{
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("playerId", performer.getId());
         jsonObject.put("action", "pass");
-        return null;
+        return jsonObject;
     }
     @Override
     public String getGameMessage(){

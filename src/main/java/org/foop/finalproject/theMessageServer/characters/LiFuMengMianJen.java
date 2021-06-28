@@ -4,11 +4,11 @@ import org.foop.finalproject.theMessageServer.Character;
 import org.foop.finalproject.theMessageServer.Mission;
 import org.foop.finalproject.theMessageServer.Skill;
 import org.foop.finalproject.theMessageServer.enums.Gender;
-import org.foop.finalproject.theMessageServer.missions.JhihMingSiangShueiMission;
+import org.foop.finalproject.theMessageServer.missions.LiFuMengMianJenMission;
 import org.foop.finalproject.theMessageServer.skills.emptySkill;
 
-public class JhihMingSiangShuei extends Character {
-    public JhihMingSiangShuei() {
-        super("致命香水", Gender.WOMAN, new JhihMingSiangShueiMission(), new emptySkill(), false);
+public class LiFuMengMianJen extends Character {
+    public LiFuMengMianJen() {
+        super("禮服蒙面人", Gender.MAN, new LiFuMengMianJenMission(), new emptySkill(), false);
     }
 }

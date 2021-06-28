@@ -29,7 +29,7 @@ public class Distribute extends GameCard {
             //
             //
         }
-        messageService.broadcastGameInformation(game, players);
+        messageService.broadcastGameInformation(game);
     }
 
     @Override

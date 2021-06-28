@@ -22,7 +22,9 @@ public class LockOn extends GameCard{
 
     @Override
     public void perform(Player performer, Player playerTarget, Game game) {
-        playerTarget.changeStatus(PlayerStatus.LockOn);
+        if(playerTarget.getStatus() == PlayerStatus.Normal || playerTarget.getStatus() == PlayerStatus.Trap){
+            playerTarget.changeStatus(PlayerStatus.LockOn);
+        }
     }
 
     @Override

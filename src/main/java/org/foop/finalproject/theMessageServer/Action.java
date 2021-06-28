@@ -10,7 +10,7 @@ public abstract class Action {
     protected Player performer;
     protected GameCard card;
     protected Player playerTarget;
-
+    protected GameCard gameCardTarget;
     public Action(Game game, Player performer, GameCard card) {
         this.game = game;
         this.performer = performer;
@@ -52,4 +52,10 @@ public abstract class Action {
     public abstract JSONObject toJsonObject();
 
     public abstract String getGameMessage();
+    public GameCard getGameCardTarget(){
+        return this.gameCardTarget;
+    }
+    public void setGameCardTarget(GameCard gameCardTarget){
+        this.gameCardTarget = gameCardTarget;
+    }
 }

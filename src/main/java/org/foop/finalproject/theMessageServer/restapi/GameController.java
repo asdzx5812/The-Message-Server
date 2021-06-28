@@ -2,6 +2,7 @@ package org.foop.finalproject.theMessageServer.restapi;
 
 import org.foop.finalproject.theMessageServer.*;
 import org.foop.finalproject.theMessageServer.GameCards.Prove;
+import org.foop.finalproject.theMessageServer.round.ProveRound;
 import org.foop.finalproject.theMessageServer.service.GameService;
 import org.foop.finalproject.theMessageServer.service.RoomService;
 import org.foop.finalproject.theMessageServer.service.MessageService;
@@ -75,8 +76,11 @@ public class GameController {
             return ResponseEntity.status(403).body("no this targetPlayerId");
         } else {
             targetPlayer = Main.getPlayer(roomId, targetPlayerId);
+            if(targetPlayer == null){
+                return ResponseEntity.status(403).body("this targetPlayerId not exist");
+            }
         }
-        System.out.println("接到" + player.getUser().getName() + "指定" + "targetPlayerId");
+        System.out.println("接到" + player.getUser().getName() + "指定" + targetPlayer.getUser().getName());
         Action action = new GameCardAction(game, player, null, targetPlayer);
         gameService.onReceiveAction(action);
         return ResponseEntity.ok().build();
@@ -129,19 +133,21 @@ public class GameController {
         gameService.onReceiveAction(action);
         return ResponseEntity.ok().body(json.toString());
     }
-    @PostMapping("/player/{playerId}/proofchose")
+    @PostMapping("/player/{playerId}/provechoose")
     public ResponseEntity playerToChooseOnProve(@PathVariable String roomId,
-                                                @PathVariable String playerId) throws Exception {
+                                                @PathVariable String playerId,
+                                                @RequestParam String chooseOption) throws Exception {
         Game game = Main.getRoom(roomId).getGame();
         Player player = Main.getPlayer(roomId, playerId);
         if (player == null) {
             throw new Exception("Performer player not found");
         }
-        GameCard gameCard = game.getCurrentActionsOnBoard().get(0).getCard();
+        Action action = new ProveAction(game, player, null, chooseOption);
         Round round = game.getRound();
-        if(round instanceof GameCardRound && gameCard instanceof Prove) {
-            messageService.broadcastPlayerChooseOfProof();
-            round.onTurnEnd();
+        if(round instanceof ProveRound) {
+            gameService.onReceiveAction(action);
+        } else{
+            System.out.println("Error: proof choice at wrong ");
         }
         return ResponseEntity.ok().build();
     }
