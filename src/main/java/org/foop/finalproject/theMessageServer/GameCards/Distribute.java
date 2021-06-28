@@ -19,7 +19,8 @@ public class Distribute extends GameCard {
     }
 
     @Override
-    public String perform(Player performer, Player playerTarget, Game game) {
+    public void perform(Player performer, Player playerTarget, Game game) {
+        return "";
     }
 
     @Override

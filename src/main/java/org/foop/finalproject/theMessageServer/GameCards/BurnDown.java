@@ -24,7 +24,7 @@ public class BurnDown extends GameCard {
         needTarget = true;
     }
     @Override
-    public String perform(Player performer, Player playerTarget, Game game) {
+    public void perform(Player performer, Player playerTarget, Game game) {
         ArrayList<GameCard> blackIntelligences = playerTarget.getIntelligences().get(GameCardColor.BLACK.type);
         if( blackIntelligences.size() > 0 ){
             GameCard lastBlackIntelligence = blackIntelligences.get(blackIntelligences.size()-1);

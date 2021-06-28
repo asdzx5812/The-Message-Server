@@ -322,6 +322,7 @@ public class Game{
                     playedCards.add(gamecard);
                 }
                 //TODO
+                message = action.getGameMessage();
                 //messageService.broadcastActionPerformed(this, message);
             } catch (Exception e) {
                 e.printStackTrace();

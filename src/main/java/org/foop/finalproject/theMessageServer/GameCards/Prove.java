@@ -27,7 +27,7 @@ public class Prove extends GameCard {
     }
 
     @Override
-    public String perform(Player performer, Player playerTarget, Game game) {
+    public void perform(Player performer, Player playerTarget, Game game) {
         // TODO
         if (proveType == false) {
             // type true: draw 2 cards or say 我是臥底
@@ -37,6 +37,7 @@ public class Prove extends GameCard {
             // type false: discard 1 card or say 我是好人
             messageService.broadcastPlayerToSelectAction(game, playerTarget, MessageType.BROADCAST_PLAYER_START_SELECTING_GAMECARD);
         }
+        return "";
     }
 
     public String getDescriptionAccordingToIdentity(){

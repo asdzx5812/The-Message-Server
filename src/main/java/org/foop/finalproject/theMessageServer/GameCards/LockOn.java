@@ -21,8 +21,9 @@ public class LockOn extends GameCard{
     }
 
     @Override
-    public String perform(Player performer, Player playerTarget, Game game) {
+    public void perform(Player performer, Player playerTarget, Game game) {
         playerTarget.changeStatus(PlayerStatus.LockOn);
+        return "";
     }
     @Override
     public boolean isValid(Round currentRound, Player owner) {

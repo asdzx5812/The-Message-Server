@@ -21,8 +21,9 @@ public class Trap extends GameCard {
     }
 
     @Override
-    public String perform(Player performer, Player playerTarget, Game game) {
+    public void perform(Player performer, Player playerTarget, Game game) {
         playerTarget.changeStatus(PlayerStatus.Trap);
+        return performer + "對" +
     }
 
     @Override

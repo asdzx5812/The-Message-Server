@@ -19,9 +19,10 @@ public class Counteract extends GameCard {
         setId(name);
     }
     @Override
-    public String perform(Player performer, Player playerTarget, Game game) {
+    public void perform(Player performer, Player playerTarget, Game game) {
         // TODO: perform message
         GameCardAction action = game.getCurrentActionsOnBoard().pop();
+        return "";
     }
 
     @Override
