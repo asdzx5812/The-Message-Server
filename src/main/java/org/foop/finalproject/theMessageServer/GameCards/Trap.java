@@ -73,7 +73,6 @@ public class Trap extends GameCard {
             messages.add("");
             messages.add("");
             messageService.broadcastActionPerformed(game, messages);
-
             playerTarget.beTrap();
         }
     }

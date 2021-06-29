@@ -234,6 +234,7 @@ public class MessageService {
 
     public void broadcastPlayerStateChangeMessage(Game game, Player player) {
         JSONObject payload = new JSONObject();
+        payload.put("playerId", player.getId());
         payload.put("status", player.getStatus().status);
         JSONObject body = getBody(payload, "", MessageType.BROADCAST_PLAYER_STATUS_CHANGE_MESSAGE);
         broadcastMessage(body, game);
