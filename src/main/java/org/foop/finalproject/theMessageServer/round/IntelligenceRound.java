@@ -97,6 +97,7 @@ public class IntelligenceRound extends Round {
     public void doWhenLeaveChildRound() {
         // 詢問接收
         System.out.println("IntelligenceRound: doWhenLeaveChildRound start.");
+
         // TODO 調虎離山 and 退回
         if(currentPlayer.getStatus() == PlayerStatus.Trap){
             onTurnEnd();

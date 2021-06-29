@@ -22,6 +22,7 @@ public class Intercept extends GameCard {
     @Override
     public void perform(Player performer, Player playerTarget, Game game) {
         // currentRound -> parentRound : intelligence Round
+        System.out.print(performer.getUser().getName() + "使用截獲！！");
         game.getRound().getParentRound().setCurrentPlayer(performer);
         performer.beLockOn();
         messageService.broadcastPlayerOnIntelligenceInFront(game, performer);

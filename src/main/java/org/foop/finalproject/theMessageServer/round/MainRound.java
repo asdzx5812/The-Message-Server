@@ -84,6 +84,7 @@ public class MainRound extends Round {
             }
         } else if(childRound instanceof TargetSelectRound){
             SendIntelligence(currentAction);
+
         } else {
             // end Round
             onTurnEnd();

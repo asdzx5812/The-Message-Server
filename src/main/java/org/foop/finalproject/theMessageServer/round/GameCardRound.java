@@ -110,7 +110,7 @@ public class GameCardRound extends Round {
             game.takeActionOnBoard();
         }
         else if(childRound instanceof ProveRound){
-            onRoundEnd();
+            onTurnEnd();
         }
         else {
             System.out.println("In GameCardRound no this type round!!!!");

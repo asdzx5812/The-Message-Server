@@ -21,6 +21,7 @@ public class Decode extends GameCard {
 
     @Override
     public void perform(Player performer, Player playerTarget, Game game) throws Exception {
+        System.out.print(performer.getUser().getName() + "使用破譯！！");
         IntelligenceRound intelligenceRound =  (IntelligenceRound) game.getRound().getParentRound();
         GameCard intelligenceCard = intelligenceRound.getIntelligence().getCard();
         messageService.sendIntelligenceInformationToPlayer(intelligenceCard, performer);
