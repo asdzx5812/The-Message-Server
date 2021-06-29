@@ -133,22 +133,38 @@ public class GameController {
         gameService.onReceiveAction(action);
         return ResponseEntity.ok().body(json.toString());
     }
-    @PostMapping("/player/{playerId}/provechoose")
-    public ResponseEntity playerToChooseOnProve(@PathVariable String roomId,
+    @PostMapping("/player/{playerId}/provechoose/{choosedOption}")
+    public ResponseEntity playerToChooseForProve(@PathVariable String roomId,
                                                 @PathVariable String playerId,
-                                                @RequestParam String chooseOption) throws Exception {
+                                                @PathVariable String choosedOption) throws Exception {
         Game game = Main.getRoom(roomId).getGame();
         Player player = Main.getPlayer(roomId, playerId);
         if (player == null) {
             throw new Exception("Performer player not found");
         }
-        Action action = new ProveAction(game, player, null, chooseOption);
+        Action action = new ProveAction(game, player, null, choosedOption);
         Round round = game.getRound();
         if(round instanceof ProveRound) {
             gameService.onReceiveAction(action);
         } else{
             System.out.println("Error: proof choice at wrong ");
         }
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/player/{playerId}/gameCard/target/{gameCardTargetId}")
+    public ResponseEntity receiveGameCardTarget(@PathVariable String roomId,
+                                        @PathVariable String playerId,
+                                        @PathVariable String gameCardTargetId) throws Exception {
+        Game game = Main.getRoom(roomId).getGame();
+        Player player = Main.getPlayer(roomId, playerId);
+        if (player == null) {
+            throw new Exception("Performer player not found");
+        }
+        GameCard gameCardTarget = player.getCardById(gameCardTargetId);
+        System.out.println("接到" + player.getUser().getName() + "指定" + player.getCardById(gameCardTargetId).getId());
+        Action action = new ProveAction(game, player, gameCardTarget, null);
+        gameService.onReceiveAction(action);
         return ResponseEntity.ok().build();
     }
 }

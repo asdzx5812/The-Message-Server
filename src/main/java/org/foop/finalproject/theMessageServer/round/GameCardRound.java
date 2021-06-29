@@ -85,7 +85,7 @@ public class GameCardRound extends Round {
         //這個takeActionOnBoard 移到doWhenLeaveChildRound
         //game.takeActionOnBoard();
 
-        if(satisfyRoundEndCondition()){
+        if(satisfyRoundEndCondition() || game.winnerAppears()){
             onRoundEnd();
             return;
         }

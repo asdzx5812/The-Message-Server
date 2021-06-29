@@ -81,22 +81,8 @@ public class ProveRound extends Round {
 
     @Override
     public void onTurnEnd()  {
-
-        /*
-        if(childRound == null){
-            //做除了丟牌的操作
-
-        }
-        else if(childRound instanceof TargetSelectRound) {
-            //丟牌
-            setChildRound(null);
-            //
-        }
-        else{
-            System.out.println("In " + name + "no this type round!!!!");
-        }
-        */
         action.execute();
+        System.out.println("Prove操作執行完畢");
         System.out.println(name+": doWhenLeaveChild end.");
         onRoundEnd();
     }

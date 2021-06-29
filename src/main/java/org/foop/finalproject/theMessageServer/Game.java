@@ -281,12 +281,22 @@ public class Game{
     public void onPlayerDie(Player deadPlayer) {
         // Check green camp win
 
+        ArrayList<Player> alivePlayers = new ArrayList<>();
+        for(Player player:players){
+            if(player.isAlive()){
+                alivePlayers.add(player);
+            }
+        }
+        if(alivePlayers.size() == 1){
+
+        }
         // Check red camp win
 
         // Check blue camp win
     }
 
     public void onGameOver() {
+        // TODO
         gameOver = true;
         messageService.broadcastGameOverMessage(this);
     }
@@ -381,7 +391,7 @@ public class Game{
                 else if (gamecard instanceof Prove){
                     //通知玩家二選一
                     action.execute();
-                    messageService.informPlayerChooseOfProof();
+                    //messageService.informPlayerChooseOfProof();
                 }
                 else {
                     System.out.println("Should not be called here!");
@@ -422,15 +432,23 @@ public class Game{
         return targetList;
     }
 
-    // TODO
-    public void checkGameOver(){
-        for(Player player: getPlayers()){
-            if(player.isDead() || player.isLose()){
-                continue;
-            }
+    public boolean winnerAppears(){
+        for(Player player: players){
             if(player.isWin()){
-                return;
+                return true;
             }
         }
+        return false;
     }
+    public ArrayList<Player> getWinners(){
+        ArrayList<Player> winners = new ArrayList<>();
+        for(Player player: players){
+            if(player.isWin()){
+                winners.add(player);
+            }
+        }
+        return winners;
+
+    }
+
 }

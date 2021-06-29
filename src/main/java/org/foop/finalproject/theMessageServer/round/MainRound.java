@@ -69,6 +69,10 @@ public class MainRound extends Round {
         System.out.println("MainRound: doWhenLeaveChildRound");
         if(childRound instanceof GameCardRound){
             //還有沒有手牌能夠打出當情報
+            if(game.winnerAppears()){
+                onRoundEnd();
+                return;
+            }
             if(currentPlayer.hasNoHandcard()){
                 currentPlayer.loseTheGame();
                 onTurnEnd();
@@ -113,15 +117,6 @@ public class MainRound extends Round {
     @Override
     public boolean satisfyRoundEndCondition() {
         System.out.println("MainRound: SatisfyRoundEndCondition");
-        ArrayList<Player> players = game.getPlayers();
-        // check if only same camp player alive (red and blue)
-        // ArrayList<Boolean> camps = new ArrayList<>(Collections.nCopies(3, false)); // 0:red 1:blue
-        for(Player player: players){
-            // camps.set(player.getCamp().type, true);
-            if(player.isWin()){
-                return true;
-            }
-        }
-        return false;
+        return game.winnerAppears();
     }
 }

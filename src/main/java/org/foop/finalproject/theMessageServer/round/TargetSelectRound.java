@@ -34,8 +34,8 @@ public class TargetSelectRound extends Round {
     @Override
     public void onTurnProgressing(Action action)  {
         if(parentRound instanceof ProveRound){
-            GameCard gameCard = action.getGameCardTarget();
-            this.action.setGameCardTarget(gameCard);
+            GameCard gameCardTarget = action.getGameCardTarget();
+            this.action.setGameCardTarget(gameCardTarget);
             onTurnEnd();
         }
         else {

@@ -23,7 +23,7 @@ public class Decode extends GameCard {
     public void perform(Player performer, Player playerTarget, Game game) throws Exception {
         IntelligenceRound intelligenceRound =  (IntelligenceRound) game.getRound().getParentRound();
         GameCard intelligenceCard = intelligenceRound.getIntelligence().getCard();
-        messageService.sendIntelligenceInformationToPlayer(intelligenceCard, playerTarget);
+        messageService.sendIntelligenceInformationToPlayer(intelligenceCard, performer);
 
     }
 

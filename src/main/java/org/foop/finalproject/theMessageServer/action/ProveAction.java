@@ -8,11 +8,11 @@ import org.foop.finalproject.theMessageServer.service.MessageService;
 import org.json.JSONObject;
 
 public class ProveAction extends Action {
-    String gameCardTargetId;
+
     String choosedOption;
-    public ProveAction(Game game, Player beProvedPlayer, String gameCardTargetId, String choosedOption) {
+    public ProveAction(Game game, Player beProvedPlayer, GameCard gameCardTarget, String choosedOption) {
         super(game, beProvedPlayer, null, null);
-        this.gameCardTargetId = gameCardTargetId;
+        this.gameCardTarget = gameCardTarget;
         this.choosedOption = choosedOption;
     }
 
@@ -34,7 +34,7 @@ public class ProveAction extends Action {
         }
         else if(choosedOption.equals("niceGuy")){
         }
-
+        messageService.broadcastPlayerChooseOptionForProve(game, performer, choosedOption);
     }// 我回不去gather town了 .... ???? mac有這麼爛？  我之前那台也是
     // 白畫面你新開一個分業看看 新開一個gather town 分業 gather town 在搞 大千習到google meet了 你剛剛開得好了 原本的好像要他們approve?
     //啥意思 喔我也白畫面 回googlemeet囉 要用哪個
@@ -42,9 +42,7 @@ public class ProveAction extends Action {
     public String getGameMessage(){
         return "";
     }
-    public String getGameCardTargetId(){
-        return gameCardTargetId;
-    }
+
     @Override
     public JSONObject toJsonObject() {
         JSONObject jsonObject = new JSONObject();
@@ -58,6 +56,6 @@ public class ProveAction extends Action {
         return jsonObject;
     }
     public String getChoosedOption(){
-        return choosedOption;
+        return this.choosedOption;
     }
 }

@@ -6,6 +6,7 @@ import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
+import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
 import org.foop.finalproject.theMessageServer.round.IntelligenceRound;
 
 public class Return extends GameCard {
@@ -21,6 +22,9 @@ public class Return extends GameCard {
     }
     @Override
     public void perform(Player performer, Player playerTarget, Game game) {
+        if(performer.getStatus() == PlayerStatus.Normal){
+            performer.changeStatus(PlayerStatus.Trap);
+        }
         ((IntelligenceRound)game.getRound().getParentRound()).changeDirection();
     }
 

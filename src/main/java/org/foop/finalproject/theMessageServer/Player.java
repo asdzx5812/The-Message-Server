@@ -63,6 +63,7 @@ public class Player {
     }
 
     public boolean isWin() {
+        if(isAlive()) return false;
         if (camp == Camp.RED || camp == Camp.BLUE)
             return intelligences.get(camp.type).size() >= 3;
         else if (camp == Camp.GREEN)
@@ -74,6 +75,12 @@ public class Player {
     public boolean isDead() { return die; }
 
     public boolean isLose() { return lose; }
+
+    public boolean isAlive() {
+        return status == PlayerStatus.Normal
+                || status == PlayerStatus.LockOn
+                || status == PlayerStatus.Trap;
+    }
 
     public void drawInitialCards() { handCards.addAll(game.drawCards(3)); }
 

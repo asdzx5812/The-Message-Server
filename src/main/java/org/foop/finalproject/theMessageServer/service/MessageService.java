@@ -1,5 +1,6 @@
 package org.foop.finalproject.theMessageServer.service;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.foop.finalproject.theMessageServer.*;
 import org.foop.finalproject.theMessageServer.action.GameCardAction;
 import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
@@ -249,7 +250,10 @@ public class MessageService {
     //TYPE:BROADCAST_GAME_OVER_MESSAGE
     //廣播遊戲結束
     public void broadcastGameOverMessage(Game game) {
-        JSONObject body = getBody(null, "--- Game Start ---", MessageType.BROADCAST_PLAYER_STATUS_CHANGE_MESSAGE);
+        ArrayList<Player> winners = game.getWinners();
+        JSONObject payload = new JSONObject();
+        payload.put("players", jsonService.getPlayersInformationObj(winners));
+        JSONObject body = getBody(payload, "--- Game over ---", MessageType.BROADCAST_GAME_OVER_MESSAGE);
         broadcastMessage(body, game);
     }
 
@@ -289,17 +293,29 @@ public class MessageService {
         //TODO
 
     }
-    //廣播誰選擇了什麼
-    public void broadcastPlayerChooseOfProof() {
+    //廣播誰試探選擇了什麼選項
+    //TYPE: BROADCAST_PLAYER_CHOOSE_OPTION_FOR_PROVE
+    public void broadcastPlayerChooseOptionForProve(Game game, Player beProvedPlayer, String choosedOption) {
+        System.out.println("廣播" + beProvedPlayer.getUser().getName() + " 選了什麼試探的選項 : " + choosedOption);
+        JSONObject payload = new JSONObject();
+        payload.put("playerId", beProvedPlayer.getId());
+        payload.put("choosedOption", choosedOption);
+        JSONObject body = getBody(payload, "", MessageType.BROADCAST_PLAYER_CHOOSE_OPTION_FOR_PROVE);
+        broadcastMessage(body, game);
     }
-    //通知玩家選試探
-    public void informPlayerChooseOfProof() {
 
+    //TYPE: INFORM_PLAYER_START_SELECTING_ACTION_FOR_PROVE
+    public void informPlayerStartSelectActionForProve(Player currentPlayer, JSONObject payload){
+        System.out.println("通知" + currentPlayer.getUser().getName() + " 選擇試探選項 : " + payload.toString());
+        JSONObject body = getBody(payload, "", MessageType.BROADCAST_PLAYER_CHOOSE_OPTION_FOR_PROVE);
+        sendMessage(body, currentPlayer.getUser().getSession());
     }
-
-    public void informPlayerStartSelectActionForProve(Player currentPlayer, JSONObject jsonObject) {
-    }
-
+    //TYPE: INFORM_PLAYER_START_SELECTING_GAMECARD_TARGET
     public void informPlayerStartSelectGameCardTarget(Game game, Player currentPlayer) {
+        System.out.println("通知" + currentPlayer.getUser().getName() + " 選擇牌（目前是給prove進行丟棄） : ");
+        //TODO 也許要傳特定可丟的牌給玩家
+        JSONObject payload = new JSONObject();
+        JSONObject body = getBody(payload, "", MessageType.BROADCAST_PLAYER_CHOOSE_OPTION_FOR_PROVE);
+        sendMessage(body, currentPlayer.getUser().getSession());
     }
 }
