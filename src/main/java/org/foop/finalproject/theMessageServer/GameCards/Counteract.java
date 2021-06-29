@@ -30,12 +30,12 @@ public class Counteract extends GameCard {
             messages.add("");
             messages.add(this.name);
             messages.add("了");
-            messages.add(playerTarget.getId());
+            //messages.add(playerTarget.getId());
+            messages.add(action.getPerformer().getId());
             messages.add("的");
             messages.add(action.getCard().getName());
             messages.add("。");
             messageService.broadcastActionPerformed(game, messages);
-
         } catch(Exception error){
             // Should don't enter here.
             System.out.println("Exception:"+error);
