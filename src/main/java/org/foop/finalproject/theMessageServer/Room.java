@@ -43,7 +43,7 @@ public class Room {
             throw new Exception("房間人數不足（需要大於等於三人才可以開始）");
         } else {
             isPlaying = true;
-            game = new Game(users);
+            game = new Game(this);
             game.initializeStage();
             game.start();
             // Thread gameThread = new Thread(game);
@@ -85,4 +85,6 @@ public class Room {
     public boolean isEmpty() {
         return users.isEmpty();
     }
+
+    public void onGameOver() { isPlaying = false; }
 }

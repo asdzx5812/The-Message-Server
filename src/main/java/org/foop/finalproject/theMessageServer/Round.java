@@ -65,34 +65,16 @@ public abstract class Round {
         }
         int nextPlayerId = (currentPlayerId + direction + players.size()) % players.size();
         Player nextPlayer = players.get(nextPlayerId);
-        while( nextPlayer.isDead() || nextPlayer.isLose() ){
+        while( !nextPlayer.isAlive() ){
             nextPlayerId = (nextPlayerId + direction + players.size()) % players.size();
             nextPlayer = players.get(nextPlayerId);
         }
         return nextPlayer;
     }
-    public Player getPreviousPlayer() {
-        ArrayList<Player> players = game.getPlayers();
-        int currentPlayerId = -1;
-        for(int i = 0; i < players.size(); i++){
-            if(players.get(i) == currentPlayer){
-                currentPlayerId = i;
-                break;
-            }
-        }
-        int prevPlayerId = (currentPlayerId - direction + players.size()) % players.size();
-        Player prevPlayer = players.get(prevPlayerId);
-        while( prevPlayer.isDead() || prevPlayer.isLose() ){
-            prevPlayerId = (prevPlayerId + direction + players.size()) % players.size();
-            prevPlayer = players.get(prevPlayerId);
-        }
-        return prevPlayer;
-    }
 
+    abstract public void onRoundStart();
 
-abstract public void onRoundStart();
-
-abstract public void onTurnStart();
+    abstract public void onTurnStart();
 
     abstract public void onTurnProgressing(Action action);
 

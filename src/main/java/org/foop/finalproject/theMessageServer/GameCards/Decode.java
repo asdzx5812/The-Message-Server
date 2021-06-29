@@ -7,6 +7,8 @@ import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.foop.finalproject.theMessageServer.round.IntelligenceRound;
 
+import java.util.ArrayList;
+
 public class Decode extends GameCard {
     public Decode(GameCardColor gameCardColor, IntelligenceType intelligenceType, int order){
         super(gameCardColor, intelligenceType, order);
@@ -24,6 +26,17 @@ public class Decode extends GameCard {
         System.out.print(performer.getUser().getName() + "使用破譯！！");
         IntelligenceRound intelligenceRound =  (IntelligenceRound) game.getRound().getParentRound();
         GameCard intelligenceCard = intelligenceRound.getIntelligence().getCard();
+        String message = "{0} {1} 了傳遞中的情報。";
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add(performer.getId());
+        messages.add("");
+        messages.add(this.name);
+        messages.add("了傳遞中的情報。");
+        messages.add("");
+        messages.add("");
+        messages.add("");
+        messages.add("");
+        messageService.broadcastActionPerformed(game, messages);
         messageService.sendIntelligenceInformationToPlayer(intelligenceCard, performer);
 
     }

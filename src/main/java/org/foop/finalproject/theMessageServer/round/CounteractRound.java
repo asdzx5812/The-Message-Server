@@ -29,8 +29,17 @@ public class CounteractRound extends Round {
     public void onTurnStart() {
         System.out.println(name+": onTurnStart start.");
         //messageService.broadcastTurnStartMessage(game, currentPlayer);
-        messageService.broadcastPlayerToSelectAction(game, currentPlayer, MessageType.BROADCAST_PLAYER_START_SELECTING_GAMECARD);
-        System.out.println(name+": onTurnStart end.");
+        //沒牌打
+        if(currentPlayer.getHandcardsNum() == 0){
+            System.out.print("沒牌打，進行跳過！！");
+            System.out.println(name + ": onTurnStart end.");
+            onTurnEnd();
+            return;
+        }
+        else {
+            messageService.broadcastPlayerToSelectAction(game, currentPlayer, MessageType.BROADCAST_PLAYER_START_SELECTING_GAMECARD);
+            System.out.println(name + ": onTurnStart end.");
+        }
     }
 
 

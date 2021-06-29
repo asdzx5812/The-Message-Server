@@ -9,6 +9,8 @@ import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
 import org.foop.finalproject.theMessageServer.round.IntelligenceRound;
 
+import java.util.ArrayList;
+
 public class Return extends GameCard {
     public Return(GameCardColor gameCardColor, IntelligenceType intelligenceType, int order){
         super(gameCardColor, intelligenceType, order);
@@ -22,10 +24,37 @@ public class Return extends GameCard {
     }
     @Override
     public void perform(Player performer, Player playerTarget, Game game) {
-        if(performer.getStatus() == PlayerStatus.Normal){
-            performer.changeStatus(PlayerStatus.Trap);
+        if(!performer.isAlive()){
+
         }
-        ((IntelligenceRound)game.getRound().getParentRound()).changeDirection();
+        else if(performer.isLockOn()){
+            ArrayList<String> messages = new ArrayList<>();
+            messages.add(performer.getId());
+            messages.add("的");
+            messages.add(this.name);
+            messages.add("發動了，但因為他處於被鎖定的狀態，退回不會產生功效。");
+            messages.add("");
+            messages.add("");
+            messages.add("");
+            messages.add("");
+            messageService.broadcastActionPerformed(game, messages);
+            return;
+        }else {
+            if (performer.getStatus() == PlayerStatus.Normal) {
+                performer.beTrap();
+            }
+            ArrayList<String> messages = new ArrayList<>();
+            messages.add(performer.getId());
+            messages.add("的");
+            messages.add(this.name);
+            messages.add("生效了了，情報將會反方向傳遞回去。");
+            messages.add("");
+            messages.add("");
+            messages.add("");
+            messages.add("");
+            messageService.broadcastActionPerformed(game, messages);
+            ((IntelligenceRound) game.getRound().getParentRound()).changeDirection();
+        }
     }
 
     @Override

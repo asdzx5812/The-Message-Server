@@ -22,6 +22,7 @@ public class BurnDown extends GameCard {
         effectDescription = "燒燬（任意一位玩家的）一份假情報。";
         setId(name);
         needTarget = true;
+        targetSelf = true;
     }
     @Override
     public void perform(Player performer, Player playerTarget, Game game) {
@@ -29,6 +30,30 @@ public class BurnDown extends GameCard {
         if( blackIntelligences.size() > 0 ){
             GameCard lastBlackIntelligence = blackIntelligences.get(blackIntelligences.size()-1);
             blackIntelligences.remove(lastBlackIntelligence);
+
+            ArrayList<String> messages = new ArrayList<>();
+            messages.add(performer.getId());
+            messages.add("");
+            messages.add(this.name);
+            messages.add("了");
+            messages.add(playerTarget.getId());
+            messages.add("面前的一張假情報。");
+            messages.add("");
+            messages.add("");
+            messageService.broadcastActionPerformed(game, messages);
+        }
+        else{
+            String message = "{0} 的 {1} 沒有產生作用，因為 {2} 面前沒有假情報。";
+            ArrayList<String> messages = new ArrayList<>();
+            messages.add(performer.getId());
+            messages.add("的");
+            messages.add(this.name);
+            messages.add("沒有產生作用，因為");
+            messages.add(playerTarget.getId());
+            messages.add("面前沒有假情報。");
+            messages.add("");
+            messages.add("");
+            messageService.broadcastActionPerformed(game, messages);
         }
     }
 

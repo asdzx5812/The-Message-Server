@@ -7,6 +7,8 @@ import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
 
+import java.util.ArrayList;
+
 public class LockOn extends GameCard{
     public LockOn(GameCardColor gameCardColor, IntelligenceType intelligenceType, int order) {
         super(gameCardColor, intelligenceType, order);
@@ -22,8 +24,46 @@ public class LockOn extends GameCard{
 
     @Override
     public void perform(Player performer, Player playerTarget, Game game) {
-        if(playerTarget.getStatus() == PlayerStatus.Normal || playerTarget.getStatus() == PlayerStatus.Trap){
-            playerTarget.changeStatus(PlayerStatus.LockOn);
+        if(playerTarget.isLockOn()){
+            ArrayList<String> messages = new ArrayList<>();
+            messages.add(performer.getId());
+            messages.add("的");
+            messages.add(this.name);
+            messages.add("沒有生效，因為");
+            messages.add(playerTarget.getId());
+            messages.add("已經被識破了");
+            messages.add("");
+            messages.add("");
+            messageService.broadcastActionPerformed(game, messages);
+            playerTarget.beLockOn();
+            System.out.println(playerTarget.getUser().getName() + "早已被鎖定了（鎖定成功）！");
+        }
+        else if(playerTarget.isAlive()){
+            ArrayList<String> messages = new ArrayList<>();
+            messages.add(performer.getId());
+            messages.add("的");
+            messages.add(this.name);
+            messages.add("生效了，當情報來到");
+            messages.add(playerTarget.getId());
+            messages.add("面前時，他只能選擇接收。");
+            messages.add("");
+            messages.add("");
+            messageService.broadcastActionPerformed(game, messages);
+            playerTarget.beLockOn();
+            System.out.println(playerTarget.getUser().getName() + "被鎖定成功！");
+        } else{
+            ArrayList<String> messages = new ArrayList<>();
+            messages.add(performer.getId());
+            messages.add("的");
+            messages.add(this.name);
+            messages.add("沒有生效，因為");
+            messages.add(playerTarget.getId());
+            messages.add("已經不在遊戲中了");
+            messages.add("");
+            messages.add("");
+            messageService.broadcastActionPerformed(game, messages);
+            playerTarget.beLockOn();
+            System.out.println(playerTarget.getUser().getName() + "在 " + playerTarget.getStatus().status+" 下不該被鎖定(error)");
         }
     }
 

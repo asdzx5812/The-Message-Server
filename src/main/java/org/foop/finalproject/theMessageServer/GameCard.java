@@ -10,6 +10,7 @@ public abstract class GameCard {
     protected GameCardColor color;
     protected String id;
     protected int order;
+    protected boolean targetSelf;
     protected String name;
     protected String timingDescription;
     protected String effectDescription;
@@ -22,6 +23,7 @@ public abstract class GameCard {
         this.intelligenceType = intelligenceType;
         this.order = order;
         this.needTarget = false;
+        this.targetSelf = false;
         this.messageService = new MessageService();
     }
 
@@ -36,6 +38,7 @@ public abstract class GameCard {
     //     return effectDescription;
     // }
 
+    public boolean canTargetPerformer() {return targetSelf;};
     public boolean getNeedTarget(){return needTarget;}
     public GameCardColor getColor(){
         return color;
@@ -64,4 +67,5 @@ public abstract class GameCard {
     }
     public boolean isDirectMessage(){ return this.intelligenceType == IntelligenceType.DIRECT_MSG;}
 
+    public String getName() { return name; }
 }

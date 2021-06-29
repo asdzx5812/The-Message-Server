@@ -9,12 +9,14 @@ import org.foop.finalproject.theMessageServer.enums.MessageType;
 
 public class GameCardRound extends Round {
     Action currentAction;
+    boolean canEndInThisTurn;
 
     GameCardRound(Player creator, Round round){
         super(round);
         this.creator = creator;
         currentPlayer = creator;
-        endPlayer = getPreviousPlayer();
+        endPlayer = currentPlayer;
+        canEndInThisTurn = false;
         name = "Game Card Round";
     }
 
@@ -30,8 +32,18 @@ public class GameCardRound extends Round {
     public void onTurnStart() {
         System.out.println("GameCardRound: onTurnStart start.");
         //messageService.broadcastTurnStartMessage(game, currentPlayer);
-        messageService.broadcastPlayerToSelectAction(game, currentPlayer, MessageType.BROADCAST_PLAYER_START_SELECTING_GAMECARD);
-        System.out.println("GameCardRound: onTurnStart end.");
+        //TODO 沒牌打的跳過
+        if(currentPlayer.getHandcardsNum() == 0){
+            currentAction = new PassAction(game, currentPlayer);
+            System.out.println("GameCardRound: onTurnStart end.");
+            onTurnEnd();
+            return;
+        }
+        else {
+            messageService.broadcastPlayerToSelectAction(game, currentPlayer, MessageType.BROADCAST_PLAYER_START_SELECTING_GAMECARD);
+            System.out.println("GameCardRound: onTurnStart end.");
+        }
+
     }
 
     @Override
@@ -91,6 +103,9 @@ public class GameCardRound extends Round {
         }
         if(currentAction instanceof PassAction){
             currentPlayer = getNextPlayer();
+            canEndInThisTurn = true;
+        } else{
+            canEndInThisTurn = false;
         }
         System.out.println("GameCardRound: onTurnEnd end.");
         onTurnStart();
@@ -110,7 +125,9 @@ public class GameCardRound extends Round {
             game.takeActionOnBoard();
         }
         else if(childRound instanceof ProveRound){
+            messageService.broadcastGameInformation(game);
             onTurnEnd();
+
         }
         else {
             System.out.println("In GameCardRound no this type round!!!!");
@@ -133,7 +150,7 @@ public class GameCardRound extends Round {
 
     @Override
     public boolean satisfyRoundEndCondition() {
-        return endPlayer == currentPlayer && currentAction instanceof PassAction;
+        return endPlayer == getNextPlayer() && canEndInThisTurn;
     }
 
 }

@@ -3,6 +3,8 @@ import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
+import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
+import org.foop.finalproject.theMessageServer.action.ReceiveAction;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import java.util.ArrayList;
@@ -20,11 +22,33 @@ public class Distribute extends GameCard {
 
     @Override
     public void perform(Player performer, Player playerTarget, Game game) {
+        int alivePlayersNum = game.getAlivePlayersNum();
+        ArrayList<IntelligenceAction> intelligences = game.drawCardsToBeIntelligences(performer, alivePlayersNum);
         ArrayList<Player> players = game.getPlayers();
+
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add(performer.getId());
+        messages.add("的");
+        messages.add(this.name);
+        messages.add("生效了。");
+        messages.add("");
+        messages.add("");
+        messages.add("");
+        messages.add("");
+        messageService.broadcastActionPerformed(game, messages);
+
         int currentPlayerIdx = players.indexOf(performer);
+        while(!intelligences.isEmpty()){
+            IntelligenceAction currentIntelligence = intelligences.remove(0);
+            ReceiveAction receiveAction = new ReceiveAction(currentIntelligence, players.get(currentPlayerIdx));
+            players.get(currentPlayerIdx).receiveIntelligence(receiveAction);
+            do{ currentPlayerIdx = (currentPlayerIdx + 1) % players.size(); }
+            while( !players.get(currentPlayerIdx).isAlive() );
+        }
         for(int i = 0; i < players.size(); i++){
-            int turnPlayerIdx = (currentPlayerIdx + i) % players.size();
-            players.get(turnPlayerIdx).drawCards_wo_broadcast(1);
+            // if(!players.get(currentPlayerIdx))
+            // int turnPlayerIdx = (currentPlayerIdx + i) % players.size();
+            // players.get(turnPlayerIdx).drawCards_wo_broadcast(1);
             //TODO 要做真偽莫辨的動畫可以在這廣播
             //
             //

@@ -51,6 +51,9 @@ public class IntelligenceRound extends Round {
                 }
             }
             int nextPlayerId = (playerId + direction + players.size()) % players.size();
+            while(!players.get(nextPlayerId).isAlive() || players.get(nextPlayerId).getStatus() == PlayerStatus.Trap){
+                nextPlayerId = (nextPlayerId + direction + players.size()) % players.size();
+            }
             return players.get(nextPlayerId);
         }
     }
@@ -78,8 +81,8 @@ public class IntelligenceRound extends Round {
         System.out.println("IntelligenceRound: onTurnProgressing start.");
         if(action instanceof ReceiveAction){
             //接收情報
-            currentPlayer.receiveIntelligence(intelligence);
-            messageService.broadcastActionBeenPlayedMessage(game, action);
+            ReceiveAction receiveAction = new ReceiveAction(intelligence, currentPlayer);
+            currentPlayer.receiveIntelligence(receiveAction);
             onRoundEnd();
         }
         else if(action instanceof PassAction){
@@ -100,12 +103,14 @@ public class IntelligenceRound extends Round {
 
         // TODO 調虎離山 and 退回
         if(currentPlayer.getStatus() == PlayerStatus.Trap){
+            System.out.println(currentPlayer + " 不能接收情報。");
+            System.out.println("IntelligenceRound: doWhenLeaveChildRound end.");
             onTurnEnd();
-            return;
         }
-        messageService.broadcastPlayerToSelectAction(game, currentPlayer, MessageType.BROADCAST_PLAYER_START_SELECTING_RECEIVE);
-
-        System.out.println("IntelligenceRound: doWhenLeaveChildRound end.");
+        else {
+            messageService.broadcastPlayerToSelectAction(game, currentPlayer, MessageType.BROADCAST_PLAYER_START_SELECTING_RECEIVE);
+            System.out.println("IntelligenceRound: doWhenLeaveChildRound end.");
+        }
     }
 
 
@@ -114,23 +119,22 @@ public class IntelligenceRound extends Round {
 
         System.out.println("IntelligenceRound: onTurnEnd start.");
         this.currentPlayer = getNextPlayer();
-        onTurnStart();
 
         System.out.println("IntelligenceRound: onTurnEnd end.");
+        onTurnStart();
     }
 
     @Override
     public void onRoundEnd() {
-
         System.out.println("IntelligenceRound: onRoundEnd start.");
         refreshAllPlayerStatus();
-        game.leaveRound();
         System.out.println("IntelligenceRound: onRoundEnd end.");
+        game.leaveRound();
     }
     private void refreshAllPlayerStatus(){
         for(Player player: game.getPlayers()){
-            if(player.getStatus() == PlayerStatus.LockOn || player.getStatus() == PlayerStatus.Trap) {
-                player.changeStatusToNormal();
+            if(player.isAlive()) {
+                player.changeStatus(PlayerStatus.Normal);
             }
         }
     }

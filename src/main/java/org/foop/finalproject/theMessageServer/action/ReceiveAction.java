@@ -9,8 +9,12 @@ import javax.websocket.EncodeException;
 import java.io.IOException;
 
 public class ReceiveAction extends Action {
-    public ReceiveAction(Game game, Player performer){
-        super(game, performer, null, null);
+    public ReceiveAction(Game game, Player receiver){
+        super(game, null, null, receiver);
+    }
+
+    public ReceiveAction(IntelligenceAction intelligenceAction, Player playerTarget){
+        super(intelligenceAction.getGame(), intelligenceAction.getPerformer(), intelligenceAction.getCard(), playerTarget);
     }
 
     @Override
@@ -21,7 +25,9 @@ public class ReceiveAction extends Action {
     @Override
     public JSONObject toJsonObject() {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("playerId", performer.getId());
+        jsonObject.put("receiverId", playerTarget.getId());
+        jsonObject.put("senderId", performer.getId());
+        jsonObject.put("intelligence", card.toJsonObject());
         jsonObject.put("action", "receive");
         return jsonObject;
     }

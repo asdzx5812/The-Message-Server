@@ -6,6 +6,7 @@ import java.util.Stack;
 
 import org.foop.finalproject.theMessageServer.GameCards.*;
 import org.foop.finalproject.theMessageServer.action.GameCardAction;
+import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
 import org.foop.finalproject.theMessageServer.characters.*;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
@@ -19,9 +20,9 @@ import org.foop.finalproject.theMessageServer.enums.Camp;
 public class Game{
 
     private MessageService messageService;
-    private int readyNum;
-    private int playerNum;
+    protected Room room;
     protected ArrayList<Player> players;
+    protected ArrayList<Player> deadPlayers;
     protected ArrayList<Player> readyPlayers;
     protected ArrayList<User> users;
     protected Round round;
@@ -34,12 +35,10 @@ public class Game{
     private boolean gameOver = false;
     public boolean isWaitingPlayerAction = false;
 
-    public Game(ArrayList<User> users) {
-        this.playerNum = users.size();
-        this.users = users;
+    public Game(Room room) {
+        this.room = room;
+        this.users = room.getUsers();
         messageService = new MessageService();
-        this.readyNum=0;
-        this.readyPlayers = new ArrayList<>();
     }
 
     public ArrayList<Player> getPlayers(){
@@ -91,24 +90,25 @@ public class Game{
         characterCardDeck.push(new DaoFong());
         characterCardDeck.push(new HuangChiue());
         characterCardDeck.push(new SiaoMaGe());
+        characterCardDeck.push(new SiaoBai());
 
         // 玩家死亡順序類
-        // characterCardDeck.push(new FuPing());
+        characterCardDeck.push(new FuPing());
 
         // 其他
         // 感覺較簡單
-        // characterCardDeck.push(new LaoGuei());
-        // characterCardDeck.push(new LiFuMengMianJen());
+        characterCardDeck.push(new ShanLing());
+        characterCardDeck.push(new LaoGuei());
+        characterCardDeck.push(new LiFuMengMianJen());
+        characterCardDeck.push(new HeiMeiGui());
         // 中間難度
-        // characterCardDeck.push(new professionalKiller());
+        characterCardDeck.push(new professionalKiller());
         // 感覺較難
-        // characterCardDeck.push(new DaMeiNyu());
+        characterCardDeck.push(new DaMeiNyu());
         // characterCardDeck.push(new FuShe());
         // 只有mission無法
-        // characterCardDeck.push(new JhihMingSiangShuei());
+        //characterCardDeck.push(new JhihMingSiangShuei());
 
-        // 我們沒有的牌
-        // characterCardDeck.push(new HeiMeiGui());
         Collections.shuffle(characterCardDeck);
     }
 
@@ -232,11 +232,13 @@ public class Game{
     }
 
     public void initializePlayers() {
+        this.players = new ArrayList<>();
+        this.deadPlayers = new ArrayList<>();
+        this.readyPlayers = new ArrayList<>();
         ArrayList<Camp> camps = getInitialCampList();
         Collections.shuffle(users);
         Collections.shuffle(camps);
-        this.players = new ArrayList<>();
-        for (int i = 0; i < playerNum; i++) {
+        for (int i = 0; i < users.size(); i++) {
             players.add(new Player(this, camps.get(i), characterCardDeck.pop(), users.get(i)));
             players.get(i).drawInitialCards();
             //messageService.informPlayerInformation(this, players.get(i));
@@ -254,20 +256,26 @@ public class Game{
         ArrayList<GameCard> cards = new ArrayList<>();
         if(num > (gameCardsDeck.size() + playedCards.size())){
             System.out.println("牌庫+棄牌堆沒牌了，無法抽牌");
-            return cards;
-        }
-        if (num >= gameCardsDeck.size()) {
-            num -= gameCardsDeck.size();
-            for (int i = 0; i < gameCardsDeck.size(); i++) {
+            refreshGameCardsDeck();
+            int times = gameCardsDeck.size();
+            for (int i = 0; i < times; i++) {
                 cards.add(gameCardsDeck.pop());
             }
-            refreshGameCardsDeck();
-        }
-        System.out.print("抽到");
+        } else {
+            if (num >= gameCardsDeck.size()) {
+                num -= gameCardsDeck.size();
+                int times = gameCardsDeck.size();
+                for (int i = 0; i < times; i++) {
+                    cards.add(gameCardsDeck.pop());
+                }
+                refreshGameCardsDeck();
+            }
+            System.out.print("抽到");
 
-        for (int i = 0; i < num; i++) {
-            cards.add(gameCardsDeck.pop());
-            System.out.print(cards.get(i).getId());
+            for (int i = 0; i < num; i++) {
+                cards.add(gameCardsDeck.pop());
+                System.out.print(cards.get(i).getId());
+            }
         }
         return cards;
     }
@@ -280,24 +288,20 @@ public class Game{
 
     public void onPlayerDie(Player deadPlayer) {
         // Check green camp win
-
-        ArrayList<Player> alivePlayers = new ArrayList<>();
-        for(Player player:players){
-            if(player.isAlive()){
-                alivePlayers.add(player);
-            }
-        }
-        if(alivePlayers.size() == 1){
-
-        }
+        deadPlayers.add(deadPlayer);
         // Check red camp win
-
+        messageService.broadcastPlayerStateChangeMessage(this, deadPlayer);
         // Check blue camp win
+    }
+
+    public void onPlayerLose(Player losedPlayer) {
+        messageService.broadcastPlayerStateChangeMessage(this, losedPlayer);
     }
 
     public void onGameOver() {
         // TODO
         gameOver = true;
+        room.onGameOver();
         messageService.broadcastGameOverMessage(this);
     }
 
@@ -311,7 +315,7 @@ public class Game{
     }
 
     private ArrayList<Camp> getInitialCampList() {
-        switch (playerNum) {
+        switch (users.size()) {
             case 2:
                 return getCampsByNums(1, 1, 0);
             case 3:
@@ -374,6 +378,7 @@ public class Game{
     public ArrayList<GameCard> getPlayedCards(){ return playedCards;}
 
     public void takeActionOnBoard() {
+        System.out.println("There are "+ currentActionsOnBoard.size() +" cards on the board.");
         while(currentActionsOnBoard.size() > 0){
             GameCardAction action = currentActionsOnBoard.pop();
             try {
@@ -383,7 +388,7 @@ public class Game{
                     action.execute();
                     // TODO
                     String message = action.getGameMessage();
-                    messageService.broadcastActionPerformed(this, message);
+                    //messageService.broadcastActionPerformed(this, message);
                     playedCards.add(gamecard);
                     messageService.broadcastGameInformation(this);
                     round.onTurnEnd();
@@ -416,16 +421,22 @@ public class Game{
     }
 
     private void tryGameStart() {
-        if (readyPlayers.size() == playerNum){
+        if (readyPlayers.size() == players.size()){
             readyPlayers = null;
             round.onRoundStart();
         }
     }
 
-    public ArrayList<String> getTargetList(Player currentPlayer){
+    public ArrayList<String> getTargetList(Player currentPlayer, GameCard gameCard){
         ArrayList<String> targetList = new ArrayList<>();
         for(Player player:players){
+            if(!player.isAlive()){
+                continue;
+            }
             if(player != currentPlayer){
+                targetList.add(player.getId());
+            }
+            else if(gameCard.canTargetPerformer()){
                 targetList.add(player.getId());
             }
         }
@@ -433,6 +444,20 @@ public class Game{
     }
 
     public boolean winnerAppears(){
+        boolean onlyOnePlayerAlive = false;
+        for(Player player: players){
+            if(player.isAlive()){
+                if(onlyOnePlayerAlive){
+                    onlyOnePlayerAlive = false;
+                    break;
+                }else{
+                    onlyOnePlayerAlive = true;
+                }
+            }
+        }
+        if(onlyOnePlayerAlive){
+            return true;
+        }
         for(Player player: players){
             if(player.isWin()){
                 return true;
@@ -451,4 +476,31 @@ public class Game{
 
     }
 
+    public int getAlivePlayersNum() {
+        int count = 0;
+        for(Player player:players){
+            if(player.isAlive()){
+                count += 1;
+            }
+        }
+        return count;
+    }
+
+    public ArrayList<IntelligenceAction> drawCardsToBeIntelligences(Player performer, int drawNum) {
+        ArrayList<IntelligenceAction> intelligences = new ArrayList<>();
+        for(int i = 0; i < drawNum; i++){
+            GameCard card = drawCards(1).get(0);
+            if(card == null){
+                break;
+            }
+            else {
+                intelligences.add(new IntelligenceAction(this, performer, card, null));
+            }
+        }
+        return intelligences;
+    }
+
+    public ArrayList<Player> getDeadPlayers() {
+        return deadPlayers;
+    }
 }

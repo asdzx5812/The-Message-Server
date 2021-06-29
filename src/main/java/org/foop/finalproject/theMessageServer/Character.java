@@ -40,6 +40,13 @@ public abstract class Character {
         this.hidden = false;
     }
 
+    public void cover(){
+        if(hidden){
+            throw new RuntimeException("This card is not revealed");
+        }
+        this.hidden = true;
+    }
+
 
     public boolean missionComplete(Game game, Player player){
         return mission.isCompleted(game, player);
@@ -48,8 +55,10 @@ public abstract class Character {
     public JSONObject toJsonObject() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", name);
-        jsonObject.put("Skill", skill.getDescription());
-        jsonObject.put("Mission", mission.getDescription());
+        jsonObject.put("gender", gender.name);
+        jsonObject.put("skill", skill.getDescription());
+        jsonObject.put("mission", mission.getDescription());
+        jsonObject.put("hidden", hidden);
         return jsonObject;
     }
 }

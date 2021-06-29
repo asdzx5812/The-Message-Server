@@ -9,6 +9,7 @@ import org.foop.finalproject.theMessageServer.Round;
 import org.foop.finalproject.theMessageServer.action.GameCardAction;
 import org.foop.finalproject.theMessageServer.action.ProveAction;
 import org.foop.finalproject.theMessageServer.enums.MessageType;
+import org.foop.finalproject.theMessageServer.enums.ProveOption;
 import org.json.JSONObject;
 
 public class ProveRound extends Round {
@@ -22,56 +23,65 @@ public class ProveRound extends Round {
 
     @Override
     public void onRoundStart() {
-        onTurnStart();
+        System.out.print(name + "onRoundStart start");
+    onTurnStart();
     }
 
     @Override
     public void onTurnStart() {
+        System.out.print(name + "onTurnStart start");
         JSONObject jsonObject = new JSONObject();
         Prove gameCard = (Prove)this.action.getCard();
-
+        jsonObject.put("performerId", action.getPerformer().getId());
+        jsonObject.put("targetId", action.getPlayerTarget().getId());
         jsonObject.put("camp", gameCard.getTargetCamp());
         //TODO 有角色可以騙人 要判斷
         if(gameCard.getProveType()){
-            //抽兩張 or 我是好人
-            String[] possibleOptions = {"drawTwoCards", "niceGuy"};
+            //抽兩張 or 我是臥底
+            String[] possibleOptions = {ProveOption.DRAW_TWO_CARDS.proveOption, ProveOption.BAD_GUY.proveOption};
             jsonObject.put("possibleOptions",possibleOptions);
+            /*
             if(action.getPlayerTarget().getCamp() == gameCard.getTargetCamp()){
-                jsonObject.put("shouldBeChoosedOption","drawTwoCards");
+                jsonObject.put("shouldBeChoosedOption","抽二張牌");
             }
             else{
-                jsonObject.put("shouldBeChoosedOption","niceGuy");
-            }
+                jsonObject.put("shouldBeChoosedOption","回答\"其實我是臥底\"");
+            }*/
         }
         else{
-            //丟一張 or 我是臥底
-            String[] possibleOptions = {"throwOneCard", "badGuy"};
+            //丟一張 or 我是好人
+            String[] possibleOptions = {ProveOption.THROW_ONE_CARD.proveOption, ProveOption.NICE_GUY.proveOption};
             jsonObject.put("possibleOptions",possibleOptions);
+            /*
             if(action.getPlayerTarget().getCamp() == gameCard.getTargetCamp()){
-                jsonObject.put("shouldBeChoosedOption","throwOneCard");
+                jsonObject.put("shouldBeChoosedOption","棄一張手牌");
             }
             else{
-                jsonObject.put("shouldBeChoosedOption","badGuy");
-            }
+                jsonObject.put("shouldBeChoosedOption","回答\"我是一個好人\"");
+            }*/
         }
-        messageService.informPlayerStartSelectActionForProve(currentPlayer, jsonObject);
+        System.out.print(name + "onTurnEnd end");
+        messageService.informPlayerStartSelectActionForProve(action.getPerformer(), action.getPlayerTarget(), jsonObject);
+
     }
 
     @Override
     public void onTurnProgressing(Action action)  {
-
+        System.out.print(name + "onTurnProgressing Start");
         //接到player選擇的指令（試探)
         //currentAction
-        this.action = action;
-        if(((ProveAction)action).getChoosedOption().equals("throwOneCard")){
+        //this.action = action;
+        ((ProveAction)this.action).setChosenOption(((ProveAction)action).getChoosedOption());
+        if(((ProveAction)this.action).checkifNeedTarget()){
             System.out.println("需要選擇target 開始targetRound");
-            childRound = new TargetSelectRound(currentPlayer, this, action);
+            childRound = new TargetSelectRound(currentPlayer, this, this.action);
             game.setRound(childRound);
             childRound.onRoundStart();
         }
         else{
             onTurnEnd();
         }
+        System.out.print(name + "onTurnProgressing end");
     }
 
     @Override
@@ -81,14 +91,16 @@ public class ProveRound extends Round {
 
     @Override
     public void onTurnEnd()  {
+        System.out.print(name + "onTurnEnd start");
         action.execute();
         System.out.println("Prove操作執行完畢");
-        System.out.println(name+": doWhenLeaveChild end.");
+        System.out.println(name+": onTurnEnd end.");
         onRoundEnd();
     }
 
     @Override
     public void onRoundEnd() {
+        System.out.print(name + "onRoundEnd end");
         game.leaveRound();
     }
 

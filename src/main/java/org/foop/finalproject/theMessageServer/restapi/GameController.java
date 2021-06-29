@@ -142,7 +142,7 @@ public class GameController {
         if (player == null) {
             throw new Exception("Performer player not found");
         }
-        Action action = new ProveAction(game, player, null, choosedOption);
+        Action action = new ProveAction(game, null, player, null, choosedOption);
         Round round = game.getRound();
         if(round instanceof ProveRound) {
             gameService.onReceiveAction(action);
@@ -163,7 +163,7 @@ public class GameController {
         }
         GameCard gameCardTarget = player.getCardById(gameCardTargetId);
         System.out.println("接到" + player.getUser().getName() + "指定" + player.getCardById(gameCardTargetId).getId());
-        Action action = new ProveAction(game, player, gameCardTarget, null);
+        Action action = new ProveAction(game, null, player, gameCardTarget, null);
         gameService.onReceiveAction(action);
         return ResponseEntity.ok().build();
     }

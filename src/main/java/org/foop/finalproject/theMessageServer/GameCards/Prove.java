@@ -4,6 +4,7 @@ import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
 import org.foop.finalproject.theMessageServer.action.GameCardAction;
+import org.foop.finalproject.theMessageServer.action.ProveAction;
 import org.foop.finalproject.theMessageServer.enums.Camp;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
@@ -12,6 +13,8 @@ import org.foop.finalproject.theMessageServer.round.GameCardRound;
 import org.foop.finalproject.theMessageServer.round.ProveRound;
 import org.foop.finalproject.theMessageServer.service.JsonService;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class Prove extends GameCard {
     boolean proveType;
@@ -35,10 +38,38 @@ public class Prove extends GameCard {
         // TODO
         //JsonService jsonService = new JsonService();
         //JSONObject jsonObj = jsonService.getProveObj(this, performer);
-        Round proveRound = new ProveRound(performer,game.getRound(),new GameCardAction(game,performer,this,playerTarget));
-        game.getRound().setChildRound(proveRound);
-        game.setRound(proveRound);
-        game.getRound().onRoundStart();
+        if(playerTarget.isAlive()) {
+            ArrayList<String> messages = new ArrayList<>();
+            messages.add(performer.getId());
+            messages.add("的");
+            messages.add(this.name);
+            messages.add("生效了。");
+            messages.add(playerTarget.getId());
+            messages.add("正在選擇回應");
+            messages.add("");
+            messages.add("");
+            messageService.broadcastActionPerformed(game, messages);
+
+            Round proveRound = new ProveRound(performer, game.getRound(), new ProveAction(game, performer, playerTarget, this, null));
+            game.getRound().setChildRound(proveRound);
+            game.setRound(proveRound);
+            game.getRound().onRoundStart();
+        }
+        else{
+            String message = "{0} 早已不再遊戲中， {1} 的 {2} 無法生效。";
+            ArrayList<String> messages = new ArrayList<>();
+            messages.add(performer.getId());
+            messages.add("的");
+            messages.add(this.name);
+            messages.add("沒有生效了，因為");
+            messages.add(playerTarget.getId());
+            messages.add("已經不在遊戲中了。");
+            messages.add("");
+            messages.add("");
+            messageService.broadcastActionPerformed(game, messages);
+            playerTarget.beLockOn();
+            System.out.println(playerTarget.getUser().getName() + "已經"+ playerTarget.getStatus().status+"了(ERROR)");
+        }
         /*
         if (proveType) {
             // type true: draw 2 cards(target camp) or say 我是臥底(other camp)

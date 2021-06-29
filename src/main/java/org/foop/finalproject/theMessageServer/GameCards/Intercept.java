@@ -6,6 +6,8 @@ import org.foop.finalproject.theMessageServer.Round;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 
+import java.util.ArrayList;
+
 public class Intercept extends GameCard {
     public Intercept(GameCardColor gameCardColor, IntelligenceType intelligenceType, int order) {
         super(gameCardColor, intelligenceType, order);
@@ -23,6 +25,16 @@ public class Intercept extends GameCard {
     public void perform(Player performer, Player playerTarget, Game game) {
         // currentRound -> parentRound : intelligence Round
         System.out.print(performer.getUser().getName() + "使用截獲！！");
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add(performer.getId());
+        messages.add("");
+        messages.add(this.name);
+        messages.add("了");
+        messages.add(game.getRound().getParentRound().getCurrentPlayer().getId());
+        messages.add("面前的情報。");
+        messages.add("");
+        messages.add("");
+        messageService.broadcastActionPerformed(game, messages);
         game.getRound().getParentRound().setCurrentPlayer(performer);
         performer.beLockOn();
         messageService.broadcastPlayerOnIntelligenceInFront(game, performer);

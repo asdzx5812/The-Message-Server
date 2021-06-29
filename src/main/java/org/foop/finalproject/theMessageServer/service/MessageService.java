@@ -7,6 +7,7 @@ import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
 import org.foop.finalproject.theMessageServer.action.PassAction;
 import org.foop.finalproject.theMessageServer.action.ReceiveAction;
 import org.foop.finalproject.theMessageServer.enums.MessageType;
+import org.foop.finalproject.theMessageServer.enums.ProveOption;
 import org.foop.finalproject.theMessageServer.round.CounteractRound;
 import org.foop.finalproject.theMessageServer.round.GameCardRound;
 import org.json.JSONObject;
@@ -153,7 +154,7 @@ public class MessageService {
     //        availableGamecardsId: []
     //    }
     public void broadcastPlayerToSelectAction(Game game, Player currentPlayer, MessageType messageType) {
-        System.out.println("輪到"+ currentPlayer.getUser().getName() + "選擇行為" + messageType);
+        System.out.println("輪到"+ currentPlayer.getUser().getName() + ", 目前狀態:"+ currentPlayer.getStatus().status + "選擇行為" + messageType);
         JSONObject payload = new JSONObject();
         payload.put("playerId", currentPlayer.getId());
         // TODO type記得傳
@@ -179,18 +180,19 @@ public class MessageService {
         else{
             System.out.println("no such type in broadcast select action");
         }
+        System.out.println(currentPlayer.getUser().getName() + "選擇行為" + payload.toString());
         JSONObject body = getBody(payload, "", messageType);
         broadcastMessage(body, game);
     }
 
     //TYPE:INFORM_PLAYER_START_SELECTING_TARGET
-    public void informPlayerStartSelectTarget(Game game, Player currentPlayer) {
+    public void informPlayerStartSelectTarget(Game game, Player currentPlayer, GameCard gameCard) {
         //Todo
         System.out.println("開始通知player選target");
         JSONObject payload = new JSONObject();
         payload.put("playerId", currentPlayer.getId());
-        payload.put("availableTargetsId", game.getTargetList(currentPlayer));
-        System.out.println(currentPlayer.getUser().getName() + "得到availableTargetsId:" + game.getTargetList(currentPlayer));
+        payload.put("availableTargetsId", game.getTargetList(currentPlayer, gameCard));
+        System.out.println(currentPlayer.getUser().getName() + "得到availableTargetsId:" + game.getTargetList(currentPlayer, gameCard));
         JSONObject body = getBody(payload, "",MessageType.INFORM_PLAYER_START_SELECTING_TARGET);
         sendMessage(body, currentPlayer.getUser().getSession());
     }
@@ -203,6 +205,7 @@ public class MessageService {
     public void broadcastActionBeenPlayedMessage(Game game, Action action) {
         System.out.println(action.getPerformer().getUser().getName() + "做了" + action.toJsonObject().toString());
         MessageType messageType;
+        // TODO
         if(action instanceof GameCardAction){
             messageType = MessageType.BROADCAST_GAMECARD_PLAYED;
         }
@@ -289,26 +292,30 @@ public class MessageService {
 
     }
     //TYPE:BROADCAST_ACTION_PERFORMED
-    public void broadcastActionPerformed(Game game, String message){
+    public void broadcastActionPerformed(Game game, ArrayList<String> messages){
         //TODO
-
+        JSONObject payload = new JSONObject();
+        payload.put("messages", messages);
+        JSONObject body = getBody(payload, "", MessageType.BROADCAST_ACTION_PERFORMED);
+        broadcastMessage(body, game);
     }
     //廣播誰試探選擇了什麼選項
     //TYPE: BROADCAST_PLAYER_CHOSED_OPTION_FOR_PROVE
-    public void broadcastPlayerChooseOptionForProve(Game game, Player beProvedPlayer, String choosedOption) {
-        System.out.println("廣播" + beProvedPlayer.getUser().getName() + " 選了什麼試探的選項 : " + choosedOption);
+    public void broadcastPlayerChooseOptionForProve(Game game, Player beProvedPlayer, ProveOption chosenOption) {
+        System.out.println("廣播" + beProvedPlayer.getUser().getName() + " 選了什麼試探的選項 : " + chosenOption.proveOption);
         JSONObject payload = new JSONObject();
         payload.put("playerId", beProvedPlayer.getId());
-        payload.put("chosedOption", choosedOption);
-        JSONObject body = getBody(payload, "", MessageType.BROADCAST_PLAYER_CHOSED_OPTION_FOR_PROVE);
+        payload.put("chosenOption", chosenOption.proveOption);
+        JSONObject body = getBody(payload, "", MessageType.BROADCAST_PLAYER_CHOSEN_OPTION_FOR_PROVE);
         broadcastMessage(body, game);
     }
 
     //TYPE: INFORM_PLAYER_START_CHOOSING_OPTION_FOR_PROVE
-    public void informPlayerStartSelectActionForProve(Player currentPlayer, JSONObject payload){
-        System.out.println("通知" + currentPlayer.getUser().getName() + " 選擇試探選項 : " + payload.toString());
+    public void informPlayerStartSelectActionForProve(Player performer, Player playerTarget, JSONObject payload){
+        System.out.println("通知" + playerTarget.getUser().getName() + " 選擇來自"+ performer.getUser().getName() +"試探選項 : " + payload.toString());
         JSONObject body = getBody(payload, "", MessageType.INFORM_PLAYER_START_CHOOSING_OPTION_FOR_PROVE);
-        sendMessage(body, currentPlayer.getUser().getSession());
+        sendMessage(body, playerTarget.getUser().getSession());
+        sendMessage(body, performer.getUser().getSession());
     }
     //TYPE: INFORM_PLAYER_START_SELECTING_GAMECARD_TARGET
     public void informPlayerStartSelectGameCardTarget(Game game, Player currentPlayer) {

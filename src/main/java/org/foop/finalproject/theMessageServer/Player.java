@@ -1,7 +1,9 @@
 package org.foop.finalproject.theMessageServer;
 
 import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
+import org.foop.finalproject.theMessageServer.action.ReceiveAction;
 import org.foop.finalproject.theMessageServer.enums.Camp;
+import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
 import org.foop.finalproject.theMessageServer.service.JsonService;
 import org.foop.finalproject.theMessageServer.service.MessageService;
@@ -24,7 +26,8 @@ public class Player {
     protected ArrayList<ArrayList<GameCard>> intelligences; // 0 -> RED, 1 -> BLUE, 2 -> BLACK
     protected Action actionToPerform;
     protected User user;
-
+    protected ArrayList<Player> killPeople = new ArrayList<>();
+    protected Player killedBy;
     public Player(Game game, Camp camp, Character character, User user) {
         this.game = game;
         this.id = Utility.generatePlayerId();
@@ -63,11 +66,11 @@ public class Player {
     }
 
     public boolean isWin() {
-        if(isAlive()) return false;
+        if(!isAlive()) return false;
         if (camp == Camp.RED || camp == Camp.BLUE)
             return intelligences.get(camp.type).size() >= 3;
         else if (camp == Camp.GREEN)
-            return character.mission.isCompleted(game, this);
+            return character.missionComplete(game, this);
         System.out.println("Which camp is this: " + camp.type + " ...");
         return false;
     }
@@ -110,9 +113,20 @@ public class Player {
         return cardSelected;
     }
 
-    public void receiveIntelligence(IntelligenceAction intelligence) {
-        GameCard card = intelligence.getCard();
+    public void receiveIntelligence(ReceiveAction receiveAction) {
+        GameCard card = receiveAction.getCard();
         intelligences.get(card.color.type).add(card);
+        messageService.broadcastActionBeenPlayedMessage(game, receiveAction);
+        //TODO 這邊要判死亡
+        if(intelligences.get(GameCardColor.BLACK.type).size() >= 3){
+            die();
+            killedBy = receiveAction.getPerformer();
+            receiveAction.getPlayerTarget().addKillPerson(this);
+        }
+    }
+
+    private void addKillPerson(Player player) {
+        killPeople.add(player);
     }
 
     public void changeStatus(PlayerStatus newStatus){
@@ -137,11 +151,11 @@ public class Player {
         this.status = PlayerStatus.LockOn;
     }
     public boolean isLockOn(){
-        return this.status == PlayerStatus.LockOn? true : false;
+        return this.status == PlayerStatus.LockOn;
     }
     public void beTrap() { this.status = PlayerStatus.Trap; }
     public boolean isTrapped(){
-        return this.status == PlayerStatus.Trap? true : false;
+        return this.status == PlayerStatus.Trap;
     }
 
     public boolean hasNoHandcard() {
@@ -150,19 +164,17 @@ public class Player {
 
     public void die() { // Todo
         status = PlayerStatus.Dead;
-        messageService.broadcastPlayerStateChangeMessage(game, this);
+        // messageService.broadcastPlayerStateChangeMessage(game, this);
         game.onPlayerDie(this);
     }
 
     public void loseTheGame() {
         status = PlayerStatus.Lose;
-        messageService.broadcastPlayerStateChangeMessage(game, this);
+        game.onPlayerLose(this);
+        // messageService.broadcastPlayerStateChangeMessage(game, this);
     }
     public PlayerStatus getStatus(){
         return this.status;
-    }
-    public void changeStatusToNormal() {
-        this.status = PlayerStatus.Normal;
     }
 
     // 會進來只會是 GameCard Round 或 Counteract Round or Intelligence Round?
@@ -203,5 +215,13 @@ public class Player {
     @Override
     public String toString(){
         return getUser().getName();
+    }
+
+    public ArrayList<Player> getKillPeople() {
+        return this.killPeople;
+    }
+
+    public boolean hasIntelligenceMoreThanEqual(GameCardColor color, int num) {
+        return this.intelligences.get(color.type).size() >= num;
     }
 }

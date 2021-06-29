@@ -58,4 +58,7 @@ public abstract class Action {
     public void setGameCardTarget(GameCard gameCardTarget){
         this.gameCardTarget = gameCardTarget;
     }
+    public void setGameCard(GameCard gameCard){
+        this.card = gameCard;
+    }
 }
