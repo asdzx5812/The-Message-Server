@@ -186,13 +186,13 @@ public class MessageService {
     }
 
     //TYPE:INFORM_PLAYER_START_SELECTING_TARGET
-    public void informPlayerStartSelectTarget(Game game, Player currentPlayer, GameCard gameCard) {
+    public void informPlayerStartSelectTarget(Game game, Player currentPlayer, Action action) {
         //Todo
         System.out.println("開始通知player選target");
         JSONObject payload = new JSONObject();
         payload.put("playerId", currentPlayer.getId());
-        payload.put("availableTargetsId", game.getTargetList(currentPlayer, gameCard));
-        System.out.println(currentPlayer.getUser().getName() + "得到availableTargetsId:" + game.getTargetList(currentPlayer, gameCard));
+        payload.put("availableTargetsId", game.getTargetList(currentPlayer, action));
+        System.out.println(currentPlayer.getUser().getName() + "得到availableTargetsId:" + game.getTargetList(currentPlayer, action));
         JSONObject body = getBody(payload, "",MessageType.INFORM_PLAYER_START_SELECTING_TARGET);
         sendMessage(body, currentPlayer.getUser().getSession());
     }
@@ -325,5 +325,16 @@ public class MessageService {
         JSONObject payload = new JSONObject();
         JSONObject body = getBody(payload, "", MessageType.INFORM_PLAYER_START_SELECTING_HANDCARD_TO_DISCARD);
         sendMessage(body, currentPlayer.getUser().getSession());
+    }
+
+    public ArrayList<String> getActionMessages(String ... strings){
+        ArrayList<String> messages = new ArrayList<>();
+        for(String s: strings){
+            messages.add(s);
+        }
+        while(messages.size() < 8){
+            messages.add("");
+        }
+        return messages;
     }
 }

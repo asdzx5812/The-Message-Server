@@ -25,15 +25,9 @@ public class Intercept extends GameCard {
     public void perform(Player performer, Player playerTarget, Game game) {
         // currentRound -> parentRound : intelligence Round
         System.out.print(performer.getUser().getName() + "使用截獲！！");
-        ArrayList<String> messages = new ArrayList<>();
-        messages.add(performer.getId());
-        messages.add("");
-        messages.add(this.name);
-        messages.add("了");
-        messages.add(game.getRound().getParentRound().getCurrentPlayer().getId());
-        messages.add("面前的情報。");
-        messages.add("");
-        messages.add("");
+        ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
+                "的", this.name, "了", game.getRound().getParentRound().getCurrentPlayer().getId(), "面前的情報。");
+
         messageService.broadcastActionPerformed(game, messages);
         game.getRound().getParentRound().setCurrentPlayer(performer);
         performer.beLockOn();

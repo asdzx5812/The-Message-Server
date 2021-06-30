@@ -27,51 +27,24 @@ public class Trap extends GameCard {
         if(!playerTarget.isAlive()){
             System.out.println("Should not happen ...");
             String message = "{0} 對已經不在遊戲的 {1} 發動了 {2}，無法發揮作用，";
-            ArrayList<String> messages = new ArrayList<>();
-            messages.add(performer.getId());
-            messages.add("的");
-            messages.add(this.name);
-            messages.add("無法發揮作用，因為");
-            messages.add(playerTarget.getId());
-            messages.add("早已不在遊戲中。");
-            messages.add("");
-            messages.add("");
+            ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
+                    "的", this.name, "無法發揮作用，因為", playerTarget.getId(), "早已不在遊戲中。");
             messageService.broadcastActionPerformed(game, messages);
         } else if(playerTarget.isLockOn()){
             String message = "{0} 對被鎖定中的 {1} 發動了 {2}，無法發揮作用。";
-            ArrayList<String> messages = new ArrayList<>();
-            messages.add(performer.getId());
-            messages.add("的");
-            messages.add(this.name);
-            messages.add("無法發揮作用，因為");
-            messages.add(playerTarget.getId());
-            messages.add("已經被鎖定了。");
-            messages.add("");
-            messages.add("");
+            ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
+                    "的", this.name, "無法發揮作用，因為", playerTarget.getId(), "已經被鎖定了。");
             messageService.broadcastActionPerformed(game, messages);
         } else if(playerTarget.isTrapped()){
             String message = "{0} 對已經被調虎離山的 {1} 發動了 {2}，不會額外發生作用";
-            ArrayList<String> messages = new ArrayList<>();
-            messages.add(performer.getId());
-            messages.add("的");
-            messages.add(this.name);
-            messages.add("無法發揮作用，因為");
-            messages.add(playerTarget.getId());
-            messages.add("早已被調虎離山過了。");
-            messages.add("");
-            messages.add("");
+            ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
+                    "的", this.name, "無法發揮作用，因為", playerTarget.getId(), "早已被調虎離山過了。");
             messageService.broadcastActionPerformed(game, messages);
         }
         else {
-            ArrayList<String> messages = new ArrayList<>();
-            messages.add(performer.getId());
-            messages.add("的");
-            messages.add(this.name);
-            messages.add("生效了，");
-            messages.add(playerTarget.getId());
-            messages.add("在本回合不可以接收情報。（情報將不會傳遞到面前）");
-            messages.add("");
-            messages.add("");
+            ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
+                    "的", this.name, "生效了，", playerTarget.getId(), "在本回合不可以接收情報。（情報將不會傳遞到面前）");
+
             messageService.broadcastActionPerformed(game, messages);
             playerTarget.beTrap();
         }

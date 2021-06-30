@@ -26,16 +26,8 @@ public class Decode extends GameCard {
         System.out.print(performer.getUser().getName() + "使用破譯！！");
         IntelligenceRound intelligenceRound =  (IntelligenceRound) game.getRound().getParentRound();
         GameCard intelligenceCard = intelligenceRound.getIntelligence().getCard();
-        String message = "{0} {1} 了傳遞中的情報。";
-        ArrayList<String> messages = new ArrayList<>();
-        messages.add(performer.getId());
-        messages.add("");
-        messages.add(this.name);
-        messages.add("了傳遞中的情報。");
-        messages.add("");
-        messages.add("");
-        messages.add("");
-        messages.add("");
+        ArrayList<String> messages = messageService.getActionMessages(performer.getId(), "", this.name,
+                "了傳遞中的情報。");
         messageService.broadcastActionPerformed(game, messages);
         messageService.sendIntelligenceInformationToPlayer(intelligenceCard, performer);
 

@@ -10,10 +10,11 @@ public class Main {
     static public ArrayList<User> users = new ArrayList<>();
 
     public Main() throws Exception {
+        /*
         rooms.add(new Room("123456", new User("EG", null)));
-
         joinRoom("123456", (new User("Sam", null)));
         joinRoom("123456", (new User("Momo", null)));
+        */
     }
 
     static public void addUser(User user){

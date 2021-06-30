@@ -27,7 +27,7 @@ public class TargetSelectRound extends Round {
             messageService.informPlayerStartSelectGameCardTarget(game, currentPlayer);
         }
         else {
-            messageService.informPlayerStartSelectTarget(game, currentPlayer, action.getCard());
+            messageService.informPlayerStartSelectTarget(game, currentPlayer, action);
         }
     }
 

@@ -12,16 +12,17 @@ import org.json.JSONObject;
 public class ProveAction extends Action {
 
     String choosedOption;
+    ProveOption chosenOption;
     public ProveAction(Game game, Player performer,Player beProvedPlayer, GameCard gameCard, String choosedOption) {
         super(game, performer, gameCard, beProvedPlayer);
         //this.gameCardTarget = gameCardTarget;
         this.choosedOption = choosedOption;
+
     }
 
     @Override
     public void execute() {
         MessageService messageService = new MessageService();
-        ProveOption chosenOption = getChosenOption();
         switch(chosenOption){
             case DRAW_TWO_CARDS:
                 playerTarget.drawCards(2);
@@ -44,29 +45,20 @@ public class ProveAction extends Action {
     }
 
     private ProveOption getChosenOption() {
-        ProveOption chosenOption;
-        if(choosedOption.equals("0")){
-            if(((Prove)this.card).getProveType()){
-                chosenOption = ProveOption.DRAW_TWO_CARDS;
-            }
-            else{
-                chosenOption = ProveOption.THROW_ONE_CARD;
-            }
-        }
-        else if(choosedOption.equals("1")){
-            if(((Prove)this.card).getProveType()){
-                chosenOption = ProveOption.BAD_GUY;
-            }
-            else{
-                chosenOption = ProveOption.NICE_GUY;
-            }
-        }
-        else{
-            System.out.println("接到 chosenOption:" + choosedOption + ((Prove)this.card).getProveType() + " 不應該存在. :ProveAction");
+        int proveType = ((Prove)this.card).getProveType();
+        int intergerChoosedOption;
+        try{
+            intergerChoosedOption = Integer.parseInt(choosedOption);
+        } catch (Exception e){
+            System.out.println("fail to get integer choosedType from " + choosedOption +" .");
+            e.printStackTrace();
             return null;
         }
-        System.out.println(playerTarget.getUser().getName() + chosenOption);
+        ProveOption chosenOption = ProveOption.staticFunctions.getOption(proveType, intergerChoosedOption);
+        System.out.println(playerTarget.getUser().getName() + chosenOption.chosedOption);
+
         return chosenOption;
+
     }
 
     @Override
@@ -89,14 +81,18 @@ public class ProveAction extends Action {
     public String getChoosedOption(){
         return this.choosedOption;
     }
-    public String setChosenOption(String choosedOption){
-        return this.choosedOption = choosedOption;
+    public void setChosenOption(String choosedOption){
+        this.choosedOption = choosedOption;
+        this.chosenOption = getChosenOption();
+        return;
     }
     public boolean checkifNeedTarget(){
-        if(choosedOption.equals("0") && ((Prove)this.card).getProveType() == false){
-            return true;
+        switch (this.chosenOption){
+            case THROW_ONE_CARD:
+                return true;
+            default:
+                return false;
         }
-        return false;
     }
 
 }

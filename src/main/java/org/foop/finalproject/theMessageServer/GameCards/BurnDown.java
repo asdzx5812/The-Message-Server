@@ -31,28 +31,14 @@ public class BurnDown extends GameCard {
             GameCard lastBlackIntelligence = blackIntelligences.get(blackIntelligences.size()-1);
             blackIntelligences.remove(lastBlackIntelligence);
 
-            ArrayList<String> messages = new ArrayList<>();
-            messages.add(performer.getId());
-            messages.add("");
-            messages.add(this.name);
-            messages.add("了");
-            messages.add(playerTarget.getId());
-            messages.add("面前的一張假情報。");
-            messages.add("");
-            messages.add("");
+            ArrayList<String> messages = messageService.getActionMessages(performer.getId(), "", this.name,
+                    "了", playerTarget.getId(), "面前的一張假情報。");
             messageService.broadcastActionPerformed(game, messages);
         }
         else{
             String message = "{0} 的 {1} 沒有產生作用，因為 {2} 面前沒有假情報。";
-            ArrayList<String> messages = new ArrayList<>();
-            messages.add(performer.getId());
-            messages.add("的");
-            messages.add(this.name);
-            messages.add("沒有產生作用，因為");
-            messages.add(playerTarget.getId());
-            messages.add("面前沒有假情報。");
-            messages.add("");
-            messages.add("");
+            ArrayList<String> messages = messageService.getActionMessages(performer.getId(), "的", this.name,
+                    "沒有產生作用，因為", playerTarget.getId(), "面前沒有假情報");
             messageService.broadcastActionPerformed(game, messages);
         }
     }

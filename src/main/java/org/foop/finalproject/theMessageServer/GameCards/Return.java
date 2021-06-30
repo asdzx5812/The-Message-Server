@@ -28,30 +28,16 @@ public class Return extends GameCard {
 
         }
         else if(performer.isLockOn()){
-            ArrayList<String> messages = new ArrayList<>();
-            messages.add(performer.getId());
-            messages.add("的");
-            messages.add(this.name);
-            messages.add("發動了，但因為他處於被鎖定的狀態，退回不會產生功效。");
-            messages.add("");
-            messages.add("");
-            messages.add("");
-            messages.add("");
+            ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
+                    "的", this.name, "發動了，但因為他處於被鎖定的狀態，退回不會產生功效。");
             messageService.broadcastActionPerformed(game, messages);
             return;
         }else {
             if (performer.getStatus() == PlayerStatus.Normal) {
                 performer.beTrap();
             }
-            ArrayList<String> messages = new ArrayList<>();
-            messages.add(performer.getId());
-            messages.add("的");
-            messages.add(this.name);
-            messages.add("生效了了，情報將會反方向傳遞回去。");
-            messages.add("");
-            messages.add("");
-            messages.add("");
-            messages.add("");
+            ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
+                    "的", this.name, "生效了了，情報將會反方向傳遞回去。");
             messageService.broadcastActionPerformed(game, messages);
             ((IntelligenceRound) game.getRound().getParentRound()).changeDirection();
         }

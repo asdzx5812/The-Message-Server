@@ -26,15 +26,9 @@ public class Distribute extends GameCard {
         ArrayList<IntelligenceAction> intelligences = game.drawCardsToBeIntelligences(performer, alivePlayersNum);
         ArrayList<Player> players = game.getPlayers();
 
-        ArrayList<String> messages = new ArrayList<>();
-        messages.add(performer.getId());
-        messages.add("的");
-        messages.add(this.name);
-        messages.add("生效了。");
-        messages.add("");
-        messages.add("");
-        messages.add("");
-        messages.add("");
+        ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
+                "的", this.name, "生效了。");
+
         messageService.broadcastActionPerformed(game, messages);
 
         int currentPlayerIdx = players.indexOf(performer);

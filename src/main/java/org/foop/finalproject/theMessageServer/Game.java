@@ -147,7 +147,6 @@ public class Game{
     public void createProves(){
         GameCardColor gameCardColor = GameCardColor.RED;
         Camp camp = Camp.RED;
-        Boolean proveType = false;
         for(int colorType = 0; colorType < 3; colorType++){
             int order = 1;
             switch(colorType){
@@ -177,17 +176,7 @@ public class Game{
                     default:
                         break;
                 }
-                for(int proofTypeCount = 0; proofTypeCount < 2; proofTypeCount ++){
-                    switch(proofTypeCount){
-                        case 0:
-                            proveType = false;
-                            break;
-                        case 1:
-                            proveType = true;
-                            break;
-                        default:
-                            break;
-                    }
+                for(int proveType = 0; proveType < 2; proveType ++){
                     createProve(gameCardColor, proveType, camp, order);
                     order ++;
                 }
@@ -195,7 +184,7 @@ public class Game{
         }
     }
 
-    public void createProve(GameCardColor gameCardColor, Boolean proveType, Camp specialCamp, int order){
+    public void createProve(GameCardColor gameCardColor, int proveType, Camp specialCamp, int order){
         gameCardsDeck.add(new Prove(gameCardColor, IntelligenceType.ENCRYPTED_MSG, proveType, specialCamp, order));
     };
     public void createGameCardExceptsForProve(int num, String type, GameCardColor gameCardColor, IntelligenceType intelligenceType){
@@ -427,7 +416,7 @@ public class Game{
         }
     }
 
-    public ArrayList<String> getTargetList(Player currentPlayer, GameCard gameCard){
+    public ArrayList<String> getTargetList(Player currentPlayer, Action action){
         ArrayList<String> targetList = new ArrayList<>();
         for(Player player:players){
             if(!player.isAlive()){
@@ -436,7 +425,11 @@ public class Game{
             if(player != currentPlayer){
                 targetList.add(player.getId());
             }
-            else if(gameCard.canTargetPerformer()){
+            else if( action instanceof IntelligenceAction &&
+                    action.getCard().getIntelligenceType() == IntelligenceType.DIRECT_MSG ){
+                targetList.add(player.getId());
+            }else if(action instanceof GameCardAction &&
+                    action.getCard().canTargetPerformer() ){
                 targetList.add(player.getId());
             }
         }

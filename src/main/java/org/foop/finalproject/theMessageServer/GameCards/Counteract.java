@@ -25,30 +25,15 @@ public class Counteract extends GameCard {
         // TODO: perform message
         try{
             GameCardAction action = game.getCurrentActionsOnBoard().pop();
-            ArrayList<String> messages = new ArrayList<>();
-            messages.add(performer.getId());
-            messages.add("");
-            messages.add(this.name);
-            messages.add("了");
-            //messages.add(playerTarget.getId());
-            messages.add(action.getPerformer().getId());
-            messages.add("的");
-            messages.add(action.getCard().getName());
-            messages.add("。");
+            ArrayList<String> messages = messageService.getActionMessages(performer.getId(), "", this.name,
+                    "了", action.getPerformer().getId(), "的", action.getCard().getName(), "。");
             messageService.broadcastActionPerformed(game, messages);
         } catch(Exception error){
             // Should don't enter here.
             System.out.println("Exception:"+error);
             System.out.println(performer + "的識破沒有生效，因為場面上沒有其他action了。");
-            ArrayList<String> messages = new ArrayList<>();
-            messages.add(performer.getId());
-            messages.add("的");
-            messages.add(this.name);
-            messages.add("沒有生效，因為場面上沒有其他功能牌了。");
-            messages.add("");
-            messages.add("");
-            messages.add("");
-            messages.add("");
+            ArrayList<String> messages = messageService.getActionMessages(performer.getId(), "的", this.name,
+                    "沒有生效，因為場面上沒有其他功能牌了。");
             messageService.broadcastActionPerformed(game, messages);
         }
 

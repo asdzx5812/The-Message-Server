@@ -1,5 +1,6 @@
 package org.foop.finalproject.theMessageServer.service;
 
+import org.foop.finalproject.theMessageServer.GameCards.Prove;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.action.GameCardAction;
@@ -25,7 +26,11 @@ public class JsonService {
     public ArrayList<JSONObject> getHandCardsObjs(ArrayList<GameCard> handCards){
         ArrayList<JSONObject> handCardsObjs = new ArrayList<>();
         for(GameCard gameCard:handCards){
-            handCardsObjs.add(gameCard.toJsonObject());
+            if(gameCard instanceof Prove){
+                handCardsObjs.add(((Prove)gameCard).toJsonObjectOnHand());
+            }else{
+                handCardsObjs.add(gameCard.toJsonObject());
+            }
         }
         return handCardsObjs;
     }

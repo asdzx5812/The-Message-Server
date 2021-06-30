@@ -7,6 +7,6 @@ import org.foop.finalproject.theMessageServer.skills.emptySkill;
 
 public class HeiMeiGui extends Character {
     public HeiMeiGui() {
-        super("HeiMeiGui", Gender.WOMAN, new HeiMeiGuiMission(), new emptySkill(), true);
+        super("黑玫瑰", Gender.WOMAN, new HeiMeiGuiMission(), new emptySkill(), true);
     }
 }

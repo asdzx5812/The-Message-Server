@@ -5,10 +5,7 @@ import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
 import org.foop.finalproject.theMessageServer.action.GameCardAction;
 import org.foop.finalproject.theMessageServer.action.ProveAction;
-import org.foop.finalproject.theMessageServer.enums.Camp;
-import org.foop.finalproject.theMessageServer.enums.GameCardColor;
-import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
-import org.foop.finalproject.theMessageServer.enums.MessageType;
+import org.foop.finalproject.theMessageServer.enums.*;
 import org.foop.finalproject.theMessageServer.round.GameCardRound;
 import org.foop.finalproject.theMessageServer.round.ProveRound;
 import org.foop.finalproject.theMessageServer.service.JsonService;
@@ -17,9 +14,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class Prove extends GameCard {
-    boolean proveType;
+    int proveType;
     Camp targetCamp;
-    public Prove(GameCardColor gameCardColor, IntelligenceType intelligenceType, boolean proveType, Camp targetCamp, int order) {
+    String[] possibleOptions;
+    public Prove(GameCardColor gameCardColor, IntelligenceType intelligenceType, int proveType, Camp targetCamp, int order) {
         super(gameCardColor, intelligenceType, order);
         // name = "PROVE"; // 試探
         // timingDescription = "Play in playing step of own round.";
@@ -31,6 +29,7 @@ public class Prove extends GameCard {
         needTarget = true;
         this.proveType = proveType;
         this.targetCamp = targetCamp;
+        this.possibleOptions = ProveOption.staticFunctions.getPossibleOptions(proveType);
     }
 
     @Override
@@ -39,15 +38,8 @@ public class Prove extends GameCard {
         //JsonService jsonService = new JsonService();
         //JSONObject jsonObj = jsonService.getProveObj(this, performer);
         if(playerTarget.isAlive()) {
-            ArrayList<String> messages = new ArrayList<>();
-            messages.add(performer.getId());
-            messages.add("的");
-            messages.add(this.name);
-            messages.add("生效了。");
-            messages.add(playerTarget.getId());
-            messages.add("正在選擇回應");
-            messages.add("");
-            messages.add("");
+            ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
+                    "的", this.name, "生效了。", playerTarget.getId(), "正在選擇回應。");
             messageService.broadcastActionPerformed(game, messages);
 
             Round proveRound = new ProveRound(performer, game.getRound(), new ProveAction(game, performer, playerTarget, this, null));
@@ -56,16 +48,8 @@ public class Prove extends GameCard {
             game.getRound().onRoundStart();
         }
         else{
-            String message = "{0} 早已不再遊戲中， {1} 的 {2} 無法生效。";
-            ArrayList<String> messages = new ArrayList<>();
-            messages.add(performer.getId());
-            messages.add("的");
-            messages.add(this.name);
-            messages.add("沒有生效了，因為");
-            messages.add(playerTarget.getId());
-            messages.add("已經不在遊戲中了。");
-            messages.add("");
-            messages.add("");
+            ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
+                    "的", this.name, "沒有生效了，因為", playerTarget.getId(), "已經不在遊戲中了。");
             messageService.broadcastActionPerformed(game, messages);
             playerTarget.beLockOn();
             System.out.println(playerTarget.getUser().getName() + "已經"+ playerTarget.getStatus().status+"了(ERROR)");
@@ -95,12 +79,14 @@ public class Prove extends GameCard {
     }
 
     public String getDescriptionAccordingToIdentity(){
-        if(proveType){
+        if(proveType == 0){
             return "";
         }else{
             return "";
         }
     }
+
+
     public Camp getTargetCamp(){
         return targetCamp;
     }
@@ -109,8 +95,32 @@ public class Prove extends GameCard {
         // 傳遞情報前的功能牌階段，當回合派發情報者可以使用
         return currentRound.isGameCardRound() && currentRound.parentRoundIsMainRound() && currentRound.playerIsCurrentPlayerOfParentRound(owner);
     }
-    public boolean getProveType(){
+    public int getProveType(){
         return proveType;
     }
 
+    public JSONObject toJsonObjectOnHand(){
+        JSONObject handCardObj = new JSONObject();
+        handCardObj.put("name", name);
+        handCardObj.put("timingDescription", timingDescription);
+        String effectDescriptionToSend = this.effectDescription;
+        effectDescriptionToSend += "\\n"+targetCamp.name + ":" + possibleOptions[0] + "\\n";
+        if(targetCamp != Camp.RED){
+            effectDescriptionToSend += Camp.RED.name;
+        }
+        if(targetCamp != Camp.BLUE){
+            effectDescriptionToSend += Camp.BLUE.name;
+        }
+        if(targetCamp != Camp.GREEN){
+            effectDescriptionToSend += Camp.GREEN.name;
+        }
+        effectDescriptionToSend += ":" + possibleOptions[1];
+
+        handCardObj.put("effectDescription", effectDescriptionToSend);
+        handCardObj.put("id",id);
+        handCardObj.put("color", color.name.toLowerCase());
+        handCardObj.put("type", intelligenceType.name);
+        handCardObj.put("needTarget", needTarget);
+        return handCardObj;
+    }
 }

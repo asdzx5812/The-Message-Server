@@ -36,10 +36,14 @@ public class ProveRound extends Round {
         jsonObject.put("targetId", action.getPlayerTarget().getId());
         jsonObject.put("camp", gameCard.getTargetCamp());
         //TODO 有角色可以騙人 要判斷
-        if(gameCard.getProveType()){
+        String[] possibleOptions = ProveOption.staticFunctions.getPossibleOptions(gameCard.getProveType());
+        jsonObject.put("possibleOptions",possibleOptions);
+
+
+        //if(gameCard.getProveType()){
             //抽兩張 or 我是臥底
-            String[] possibleOptions = {ProveOption.DRAW_TWO_CARDS.proveOption, ProveOption.BAD_GUY.proveOption};
-            jsonObject.put("possibleOptions",possibleOptions);
+            //String[] possibleOptions = {ProveOption.DRAW_TWO_CARDS.proveOption, ProveOption.BAD_GUY.proveOption};
+            //jsonObject.put("possibleOptions",possibleOptions);
             /*
             if(action.getPlayerTarget().getCamp() == gameCard.getTargetCamp()){
                 jsonObject.put("shouldBeChoosedOption","抽二張牌");
@@ -47,11 +51,11 @@ public class ProveRound extends Round {
             else{
                 jsonObject.put("shouldBeChoosedOption","回答\"其實我是臥底\"");
             }*/
-        }
-        else{
+        //}
+        //else{
             //丟一張 or 我是好人
-            String[] possibleOptions = {ProveOption.THROW_ONE_CARD.proveOption, ProveOption.NICE_GUY.proveOption};
-            jsonObject.put("possibleOptions",possibleOptions);
+        //    String[] possibleOptions = {ProveOption.THROW_ONE_CARD.proveOption, ProveOption.NICE_GUY.proveOption};
+        //    jsonObject.put("possibleOptions",possibleOptions);
             /*
             if(action.getPlayerTarget().getCamp() == gameCard.getTargetCamp()){
                 jsonObject.put("shouldBeChoosedOption","棄一張手牌");
@@ -59,7 +63,7 @@ public class ProveRound extends Round {
             else{
                 jsonObject.put("shouldBeChoosedOption","回答\"我是一個好人\"");
             }*/
-        }
+        //}
         System.out.print(name + "onTurnEnd end");
         messageService.informPlayerStartSelectActionForProve(action.getPerformer(), action.getPlayerTarget(), jsonObject);
 
