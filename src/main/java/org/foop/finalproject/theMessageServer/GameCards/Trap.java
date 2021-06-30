@@ -17,7 +17,7 @@ public class Trap extends GameCard {
         // effectDescription = "Another player becomes [Trap Status] (Player in [Lock On Status] can not be affected by this)";
         name = "調虎離山"; // 調虎離山
         timingDescription = "當情報開始傳遞後使用。";
-        effectDescription = "指定一位自己以外的玩家不參與本次的情報傳遞。（不能指定傳出情報者和被鎖定的玩家）";
+        effectDescription = "指定一位自己以外的玩家不參與本次的情報傳遞。";
         setId(name);
         needTarget = true;
     }
@@ -26,24 +26,25 @@ public class Trap extends GameCard {
     public void perform(Player performer, Player playerTarget, Game game) {
         if(!playerTarget.isAlive()){
             System.out.println("Should not happen ...");
-            String message = "{0} 對已經不在遊戲的 {1} 發動了 {2}，無法發揮作用，";
             ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
                     "的", this.name, "無法發揮作用，因為", playerTarget.getId(), "早已不在遊戲中。");
             messageService.broadcastActionPerformed(game, messages);
         } else if(playerTarget.isLockOn()){
-            String message = "{0} 對被鎖定中的 {1} 發動了 {2}，無法發揮作用。";
             ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
                     "的", this.name, "無法發揮作用，因為", playerTarget.getId(), "已經被鎖定了。");
             messageService.broadcastActionPerformed(game, messages);
+        } else if(playerTarget == game.getRound().getParentRound().getEndPlayer()){
+            ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
+                    "的", this.name, "無法發揮作用，因為", playerTarget.getId(), "是傳遞出情報的人，無法被調虎離山。");
+            messageService.broadcastActionPerformed(game, messages);
         } else if(playerTarget.isTrapped()){
-            String message = "{0} 對已經被調虎離山的 {1} 發動了 {2}，不會額外發生作用";
             ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
                     "的", this.name, "無法發揮作用，因為", playerTarget.getId(), "早已被調虎離山過了。");
             messageService.broadcastActionPerformed(game, messages);
         }
         else {
             ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
-                    "的", this.name, "生效了，", playerTarget.getId(), "在本回合不可以接收情報。（情報將不會傳遞到面前）");
+                    "的", this.name, "生效了，", playerTarget.getId(), "在本回合不可以接收情報。");
 
             messageService.broadcastActionPerformed(game, messages);
             playerTarget.beTrap();

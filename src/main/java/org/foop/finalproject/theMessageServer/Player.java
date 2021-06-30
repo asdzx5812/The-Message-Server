@@ -58,13 +58,17 @@ public class Player {
     }
 
     public boolean isWin() {
-        if(!isLose()) return false;
-        if (camp == Camp.RED || camp == Camp.BLUE)
-            return intelligences.get(camp.type).size() >= 3;
-        else if (camp == Camp.GREEN)
-            return character.missionComplete(game, this);
-        System.out.println("Which camp is this: " + camp.type + " ...");
-        return false;
+        if(isLose()) return false;
+        switch (camp){
+            case RED:
+            case BLUE:
+                return intelligences.get(camp.type).size() >= 3;
+            case GREEN:
+                return character.missionComplete(game, this);
+            default:
+                System.out.println("Which camp is this: " + camp.type + " ...");
+                return false;
+        }
     }
 
     public boolean isDead() { return die; }
@@ -96,7 +100,6 @@ public class Player {
         GameCard card = receiveAction.getCard();
         intelligences.get(card.color.type).add(card);
         messageService.broadcastActionBeenPlayedMessage(game, receiveAction);
-        //TODO 這邊要判死亡
         if(intelligences.get(GameCardColor.BLACK.type).size() >= 3){
             die();
             killedBy = receiveAction.getPerformer();

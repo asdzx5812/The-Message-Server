@@ -31,7 +31,7 @@ public class ProveRound extends Round {
         Prove gameCard = (Prove)this.action.getCard();
         jsonObject.put("performerId", action.getPerformer().getId());
         jsonObject.put("targetId", action.getPlayerTarget().getId());
-        jsonObject.put("camp", gameCard.getTargetCamp());
+        jsonObject.put("camp", gameCard.getTargetCamp().name);
         //TODO 有角色可以騙人 要判斷
         String[] possibleOptions = ProveOption.staticFunctions.getPossibleOptions(gameCard.getProveType());
         jsonObject.put("possibleOptions",possibleOptions);

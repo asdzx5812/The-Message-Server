@@ -169,7 +169,7 @@ public class MessageService {
         else if(messageType == MessageType.BROADCAST_PLAYER_START_SELECTING_RECEIVE){
             boolean pass = true;
             boolean receive = true;
-            if(currentPlayer.isLockOn()){
+            if(currentPlayer.isLockOn() || currentPlayer == game.getRound().getEndPlayer()){
                 pass = false;
             }
             else if(currentPlayer.isTrapped()){
