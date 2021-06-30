@@ -320,11 +320,13 @@ public class MessageService {
         sendMessage(body, playerTarget.getUser().getSession());
         sendMessage(body, performer.getUser().getSession());
     }
-    //TYPE: INFORM_PLAYER_START_SELECTING_GAMECARD_TARGET
+    //TYPE: INFORM_PLAYER_START_SELECTING_HANDCARD_TO_DISCARD
     public void informPlayerStartSelectGameCardTarget(Game game, Player currentPlayer) {
         System.out.println("通知" + currentPlayer.getUser().getName() + " 選擇牌（目前是給prove進行丟棄） : ");
         //TODO 也許要傳特定可丟的牌給玩家
         JSONObject payload = new JSONObject();
+        payload.put("playerId", currentPlayer.getId());
+        payload.put("availableGamecardsId", currentPlayer.getHandCards().stream().map(gameCard -> gameCard.getId()).collect(Collectors.toList()));
         JSONObject body = getBody(payload, "", MessageType.INFORM_PLAYER_START_SELECTING_HANDCARD_TO_DISCARD);
         sendMessage(body, currentPlayer.getUser().getSession());
     }
