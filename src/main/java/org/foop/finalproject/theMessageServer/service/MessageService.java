@@ -6,6 +6,7 @@ import org.foop.finalproject.theMessageServer.action.GameCardAction;
 import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
 import org.foop.finalproject.theMessageServer.action.PassAction;
 import org.foop.finalproject.theMessageServer.action.ReceiveAction;
+import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.foop.finalproject.theMessageServer.enums.MessageType;
 import org.foop.finalproject.theMessageServer.enums.ProveOption;
 import org.foop.finalproject.theMessageServer.round.CounteractRound;
@@ -192,6 +193,7 @@ public class MessageService {
         System.out.println("開始通知player選target");
         JSONObject payload = new JSONObject();
         payload.put("playerId", currentPlayer.getId());
+
         payload.put("availableTargetsId", game.getTargetList(currentPlayer, action));
         System.out.println(currentPlayer.getUser().getName() + "得到availableTargetsId:" + game.getTargetList(currentPlayer, action));
         JSONObject body = getBody(payload, "",MessageType.INFORM_PLAYER_START_SELECTING_TARGET);

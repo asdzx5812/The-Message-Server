@@ -8,6 +8,6 @@ import org.foop.finalproject.theMessageServer.skills.emptySkill;
 public class FuShe extends Character {
 
     public FuShe() {
-        super("腹蛇", Gender.MAN, new FuSheMission(), new emptySkill(), false);
+        super("蝮蛇", Gender.MAN, new FuSheMission(), new emptySkill(), false);
     }
 }

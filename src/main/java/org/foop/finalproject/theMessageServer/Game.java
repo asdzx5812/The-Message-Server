@@ -430,7 +430,7 @@ public class Game{
                 targetList.add(player.getId());
             }
             else if( action instanceof IntelligenceAction &&
-                    action.getCard().getIntelligenceType() == IntelligenceType.DIRECT_MSG ){
+                    action.getCard().getIntelligenceType() != IntelligenceType.DIRECT_MSG ){
                 targetList.add(player.getId());
             }else if(action instanceof GameCardAction &&
                     action.getCard().canTargetPerformer() ){
