@@ -164,12 +164,18 @@ public class Player {
 
     public void die() { // Todo
         status = PlayerStatus.Dead;
+        if(character.isHidden()) {
+            character.uncover();
+        }
         // messageService.broadcastPlayerStateChangeMessage(game, this);
         game.onPlayerDie(this);
     }
 
     public void loseTheGame() {
         status = PlayerStatus.Lose;
+        if(character.isHidden()) {
+            character.uncover();
+        }
         game.onPlayerLose(this);
         // messageService.broadcastPlayerStateChangeMessage(game, this);
     }

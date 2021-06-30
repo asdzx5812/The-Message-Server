@@ -40,6 +40,10 @@ public abstract class Character {
         this.hidden = false;
     }
 
+    public boolean isHidden(){
+        return hidden;
+    }
+
     public void cover(){
         if(hidden){
             throw new RuntimeException("This card is not revealed");
