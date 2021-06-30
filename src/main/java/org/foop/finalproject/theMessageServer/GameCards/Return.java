@@ -24,11 +24,7 @@ public class Return extends GameCard {
     }
     @Override
     public void perform(Player performer, Player playerTarget, Game game) {
-
-        if(!performer.isAlive()){
-
-        }
-        else if(performer.isLockOn()){
+        if(performer.isLockOn()){
             ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
                     "的", this.name, "發動了，但因為他處於被鎖定的狀態，退回不會產生功效。");
             messageService.broadcastActionPerformed(game, messages);

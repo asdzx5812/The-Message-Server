@@ -60,7 +60,7 @@ public class IntelligenceRound extends Round {
 
     @Override
     public void onRoundStart() {
-        this.endPlayer.beLockOn();
+        //this.endPlayer.beLockOn();
         //messageService.broadcastRoundStartMessage(game);
         //廣播誰打出情報
         onTurnStart();
