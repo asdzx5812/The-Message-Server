@@ -219,13 +219,13 @@ public class Game{
         this.deadPlayers = new ArrayList<>();
         this.readyPlayers = new ArrayList<>();
         ArrayList<Camp> camps = getInitialCampList();
-        Collections.shuffle(users);
         Collections.shuffle(camps);
         for (int i = 0; i < users.size(); i++) {
             players.add(new Player(this, camps.get(i), characterCardDeck.pop(), users.get(i)));
             players.get(i).drawInitialCards();
             //messageService.informPlayerInformation(this, players.get(i));
         }
+        Collections.shuffle(players);
     }
 
     public void start() {
@@ -473,14 +473,35 @@ public class Game{
                 System.out.println("should not happen");
             }
         }
+        //找到所有獲得三張情報 和 機密任務完成的人
+        boolean redWin = false;
+        boolean blueWin = false;
         for(Player player: players){
             if(player.isWin()){
+                winners.add(player);
+                if(player.getCamp() == Camp.RED){
+                    redWin = true;
+                }
+                else if(player.getCamp() == Camp.BLUE){
+                    blueWin = true;
+                }
+            }
+        }
+        //補上若是獲得三張紅 藍情報，同陣營也會一起獲勝
+        for(Player player: players){
+            if(winners.contains(player)){
+                continue;
+            }
+            if(redWin && player.getCamp() == Camp.RED){
+                winners.add(player);
+            }
+            else if(blueWin && player.getCamp() == Camp.BLUE){
                 winners.add(player);
             }
         }
         //腹蛇
         for(Player player: players){
-            if(player.character instanceof FuShe && player.isWin()){
+            if(player.character instanceof FuShe && player.getCamp() == Camp.GREEN && player.isWin()){
                 winners.clear();
                 winners.add(player);
                 break;
