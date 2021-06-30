@@ -1,8 +1,6 @@
 package org.foop.finalproject.theMessageServer.characters;
 
 import org.foop.finalproject.theMessageServer.Character;
-import org.foop.finalproject.theMessageServer.Mission;
-import org.foop.finalproject.theMessageServer.Skill;
 import org.foop.finalproject.theMessageServer.enums.Gender;
 import org.foop.finalproject.theMessageServer.missions.DaiLiMission;
 import org.foop.finalproject.theMessageServer.skills.emptySkill;

@@ -1,6 +1,5 @@
 package org.foop.finalproject.theMessageServer;
 
-import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
 import org.foop.finalproject.theMessageServer.action.ReceiveAction;
 import org.foop.finalproject.theMessageServer.enums.Camp;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
@@ -13,7 +12,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class Player {
-    private Game game;
+    private final Game game;
     protected String id;
     protected Character character;
     protected Camp camp;
@@ -24,7 +23,6 @@ public class Player {
     protected PlayerStatus status;
     protected ArrayList<GameCard> handCards;
     protected ArrayList<ArrayList<GameCard>> intelligences; // 0 -> RED, 1 -> BLUE, 2 -> BLACK
-    protected Action actionToPerform;
     protected User user;
     protected ArrayList<Player> killPeople = new ArrayList<>();
     protected Player killedBy;
@@ -51,12 +49,6 @@ public class Player {
 
     public ArrayList<GameCard> getHandCards(){ return handCards; }
 
-    // public Character getCharacter(){ return character; }
-
-    // public void setCharacter(Character character) {
-    //     this.character = character;
-    // }
-
     public Camp getCamp() {return camp;}
 
     public int getHandcardsNum(){ return handCards.size();}
@@ -66,7 +58,7 @@ public class Player {
     }
 
     public boolean isWin() {
-        if(!isAlive()) return false;
+        if(!isLose()) return false;
         if (camp == Camp.RED || camp == Camp.BLUE)
             return intelligences.get(camp.type).size() >= 3;
         else if (camp == Camp.GREEN)
@@ -98,19 +90,6 @@ public class Player {
     }
     public void removeCardFromHandCards(GameCard card) {
         handCards.remove(card);
-        // ArrayList<Player> players = new ArrayList<>();
-        // players.add(this);
-        // messageService.broadcastGameInformation(game, game.getPlayers());
-    }
-
-    public GameCard getCardByIndex(int idx) throws Exception {
-        GameCard cardSelected;
-        try{
-            cardSelected = handCards.get(idx);
-        } catch (Exception e) {
-            throw new Exception("Index out of range of handcard.");
-        }
-        return cardSelected;
     }
 
     public void receiveIntelligence(ReceiveAction receiveAction) {
@@ -129,7 +108,7 @@ public class Player {
         killPeople.add(player);
     }
 
-    public void changeStatus(PlayerStatus newStatus){
+    public void setStatus(PlayerStatus newStatus){
         this.status = newStatus;
     }
 
@@ -158,7 +137,7 @@ public class Player {
         return this.status == PlayerStatus.Trap;
     }
 
-    public boolean hasNoHandcard() {
+    public boolean hasNoHandcards() {
         return handCards.isEmpty();
     }
 
@@ -201,7 +180,7 @@ public class Player {
         for(GameCard gameCard:handCards){
             stringBuilder.append(gameCard.getId() + ",");
         }
-        System.out.println(stringBuilder.toString());
+        System.out.println(stringBuilder);
         for(GameCard gameCard:handCards){
             if(gameCard.getId().equals(gameCardId)){
                 return gameCard;
@@ -227,7 +206,7 @@ public class Player {
         return this.killPeople;
     }
 
-    public boolean hasIntelligenceMoreThanEqual(GameCardColor color, int num) {
-        return this.intelligences.get(color.type).size() >= num;
+    public boolean hasIntelligenceMoreThanEqualTo(GameCardColor color, int num) {
+        return this.intelligences.get(color.type).size() < num;
     }
 }

@@ -1,14 +1,15 @@
 package org.foop.finalproject.theMessageServer.GameCards;
+
 import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
-import org.foop.finalproject.theMessageServer.action.GameCardAction;
 import org.foop.finalproject.theMessageServer.action.ProveAction;
-import org.foop.finalproject.theMessageServer.enums.*;
-import org.foop.finalproject.theMessageServer.round.GameCardRound;
+import org.foop.finalproject.theMessageServer.enums.Camp;
+import org.foop.finalproject.theMessageServer.enums.GameCardColor;
+import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
+import org.foop.finalproject.theMessageServer.enums.ProveOption;
 import org.foop.finalproject.theMessageServer.round.ProveRound;
-import org.foop.finalproject.theMessageServer.service.JsonService;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -34,9 +35,6 @@ public class Prove extends GameCard {
 
     @Override
     public void perform(Player performer, Player playerTarget, Game game) {
-        // TODO
-        //JsonService jsonService = new JsonService();
-        //JSONObject jsonObj = jsonService.getProveObj(this, performer);
         if(playerTarget.isAlive()) {
             ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
                     "的", this.name, "生效了。", playerTarget.getId(), "正在選擇回應。");
@@ -54,38 +52,12 @@ public class Prove extends GameCard {
             playerTarget.beLockOn();
             System.out.println(playerTarget.getUser().getName() + "已經"+ playerTarget.getStatus().status+"了(ERROR)");
         }
-        /*
-        if (proveType) {
-            // type true: draw 2 cards(target camp) or say 我是臥底(other camp)
-            // messageService.informPlayerOnProve(playerTarget);
-            if(playerTarget.getCamp() == targetCamp){
-                playerTarget.drawCards(2);
-            }
-        }
-        else{
-            if(playerTarget.getCamp() == targetCamp){
-                playerTarget.drawCards(2);
-            }
-            // type false: discard 1 card(target camp) or say 我是好人(other camp)
-            //messageService.informPlayerOnProve(game, playerTarget);
-            //messageService.broadcastPlayerToSelectAction(game, playerTarget, MessageType.BROADCAST_PLAYER_START_SELECTING_GAMECARD);
-        }
-        */
     }
 
     @Override
     public String getGameMessage(Player performer, Player playerTarget, Game game) {
         return "";
     }
-
-    public String getDescriptionAccordingToIdentity(){
-        if(proveType == 0){
-            return "";
-        }else{
-            return "";
-        }
-    }
-
 
     public Camp getTargetCamp(){
         return targetCamp;
@@ -104,20 +76,33 @@ public class Prove extends GameCard {
         handCardObj.put("name", name);
         handCardObj.put("timingDescription", timingDescription);
         String effectDescriptionToSend = this.effectDescription;
-        effectDescriptionToSend += "\\n"+targetCamp.name + ":" + possibleOptions[0] + "\\n";
+        effectDescriptionToSend += "\\n"+targetCamp.name + "：" + possibleOptions[0] + "\\n";
+        int count = 0;
         if(targetCamp != Camp.RED){
+            if(count != 0){
+                effectDescriptionToSend += " / ";
+            }
+            count ++;
             effectDescriptionToSend += Camp.RED.name;
         }
         if(targetCamp != Camp.BLUE){
+            if(count != 0){
+                effectDescriptionToSend += " / ";
+            }
+            count ++;
             effectDescriptionToSend += Camp.BLUE.name;
         }
         if(targetCamp != Camp.GREEN){
+            if(count != 0){
+                effectDescriptionToSend += " / ";
+            }
+            count ++;
             effectDescriptionToSend += Camp.GREEN.name;
         }
-        effectDescriptionToSend += ":" + possibleOptions[1];
+        effectDescriptionToSend += "：" + possibleOptions[1];
 
         handCardObj.put("effectDescription", effectDescriptionToSend);
-        handCardObj.put("id",id);
+        handCardObj.put("id", id);
         handCardObj.put("color", color.name.toLowerCase());
         handCardObj.put("type", intelligenceType.name);
         handCardObj.put("needTarget", needTarget);

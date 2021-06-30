@@ -134,7 +134,7 @@ public class IntelligenceRound extends Round {
     private void refreshAllPlayerStatus(){
         for(Player player: game.getPlayers()){
             if(player.isAlive()) {
-                player.changeStatus(PlayerStatus.Normal);
+                player.setStatus(PlayerStatus.Normal);
             }
         }
     }

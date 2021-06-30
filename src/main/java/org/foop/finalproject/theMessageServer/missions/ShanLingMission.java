@@ -14,8 +14,8 @@ public class ShanLingMission extends Mission {
         // TODO
         ArrayList<Player> killPeople = player.getKillPeople();
         for(Player killedPlayer: killPeople){
-            if(!killedPlayer.hasIntelligenceMoreThanEqual(GameCardColor.RED, 1) &&
-                    !killedPlayer.hasIntelligenceMoreThanEqual(GameCardColor.BLUE, 1)){
+            if(killedPlayer.hasIntelligenceMoreThanEqualTo(GameCardColor.RED, 1) &&
+                    killedPlayer.hasIntelligenceMoreThanEqualTo(GameCardColor.BLUE, 1)){
                 return true;
             }
         }

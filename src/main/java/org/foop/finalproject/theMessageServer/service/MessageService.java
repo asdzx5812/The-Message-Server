@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.websocket.*;
@@ -253,10 +254,11 @@ public class MessageService {
 
     //TYPE:BROADCAST_GAME_OVER_MESSAGE
     //廣播遊戲結束
-    public void broadcastGameOverMessage(Game game) {
-        ArrayList<Player> winners = game.getWinners();
+    public void broadcastGameOverMessage(Game game, ArrayList<Player> winners) {
         JSONObject payload = new JSONObject();
-        payload.put("players", jsonService.getPlayersInformationObj(winners));
+        payload.put("players", jsonService.getPlayersInformationObj(game.getPlayers()));
+        List<String> winnersId = winners.stream().map(player -> player.getId()).collect(Collectors.toList());
+        payload.put("winnersId", winnersId);
         JSONObject body = getBody(payload, "--- Game over ---", MessageType.BROADCAST_GAME_OVER_MESSAGE);
         broadcastMessage(body, game);
     }

@@ -9,45 +9,45 @@ public enum ProveOption {
 
     public String proveOption;
     public int proveType;
-    public int chosedOption;
-    ProveOption(String proveOption, int proveType, int chosedOption) {
+    public int chosenOptionInt;
+    ProveOption(String proveOption, int proveType, int chosenOptionInt) {
 
         this.proveOption = proveOption;
         this.proveType = proveType;
-        this.chosedOption = chosedOption;
+        this.chosenOptionInt = chosenOptionInt;
     }
-    public ProveOption getOption(int proveType, int chosedOption){
+    public ProveOption getOption(int proveType, int chosenOptionInt){
         switch (proveType){
             case 0:
-                switch (chosedOption){
+                switch (chosenOptionInt){
                     case 0:
                         return DRAW_TWO_CARDS;
                     case 1:
                         return BAD_GUY;
                     default:
-                        GetUnexpectedArgumentError(proveType, chosedOption);
+                        GetUnexpectedArgumentError(proveType, chosenOptionInt);
                         break;
                 }
                 break;
             case 1:
-                switch (chosedOption) {
+                switch (chosenOptionInt) {
                     case 0:
                         return THROW_ONE_CARD;
                     case 1:
                         return NICE_GUY;
                     default:
-                        GetUnexpectedArgumentError(proveType, chosedOption);
+                        GetUnexpectedArgumentError(proveType, chosenOptionInt);
                         break;
                 }
                 break;
             default:
-                GetUnexpectedArgumentError(proveType, chosedOption);
+                GetUnexpectedArgumentError(proveType, chosenOptionInt);
                 break;
         }
         return null;
     }
-    private void GetUnexpectedArgumentError(int proveType, int chosedOption){
-        System.out.println("This is not expected -- proveType" + proveType + ", chosedOption:" + chosedOption + ".");
+    private void GetUnexpectedArgumentError(int proveType, int chosenOptionInt){
+        System.out.println("This is not expected -- proveType" + proveType + ", chosenOptionInt:" + chosenOptionInt + ".");
     }
 
     public String[] getPossibleOptions(int proveType){

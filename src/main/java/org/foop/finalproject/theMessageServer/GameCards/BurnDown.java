@@ -16,7 +16,6 @@ public class BurnDown extends GameCard {
         //name = "BURN DOWN"; // 燒毀
         //timingDescription = "You can play this card at anytime.";
         //effectDescription = "Burn down one fake intelligence in front of any player.";
-        // 燒毀
         name = "燒毀";
         timingDescription = "你可以在功能牌階段使用此牌。";
         effectDescription = "燒燬（任意一位玩家的）一份假情報。";
@@ -36,7 +35,6 @@ public class BurnDown extends GameCard {
             messageService.broadcastActionPerformed(game, messages);
         }
         else{
-            String message = "{0} 的 {1} 沒有產生作用，因為 {2} 面前沒有假情報。";
             ArrayList<String> messages = messageService.getActionMessages(performer.getId(), "的", this.name,
                     "沒有產生作用，因為", playerTarget.getId(), "面前沒有假情報");
             messageService.broadcastActionPerformed(game, messages);

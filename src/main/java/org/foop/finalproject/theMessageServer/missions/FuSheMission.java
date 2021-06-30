@@ -11,6 +11,10 @@ public class FuSheMission extends Mission {
     @Override
     protected boolean isCompleted(Game game, Player player) {
         // TODO
+        //當Main Round離開讓game.round變成null代表有人獲勝
+
+        if(game.getRound() == null && game.getDeadPlayers().size() == 0)
+            return true;
         return false;
     }
 }

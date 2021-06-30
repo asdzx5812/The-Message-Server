@@ -4,8 +4,6 @@ import org.foop.finalproject.theMessageServer.*;
 import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
 import org.foop.finalproject.theMessageServer.enums.MessageType;
 
-import java.util.ArrayList;
-
 public class MainRound extends Round {
     boolean intelligenceHasSent;
     Action currentAction;
@@ -73,7 +71,7 @@ public class MainRound extends Round {
                 onRoundEnd();
                 return;
             }
-            if(currentPlayer.hasNoHandcard()){
+            if(currentPlayer.hasNoHandcards()){
                 currentPlayer.loseTheGame();
                 onTurnEnd();
             }

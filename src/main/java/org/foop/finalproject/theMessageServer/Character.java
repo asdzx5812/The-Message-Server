@@ -1,6 +1,5 @@
 package org.foop.finalproject.theMessageServer;
 
-import org.foop.finalproject.theMessageServer.missions.emptyMission;
 import org.foop.finalproject.theMessageServer.enums.Gender;
 import org.json.JSONObject;
 
@@ -20,6 +19,7 @@ public abstract class Character {
         this.hidden = hidden;
     }
 
+    /*
     public String getMissionDescription(){
         if(this.hidden)
             throw new RuntimeException("The information is hidden.");
@@ -32,6 +32,7 @@ public abstract class Character {
     }
     public boolean isMale(){return this.gender.isMale();}
     public boolean isFemale(){return this.gender.isFemale();}
+    */
 
     protected void uncover(){
         if(!this.hidden){
@@ -54,7 +55,7 @@ public abstract class Character {
 
     public boolean missionComplete(Game game, Player player){
         return mission.isCompleted(game, player);
-    };
+    }
 
     public JSONObject toJsonObject() {
         JSONObject jsonObject = new JSONObject();

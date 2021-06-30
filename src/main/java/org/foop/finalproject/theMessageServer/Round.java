@@ -88,19 +88,16 @@ public abstract class Round {
 
     public String getName(){ return name; }
 
-    public boolean isMainRound(){ return this instanceof MainRound; }
+    // public boolean isMainRound(){ return this instanceof MainRound; }
     public boolean isGameCardRound(){ return this instanceof GameCardRound; }
-    public boolean isIntelligenceRound(){ return this instanceof IntelligenceRound; }
+    // public boolean isIntelligenceRound(){ return this instanceof IntelligenceRound; }
     public boolean isCounteractRound(){ return this instanceof CounteractRound; }
 
     public boolean parentRoundIsMainRound(){ return parentRound instanceof MainRound; }
     public boolean parentRoundIsIntelligenceRound(){ return parentRound instanceof IntelligenceRound; }
 
-    public boolean playerIsOwnerOfCurrentRound(Player player){ return player == creator;}
+    // public boolean playerIsOwnerOfCurrentRound(Player player){ return player == creator;}
     public boolean playerIsOwnerOfParentRound(Player player){ return player == parentRound.creator; }
     public boolean playerIsCurrentPlayerOfParentRound(Player player) { return player == parentRound.currentPlayer; }
 
-    public boolean cardNeedTarget(GameCard card){
-        return (this instanceof GameCardRound && card.getNeedTarget()) || (this instanceof IntelligenceRound && card.isDirectMessage());
-    }
 }

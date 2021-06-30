@@ -2,13 +2,10 @@ package org.foop.finalproject.theMessageServer.round;
 
 
 import org.foop.finalproject.theMessageServer.Action;
-import org.foop.finalproject.theMessageServer.GameCards.Counteract;
 import org.foop.finalproject.theMessageServer.GameCards.Prove;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
-import org.foop.finalproject.theMessageServer.action.GameCardAction;
 import org.foop.finalproject.theMessageServer.action.ProveAction;
-import org.foop.finalproject.theMessageServer.enums.MessageType;
 import org.foop.finalproject.theMessageServer.enums.ProveOption;
 import org.json.JSONObject;
 
@@ -75,8 +72,8 @@ public class ProveRound extends Round {
         //接到player選擇的指令（試探)
         //currentAction
         //this.action = action;
-        ((ProveAction)this.action).setChosenOption(((ProveAction)action).getChoosedOption());
-        if(((ProveAction)this.action).checkifNeedTarget()){
+        ((ProveAction)this.action).setChosenOption(((ProveAction)action).getChosenOptionString());
+        if(((ProveAction)this.action).checkIfNeedTarget()){
             System.out.println("需要選擇target 開始targetRound");
             childRound = new TargetSelectRound(currentPlayer, this, this.action);
             game.setRound(childRound);

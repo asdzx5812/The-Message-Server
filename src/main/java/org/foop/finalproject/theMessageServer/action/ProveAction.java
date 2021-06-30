@@ -11,12 +11,12 @@ import org.json.JSONObject;
 
 public class ProveAction extends Action {
 
-    String choosedOption;
+    String chosenOptionString;
     ProveOption chosenOption;
-    public ProveAction(Game game, Player performer,Player beProvedPlayer, GameCard gameCard, String choosedOption) {
+    public ProveAction(Game game, Player performer,Player beProvedPlayer, GameCard gameCard, String chosenOptionString) {
         super(game, performer, gameCard, beProvedPlayer);
         //this.gameCardTarget = gameCardTarget;
-        this.choosedOption = choosedOption;
+        this.chosenOptionString = chosenOptionString;
 
     }
 
@@ -46,16 +46,16 @@ public class ProveAction extends Action {
 
     private ProveOption getChosenOption() {
         int proveType = ((Prove)this.card).getProveType();
-        int intergerChoosedOption;
+        int integerChosenOption;
         try{
-            intergerChoosedOption = Integer.parseInt(choosedOption);
+            integerChosenOption = Integer.parseInt(chosenOptionString);
         } catch (Exception e){
-            System.out.println("fail to get integer choosedType from " + choosedOption +" .");
+            System.out.println("fail to get integer chosenType from " + chosenOptionString +" .");
             e.printStackTrace();
             return null;
         }
-        ProveOption chosenOption = ProveOption.staticFunctions.getOption(proveType, intergerChoosedOption);
-        System.out.println(playerTarget.getUser().getName() + chosenOption.chosedOption);
+        ProveOption chosenOption = ProveOption.staticFunctions.getOption(proveType, integerChosenOption);
+        System.out.println(playerTarget.getUser().getName() + chosenOption.chosenOptionInt);
 
         return chosenOption;
 
@@ -78,15 +78,15 @@ public class ProveAction extends Action {
         }*/
         return jsonObject;
     }
-    public String getChoosedOption(){
-        return this.choosedOption;
+    public String getChosenOptionString(){
+        return this.chosenOptionString;
     }
-    public void setChosenOption(String choosedOption){
-        this.choosedOption = choosedOption;
+    public void setChosenOption(String chosenOptionString){
+        this.chosenOptionString = chosenOptionString;
         this.chosenOption = getChosenOption();
         return;
     }
-    public boolean checkifNeedTarget(){
+    public boolean checkIfNeedTarget(){
         switch (this.chosenOption){
             case THROW_ONE_CARD:
                 return true;

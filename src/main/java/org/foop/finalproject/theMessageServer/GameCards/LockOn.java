@@ -5,7 +5,6 @@ import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
-import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
 
 import java.util.ArrayList;
 

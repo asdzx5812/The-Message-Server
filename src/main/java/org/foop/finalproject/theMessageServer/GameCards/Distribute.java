@@ -39,14 +39,6 @@ public class Distribute extends GameCard {
             do{ currentPlayerIdx = (currentPlayerIdx + 1) % players.size(); }
             while( !players.get(currentPlayerIdx).isAlive() );
         }
-        for(int i = 0; i < players.size(); i++){
-            // if(!players.get(currentPlayerIdx))
-            // int turnPlayerIdx = (currentPlayerIdx + i) % players.size();
-            // players.get(turnPlayerIdx).drawCards_wo_broadcast(1);
-            //TODO 要做真偽莫辨的動畫可以在這廣播
-            //
-            //
-        }
         messageService.broadcastGameInformation(game);
     }
 

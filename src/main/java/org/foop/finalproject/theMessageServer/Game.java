@@ -10,16 +10,14 @@ import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
 import org.foop.finalproject.theMessageServer.characters.*;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
-import org.foop.finalproject.theMessageServer.enums.MessageType;
-import org.foop.finalproject.theMessageServer.missions.DaiLiMission;
-import org.foop.finalproject.theMessageServer.missions.JhihMingSiangShueiMission;
+import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
 import org.foop.finalproject.theMessageServer.round.MainRound;
 import org.foop.finalproject.theMessageServer.service.MessageService;
 import org.foop.finalproject.theMessageServer.enums.Camp;
 
 public class Game{
 
-    private MessageService messageService;
+    final private MessageService messageService;
     protected Room room;
     protected ArrayList<Player> players;
     protected ArrayList<Player> deadPlayers;
@@ -32,8 +30,6 @@ public class Game{
     protected Stack<GameCardAction> currentActionsOnBoard;
 
     protected GameCard passingCard;
-    private boolean gameOver = false;
-    public boolean isWaitingPlayerAction = false;
 
     public Game(Room room) {
         this.room = room;
@@ -105,7 +101,7 @@ public class Game{
         characterCardDeck.push(new professionalKiller());
         // 感覺較難
         characterCardDeck.push(new DaMeiNyu());
-        // characterCardDeck.push(new FuShe());
+        characterCardDeck.push(new FuShe());
         // 只有mission無法
         //characterCardDeck.push(new JhihMingSiangShuei());
 
@@ -134,10 +130,7 @@ public class Game{
         createGameCardExceptsForProve(5, "Counteract", GameCardColor.RED, IntelligenceType.DIRECT_MSG);
         createGameCardExceptsForProve(5, "Counteract", GameCardColor.BLUE, IntelligenceType.DIRECT_MSG);
         createGameCardExceptsForProve(4, "Counteract", GameCardColor.BLACK, IntelligenceType.DIRECT_MSG);
-        // TODO
         createProves();
-        //createProve(6, "Prove", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
-        //createProve(6, "Prove", GameCardColor.BLUE, IntelligenceType.ENCRYPTED_MSG);
         createGameCardExceptsForProve(1, "Distribute", GameCardColor.RED, IntelligenceType.CORPUS_MSG);
         createGameCardExceptsForProve(1, "Distribute", GameCardColor.BLUE, IntelligenceType.CORPUS_MSG);
         createGameCardExceptsForProve(1, "Distribute", GameCardColor.BLACK, IntelligenceType.CORPUS_MSG);
@@ -186,7 +179,8 @@ public class Game{
 
     public void createProve(GameCardColor gameCardColor, int proveType, Camp specialCamp, int order){
         gameCardsDeck.add(new Prove(gameCardColor, IntelligenceType.ENCRYPTED_MSG, proveType, specialCamp, order));
-    };
+    }
+
     public void createGameCardExceptsForProve(int num, String type, GameCardColor gameCardColor, IntelligenceType intelligenceType){
         for(int i = 1; i <= num; i++){
             switch (type){
@@ -283,15 +277,28 @@ public class Game{
         // Check blue camp win
     }
 
-    public void onPlayerLose(Player losedPlayer) {
-        messageService.broadcastPlayerStateChangeMessage(this, losedPlayer);
+    public void onPlayerLose(Player lostPlayer) {
+        messageService.broadcastPlayerStateChangeMessage(this, lostPlayer);
     }
 
     public void onGameOver() {
         // TODO
-        gameOver = true;
+        ArrayList<Player> winners = this.getWinners();
+        for(Player player:players){
+            if(player.character.hidden){
+                player.character.uncover();
+            }
+            for(Player winPlayer: winners){
+                if(player == winPlayer){
+                    player.setStatus(PlayerStatus.Win);
+                }
+            }
+            if(player.getStatus() != PlayerStatus.Win){
+                player.setStatus(PlayerStatus.Lose);
+            }
+        }
+        messageService.broadcastGameOverMessage(this, winners);
         room.onGameOver();
-        messageService.broadcastGameOverMessage(this);
     }
 
     public Player getPlayerById(String id) {
@@ -350,11 +357,13 @@ public class Game{
 
     public void leaveRound() {
         if(round instanceof MainRound){
+            this.round = this.round.getParentRound();
             onGameOver();
         }
         else {
             this.round = this.round.getParentRound();
             round.doWhenLeaveChildRound();
+
         }
     }
 
@@ -362,9 +371,9 @@ public class Game{
         return currentActionsOnBoard;
     }
 
-    public Stack<GameCard> getGameCardsDeck(){ return gameCardsDeck;}
+    // public Stack<GameCard> getGameCardsDeck(){ return gameCardsDeck; }
 
-    public ArrayList<GameCard> getPlayedCards(){ return playedCards;}
+    // public ArrayList<GameCard> getPlayedCards(){ return playedCards; }
 
     public void takeActionOnBoard() {
         System.out.println("There are "+ currentActionsOnBoard.size() +" cards on the board.");
@@ -375,20 +384,15 @@ public class Game{
                 if(!(gamecard instanceof Prove)) {
                     //非prove 不需要等待詢問 直接下一個turn
                     action.execute();
-                    // TODO
-                    String message = action.getGameMessage();
-                    //messageService.broadcastActionPerformed(this, message);
                     playedCards.add(gamecard);
                     messageService.broadcastGameInformation(this);
                     round.onTurnEnd();
                 }
-                else if (gamecard instanceof Prove){
+                else{
+                    // gameCard instanceof Prove
                     //通知玩家二選一
                     action.execute();
                     //messageService.informPlayerChooseOfProof();
-                }
-                else {
-                    System.out.println("Should not be called here!");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -402,7 +406,7 @@ public class Game{
     public GameCard getPassingCard() { return this.passingCard;}
 
     public void addReadyPlayer(Player player) {
-        if(readyPlayers != null && readyPlayers.indexOf(player) == -1){
+        if(readyPlayers != null && !readyPlayers.contains(player)){
             readyPlayers.add(player);
             System.out.println(player.getUser().getName() + "準備好了！！");
             tryGameStart();
@@ -435,8 +439,7 @@ public class Game{
         }
         return targetList;
     }
-
-    public boolean winnerAppears(){
+    public boolean isOnlyOnePlayerAlive(){
         boolean onlyOnePlayerAlive = false;
         for(Player player: players){
             if(player.isAlive()){
@@ -448,7 +451,10 @@ public class Game{
                 }
             }
         }
-        if(onlyOnePlayerAlive){
+        return onlyOnePlayerAlive;
+    }
+    public boolean winnerAppears(){
+        if(isOnlyOnePlayerAlive()){
             return true;
         }
         for(Player player: players){
@@ -460,13 +466,38 @@ public class Game{
     }
     public ArrayList<Player> getWinners(){
         ArrayList<Player> winners = new ArrayList<>();
+        if(isOnlyOnePlayerAlive()){
+            if(getOnlyOnePlayerAlive() != null)
+                winners.add(getOnlyOnePlayerAlive());
+            else{
+                System.out.println("should not happen");
+            }
+        }
         for(Player player: players){
             if(player.isWin()){
                 winners.add(player);
             }
         }
+        //腹蛇
+        for(Player player: players){
+            if(player.character instanceof FuShe && player.isWin()){
+                winners.clear();
+                winners.add(player);
+                break;
+            }
+        }
+
+
         return winners;
 
+    }
+
+    private Player getOnlyOnePlayerAlive() {
+        for(Player player:players){
+            if(player.isAlive())
+                return player;
+        }
+        return null;
     }
 
     public int getAlivePlayersNum() {

@@ -6,7 +6,8 @@ public enum PlayerStatus {
     LockOn("LOCKEDON"),
     Trap("TRAPPED"),
     Dead("DEAD"),
-    Lose("LOST");
+    Lose("LOSE"),
+    Win("WIN");
 
 
     public String status;

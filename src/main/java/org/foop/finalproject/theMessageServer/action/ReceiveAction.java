@@ -5,9 +5,6 @@ import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.Player;
 import org.json.JSONObject;
 
-import javax.websocket.EncodeException;
-import java.io.IOException;
-
 public class ReceiveAction extends Action {
     public ReceiveAction(Game game, Player receiver){
         super(game, null, null, receiver);
