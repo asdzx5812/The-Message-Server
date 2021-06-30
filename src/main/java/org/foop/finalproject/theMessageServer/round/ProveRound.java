@@ -75,7 +75,7 @@ public class ProveRound extends Round {
         ((ProveAction)this.action).setChosenOption(((ProveAction)action).getChosenOptionString());
         if(((ProveAction)this.action).checkIfNeedTarget()){
             System.out.println("需要選擇target 開始targetRound");
-            childRound = new TargetSelectRound(currentPlayer, this, this.action);
+            childRound = new TargetSelectRound(this.action.getPlayerTarget(), this, this.action);
             game.setRound(childRound);
             childRound.onRoundStart();
         }

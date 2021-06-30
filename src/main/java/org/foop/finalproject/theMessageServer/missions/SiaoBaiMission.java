@@ -7,7 +7,9 @@ import org.foop.finalproject.theMessageServer.enums.Camp;
 import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
 
 public class SiaoBaiMission extends Mission {
-
+    public SiaoBaiMission(){
+        description = "你第一個死亡，或潛伏與軍情雙方的其中一方全滅。";
+    }
     @Override
     protected boolean isCompleted(Game game, Player player) {
         boolean firstDieFlag = true;

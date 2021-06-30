@@ -24,6 +24,7 @@ public class Return extends GameCard {
     }
     @Override
     public void perform(Player performer, Player playerTarget, Game game) {
+
         if(!performer.isAlive()){
 
         }
@@ -33,11 +34,13 @@ public class Return extends GameCard {
             messageService.broadcastActionPerformed(game, messages);
             return;
         }else {
+
+            /*
             if (performer.getStatus() == PlayerStatus.Normal) {
                 performer.beTrap();
-            }
+            }*/
             ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
-                    "的", this.name, "生效了了，情報將會反方向傳遞回去。");
+                    "的", this.name, "生效了，情報將會反方向傳遞回去。");
             messageService.broadcastActionPerformed(game, messages);
             ((IntelligenceRound) game.getRound().getParentRound()).changeDirection();
         }
