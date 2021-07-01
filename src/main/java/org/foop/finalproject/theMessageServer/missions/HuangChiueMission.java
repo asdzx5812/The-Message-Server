@@ -13,6 +13,21 @@ public class HuangChiueMission extends Mission {
     protected boolean isCompleted(Game game, Player player) {
         boolean aBlueDie = false;
         boolean aRedDie = false;
+        for(Player deadPlayer: game.getDeadPlayers()){
+            switch (deadPlayer.getCamp()){
+                case BLUE:
+                    aBlueDie = true;
+                    break;
+                case RED:
+                    aRedDie = true;
+                    break;
+            }
+        }
+        return aBlueDie && aRedDie;
+        /*
+        boolean aBlueDie = false;
+        boolean aRedDie = false;
+
         for(Player otherPlayer: game.getPlayers()){
             if(otherPlayer.getCamp() == Camp.BLUE && otherPlayer.isDead()){
                 aBlueDie = true;
@@ -22,5 +37,6 @@ public class HuangChiueMission extends Mission {
             }
         }
         return aBlueDie && aRedDie;
+        */
     }
 }

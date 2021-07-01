@@ -206,6 +206,7 @@ public class Player {
 
     public void die() { // Todo
         status = PlayerStatus.Dead;
+        die = true;
         if(character.isHidden()) {
             character.uncover();
         }
@@ -214,7 +215,9 @@ public class Player {
     }
 
     public void loseTheGame() {
+        die();
         status = PlayerStatus.Lose;
+        lose = true;
         if(character.isHidden()) {
             character.uncover();
         }

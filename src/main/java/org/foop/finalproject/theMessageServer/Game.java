@@ -86,7 +86,7 @@ public class Game{
         characterCardDeck.push(new DaoFong());
         characterCardDeck.push(new HuangChiue());
         characterCardDeck.push(new SiaoMaGe());
-        characterCardDeck.push(new SiaoBai());
+        //characterCardDeck.push(new SiaoBai());
 
         // 玩家死亡順序類
         // characterCardDeck.push(new FuPing());
