@@ -270,11 +270,8 @@ public class Game{
     }
 
     public void onPlayerDie(Player deadPlayer) {
-        // Check green camp win
         deadPlayers.add(deadPlayer);
-        // Check red camp win
         messageService.broadcastPlayerStateChangeMessage(this, deadPlayer);
-        // Check blue camp win
     }
 
     public void onPlayerLose(Player lostPlayer) {

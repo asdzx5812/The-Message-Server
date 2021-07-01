@@ -11,6 +11,7 @@ public class FuPingMission extends Mission {
     }
     @Override
     protected boolean isCompleted(Game game, Player player) {
+        //TODO Future work: simplified
         boolean hasFirsyPlayer = false;
         for(Player otherPlayer: game.getPlayers()){
             if(otherPlayer.getStatus() == PlayerStatus.Dead){

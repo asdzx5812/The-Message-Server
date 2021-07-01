@@ -82,14 +82,6 @@ public class GameCardRound extends Round {
         System.out.println("GameCardRound: onTurnProgressing end.");
     }
 
-    private boolean checkIfCounteract(Action action) {
-        System.out.println("GameCardRound: checkIfCounteract");
-        if( action.getCard() instanceof Counteract){
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public void onTurnEnd() {
         System.out.println("GameCardRound: onTurnEnd start.");
@@ -97,7 +89,8 @@ public class GameCardRound extends Round {
         //這個takeActionOnBoard 移到doWhenLeaveChildRound
         //game.takeActionOnBoard();
 
-        if(satisfyRoundEndCondition() || game.winnerAppears()){
+        if(satisfyRoundEndCondition()){
+            System.out.println("GameCardRound: onTurnEnd end.");
             onRoundEnd();
             return;
         }
@@ -150,7 +143,7 @@ public class GameCardRound extends Round {
 
     @Override
     public boolean satisfyRoundEndCondition() {
-        return endPlayer == getNextPlayer() && canEndInThisTurn;
+        return game.winnerAppears() || (endPlayer == getNextPlayer() && canEndInThisTurn);
     }
 
 }
