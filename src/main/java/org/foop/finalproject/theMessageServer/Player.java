@@ -102,8 +102,9 @@ public class Player {
         messageService.broadcastActionBeenPlayedMessage(game, receiveAction);
         if(intelligences.get(GameCardColor.BLACK.type).size() >= 3){
             die();
-            killedBy = receiveAction.getPerformer();
-            receiveAction.getPlayerTarget().addKillPerson(this);
+            killedBy = receiveAction.getPerformer(); //殺人的人
+            killedBy.addKillPerson(this); //把被殺的加入殺手的得手名單
+            //receiveAction.getPlayerTarget().addKillPerson(this);
         }
     }
 

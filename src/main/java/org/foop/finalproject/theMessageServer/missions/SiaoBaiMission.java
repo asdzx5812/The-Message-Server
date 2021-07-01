@@ -12,7 +12,7 @@ public class SiaoBaiMission extends Mission {
     }
     @Override
     protected boolean isCompleted(Game game, Player player) {
-        boolean firstDieFlag = true;
+        boolean firstDieFlag = (player.getStatus() == PlayerStatus.Dead);
         boolean blueCampAllDieFlag = true;
         boolean redCampAllDieFlag = true;
         if(player.getStatus() == PlayerStatus.Dead){
