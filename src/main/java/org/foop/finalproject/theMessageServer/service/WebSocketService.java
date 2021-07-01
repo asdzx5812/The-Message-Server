@@ -39,7 +39,9 @@ public class WebSocketService {
     @OnClose
     public void onClose(Session session, CloseReason closedReason) {
         // Main.closeSessions();
+
         System.out.println("有人結束連線 : " + session.getId() + " " + closedReason.getReasonPhrase());
+        /*
         if(Main.sessionIdMapToUser.containsKey(session.getId())){
             User user = Main.sessionIdMapToUser.get(session.getId());
             Room room = user.getCurrentRoom();
@@ -68,6 +70,8 @@ public class WebSocketService {
             }
         }
         Main.sessionIdMapToUser.remove(session.getId());
+        */
+
     }
 
     /**
