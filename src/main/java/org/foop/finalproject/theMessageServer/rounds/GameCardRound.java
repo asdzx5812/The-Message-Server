@@ -1,7 +1,6 @@
 package org.foop.finalproject.theMessageServer.rounds;
 
 import org.foop.finalproject.theMessageServer.Action;
-import org.foop.finalproject.theMessageServer.gamecards.Counteract;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
 import org.foop.finalproject.theMessageServer.actions.*;
@@ -87,7 +86,7 @@ public class GameCardRound extends Round {
         System.out.println("GameCardRound: onTurnEnd start.");
 
         //這個takeActionOnBoard 移到doWhenLeaveChildRound
-        //game.takeActionOnBoard();
+        //game.takeActionsOnBoard();
 
         if(satisfyRoundEndCondition()){
             System.out.println("GameCardRound: onTurnEnd end.");
@@ -115,7 +114,7 @@ public class GameCardRound extends Round {
         else if(childRound instanceof CounteractRound) {
             setChildRound(null);
             //被移到這裡
-            game.takeActionOnBoard();
+            game.takeActionsOnBoard();
         }
         else if(childRound instanceof ProveRound){
             messageService.broadcastGameInformation(game);

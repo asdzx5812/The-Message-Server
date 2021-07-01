@@ -45,7 +45,6 @@ public abstract class Action {
     public boolean ifNeedTarget(){
         return this.card.getNeedTarget();
     }
-    //Todo
     public abstract JSONObject toJsonObject();
 
     public abstract String getGameMessage();

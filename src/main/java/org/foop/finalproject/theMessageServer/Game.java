@@ -67,41 +67,41 @@ public class Game{
 
     public void createCharacterCardDeck(){
         // 情報類
-        // characterCardDeck.push(new ChingBaoChuJhang());
-        // characterCardDeck.push(new CiBai());
-        // characterCardDeck.push(new DaiLi());
-        // characterCardDeck.push(new EMeiFong());
-        // characterCardDeck.push(new LaoCiang());
-        // characterCardDeck.push(new LiuJie());
-        // characterCardDeck.push(new YiDianYuan());
+        characterCardDeck.push(new ChingBaoChuJhang());
+        characterCardDeck.push(new CiBai());
+        characterCardDeck.push(new DaiLi());
+        characterCardDeck.push(new EMeiFong());
+        characterCardDeck.push(new LaoCiang());
+        characterCardDeck.push(new LiuJie());
+        characterCardDeck.push(new YiDianYuan());
 
         // 手牌類
-        // characterCardDeck.push(new BeiLeiMao());
-        // characterCardDeck.push(new GangTieTeGong());
-        // characterCardDeck.push(new GuaiDaoJiouJiou());
-        // characterCardDeck.push(new Holmes());
-        // characterCardDeck.push(new LaoJin());
+        characterCardDeck.push(new BeiLeiMao());
+        characterCardDeck.push(new GangTieTeGong());
+        characterCardDeck.push(new GuaiDaoJiouJiou());
+        characterCardDeck.push(new Holmes());
+        characterCardDeck.push(new LaoJin());
 
         // 玩家死亡數量類
         characterCardDeck.push(new DaoFong());
         characterCardDeck.push(new HuangChiue());
         characterCardDeck.push(new SiaoMaGe());
-        //characterCardDeck.push(new SiaoBai());
+        characterCardDeck.push(new SiaoBai());
 
         // 玩家死亡順序類
-        // characterCardDeck.push(new FuPing());
+        characterCardDeck.push(new FuPing());
 
         // 其他
         // 感覺較簡單
-        // characterCardDeck.push(new ShanLing());
+        characterCardDeck.push(new ShanLing());
         characterCardDeck.push(new LaoGuei());
-        // characterCardDeck.push(new LiFuMengMianJen());
+        characterCardDeck.push(new LiFuMengMianJen());
         characterCardDeck.push(new HeiMeiGui());
         // 中間難度
         characterCardDeck.push(new professionalKiller());
         // 感覺較難
         characterCardDeck.push(new DaMeiNyu());
-        // characterCardDeck.push(new FuShe());
+        characterCardDeck.push(new FuShe());
         // 沒有skill無法
         //characterCardDeck.push(new JhihMingSiangShuei());
 
@@ -279,7 +279,6 @@ public class Game{
     }
 
     public void onGameOver() {
-        // TODO
         ArrayList<Player> winners = this.getWinners();
         for(Player player:players){
             if(player.character.hidden){
@@ -368,11 +367,7 @@ public class Game{
         return currentActionsOnBoard;
     }
 
-    // public Stack<GameCard> getGameCardsDeck(){ return gameCardsDeck; }
-
-    // public ArrayList<GameCard> getPlayedCards(){ return playedCards; }
-
-    public void takeActionOnBoard() {
+    public void takeActionsOnBoard() {
         System.out.println("There are "+ currentActionsOnBoard.size() +" cards on the board.");
         while(currentActionsOnBoard.size() > 0){
             GameCardAction action = currentActionsOnBoard.pop();
@@ -436,21 +431,6 @@ public class Game{
         }
         return targetList;
     }
-    /*
-    public boolean isOnlyOnePlayerAlive(){
-        boolean onlyOnePlayerAlive = false;
-        for(Player player: players){
-            if(player.isAlive()){
-                if(onlyOnePlayerAlive){
-                    onlyOnePlayerAlive = false;
-                    break;
-                }else{
-                    onlyOnePlayerAlive = true;
-                }
-            }
-        }
-        return onlyOnePlayerAlive;
-    }*/
 
     public boolean winnerAppears(){
         for(Player player: players){
@@ -488,11 +468,9 @@ public class Game{
         ArrayList<Player> winners = new ArrayList<>();
         winners.addAll(directWinners);
         winners.addAll(indirectWinners);
-
         return winners;
 
     }
-
     public int getAlivePlayersNum() {
         int count = 0;
         for(Player player:players){
