@@ -29,6 +29,11 @@ public class MainRound extends Round {
         // TODO: 廣播誰負責派情報，並且廣播開始功能牌階段
         intelligenceHasSent = false;
         currentPlayer.drawCards(2);
+        //要判怪盜99之類集手牌的角色獲勝
+        if(satisfyRoundEndCondition()){
+            onRoundEnd();
+            return;
+        }
         messageService.broadcastTurnStartMessage(game, currentPlayer);
         childRound = new GameCardRound(currentPlayer, this);
         game.setRound(childRound);

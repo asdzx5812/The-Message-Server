@@ -439,6 +439,7 @@ public class Game{
         }
         return targetList;
     }
+    /*
     public boolean isOnlyOnePlayerAlive(){
         boolean onlyOnePlayerAlive = false;
         for(Player player: players){
@@ -452,73 +453,47 @@ public class Game{
             }
         }
         return onlyOnePlayerAlive;
-    }
+    }*/
+
     public boolean winnerAppears(){
-        if(isOnlyOnePlayerAlive()){
-            return true;
-        }
         for(Player player: players){
-            if(player.isWin()){
+            if(player.isDirectWin()){
                 return true;
             }
         }
         return false;
     }
     public ArrayList<Player> getWinners(){
-        ArrayList<Player> winners = new ArrayList<>();
-        if(isOnlyOnePlayerAlive()){
-            if(getOnlyOnePlayerAlive() != null)
-                winners.add(getOnlyOnePlayerAlive());
-            else{
-                System.out.println("should not happen");
-            }
-        }
+        ArrayList<Player> directWinners = new ArrayList<>();
+        ArrayList<Player> indirectWinners = new ArrayList<>();
         //找到所有獲得三張情報 和 機密任務完成的人
-        boolean redWin = false;
-        boolean blueWin = false;
         for(Player player: players){
-            if(player.isWin()){
-                winners.add(player);
-                if(player.getCamp() == Camp.RED){
-                    redWin = true;
-                }
-                else if(player.getCamp() == Camp.BLUE){
-                    blueWin = true;
-                }
-            }
-        }
-        //補上若是獲得三張紅 藍情報，同陣營也會一起獲勝
-        for(Player player: players){
-            if(winners.contains(player)){
-                continue;
-            }
-            if(redWin && player.getCamp() == Camp.RED){
-                winners.add(player);
-            }
-            else if(blueWin && player.getCamp() == Camp.BLUE){
-                winners.add(player);
+            if(player.isDirectWin()){
+                directWinners.add(player);
             }
         }
         //腹蛇
         for(Player player: players){
-            if(player.character instanceof FuShe && player.getCamp() == Camp.GREEN && player.isWin()){
-                winners.clear();
-                winners.add(player);
+            if(player.character instanceof FuShe && player.getCamp() == Camp.GREEN && player.isDirectWin()){
+                directWinners.clear();
+                directWinners.add(player);
                 break;
             }
         }
 
+        for(Player player: players){
+            // 若是獲得三張紅 藍情報，同陣營也會一起獲勝
+            // 打醬油可能會有跟隨勝利的，eg 黑玫瑰or禮服蒙面人
+            if(player.isIndirectWin(directWinners)){
+                indirectWinners.add(player);
+            }
+        }
+        ArrayList<Player> winners = new ArrayList<>();
+        winners.addAll(directWinners);
+        winners.addAll(indirectWinners);
 
         return winners;
 
-    }
-
-    private Player getOnlyOnePlayerAlive() {
-        for(Player player:players){
-            if(player.isAlive())
-                return player;
-        }
-        return null;
     }
 
     public int getAlivePlayersNum() {

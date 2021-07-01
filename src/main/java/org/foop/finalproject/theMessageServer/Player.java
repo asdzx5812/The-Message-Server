@@ -1,6 +1,8 @@
 package org.foop.finalproject.theMessageServer;
 
 import org.foop.finalproject.theMessageServer.actions.ReceiveAction;
+import org.foop.finalproject.theMessageServer.characters.DaMeiNyu;
+import org.foop.finalproject.theMessageServer.characters.LiFuMengMianJen;
 import org.foop.finalproject.theMessageServer.enums.Camp;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
@@ -57,8 +59,21 @@ public class Player {
         return intelligences;
     }
 
-    public boolean isWin() {
+    public boolean isDirectWin() {
         if(isLose()) return false;
+        boolean onlyThisPlayerAlive = isAlive();
+        for(Player player: game.getPlayers()){
+            if(player == this) {
+                continue;
+            }
+            if(player.isAlive()){
+                onlyThisPlayerAlive = false;
+                break;
+            }
+        }
+        if(onlyThisPlayerAlive){
+            return true;
+        }
         switch (camp){
             case RED:
             case BLUE:
@@ -69,6 +84,50 @@ public class Player {
                 System.out.println("Which camp is this: " + camp.type + " ...");
                 return false;
         }
+    }
+    public boolean isIndirectWin(ArrayList<Player> directWinners){
+        if(directWinners.contains(this)){
+            return false;
+        }
+        boolean redWin = false, blueWin = false;
+        for(Player directWinner: directWinners) {
+            switch (directWinner.getCamp()) {
+                case BLUE:
+                    blueWin = true;
+                    break;
+                case RED:
+                    redWin = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+        switch (this.getCamp()) {
+            case RED:
+                return redWin;
+            case BLUE:
+                return blueWin;
+            case GREEN:
+                if (this.character instanceof DaMeiNyu) {
+                    if (this.getIntelligences().get(GameCardColor.BLACK.type).size() <= 1) {
+                        for (Player directWinner : directWinners) {
+                            if (directWinner.character.gender.isMale()) {
+                                return true;
+                            }
+                        }
+                    }
+                } else if (this.character instanceof LiFuMengMianJen) {
+                    for (Player directWinner : directWinners) {
+                        if (directWinner.character.gender.isFemale()) {
+                            return true;
+                        }
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        return false;
     }
 
     public boolean isDead() { return die; }
