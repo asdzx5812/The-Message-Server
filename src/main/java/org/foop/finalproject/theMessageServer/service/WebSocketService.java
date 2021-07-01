@@ -68,8 +68,9 @@ public class WebSocketService {
                     System.out.println(user.getName() + "斷線，從房間中移除。");
                 }
             }
+            Main.sessionIdMapToUser.remove(session.getId());
         }
-        Main.sessionIdMapToUser.remove(session.getId());
+
         */
 
     }
