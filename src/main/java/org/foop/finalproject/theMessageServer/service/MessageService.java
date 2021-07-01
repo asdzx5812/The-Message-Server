@@ -1,21 +1,16 @@
 package org.foop.finalproject.theMessageServer.service;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.foop.finalproject.theMessageServer.*;
-import org.foop.finalproject.theMessageServer.action.GameCardAction;
-import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
-import org.foop.finalproject.theMessageServer.action.PassAction;
-import org.foop.finalproject.theMessageServer.action.ReceiveAction;
-import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
+import org.foop.finalproject.theMessageServer.actions.GameCardAction;
+import org.foop.finalproject.theMessageServer.actions.IntelligenceAction;
+import org.foop.finalproject.theMessageServer.actions.PassAction;
+import org.foop.finalproject.theMessageServer.actions.ReceiveAction;
 import org.foop.finalproject.theMessageServer.enums.MessageType;
 import org.foop.finalproject.theMessageServer.enums.ProveOption;
-import org.foop.finalproject.theMessageServer.round.CounteractRound;
-import org.foop.finalproject.theMessageServer.round.GameCardRound;
+import org.foop.finalproject.theMessageServer.rounds.CounteractRound;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -305,8 +300,8 @@ public class MessageService {
         broadcastMessage(body, game);
     }
     //廣播誰試探選擇了什麼選項
-    //TYPE: BROADCAST_PLAYER_CHOSED_OPTION_FOR_PROVE
-    public void broadcastPlayerChooseOptionForProve(Game game, Player beProvedPlayer, ProveOption chosenOption) {
+    //TYPE: BROADCAST_PLAYER_CHOSEN_OPTION_FOR_PROVE
+    public void broadcastPlayerChosenOptionForProve(Game game, Player beProvedPlayer, ProveOption chosenOption) {
         System.out.println("廣播" + beProvedPlayer.getUser().getName() + " 選了什麼試探的選項 : " + chosenOption.proveOption);
         JSONObject payload = new JSONObject();
         payload.put("playerId", beProvedPlayer.getId());

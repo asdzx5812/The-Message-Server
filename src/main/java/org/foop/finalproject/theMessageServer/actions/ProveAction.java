@@ -1,9 +1,9 @@
-package org.foop.finalproject.theMessageServer.action;
+package org.foop.finalproject.theMessageServer.actions;
 
 import org.foop.finalproject.theMessageServer.Action;
 import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
-import org.foop.finalproject.theMessageServer.GameCards.Prove;
+import org.foop.finalproject.theMessageServer.gamecards.Prove;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.service.MessageService;
 import org.foop.finalproject.theMessageServer.enums.ProveOption;
@@ -13,11 +13,10 @@ public class ProveAction extends Action {
 
     String chosenOptionString;
     ProveOption chosenOption;
-    public ProveAction(Game game, Player performer,Player beProvedPlayer, GameCard gameCard, String chosenOptionString) {
+    public ProveAction(Game game, Player performer, Player beProvedPlayer, GameCard gameCard, String chosenOptionString) {
         super(game, performer, gameCard, beProvedPlayer);
-        //this.gameCardTarget = gameCardTarget;
+        this.gameCardTarget = gameCard;
         this.chosenOptionString = chosenOptionString;
-
     }
 
     @Override
@@ -30,7 +29,7 @@ public class ProveAction extends Action {
             case THROW_ONE_CARD:
                 if(gameCardTarget == null){
                     System.out.println("prove沒選到丟棄手牌");
-                    return;
+                    // return;
                 }
                 playerTarget.removeCardFromHandCards(gameCardTarget);
                 break;
@@ -41,7 +40,7 @@ public class ProveAction extends Action {
             default:
                 break;
         }
-        messageService.broadcastPlayerChooseOptionForProve(game, playerTarget, chosenOption);
+        messageService.broadcastPlayerChosenOptionForProve(game, playerTarget, chosenOption);
     }
 
     private ProveOption getChosenOption() {

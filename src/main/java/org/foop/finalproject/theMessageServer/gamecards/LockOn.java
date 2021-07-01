@@ -1,4 +1,4 @@
-package org.foop.finalproject.theMessageServer.GameCards;
+package org.foop.finalproject.theMessageServer.gamecards;
 import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Player;
@@ -8,7 +8,7 @@ import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 
 import java.util.ArrayList;
 
-public class LockOn extends GameCard{
+public class LockOn extends GameCard {
     public LockOn(GameCardColor gameCardColor, IntelligenceType intelligenceType, int order) {
         super(gameCardColor, intelligenceType, order);
         // name = "LOCK ON"; // 鎖定
@@ -25,7 +25,7 @@ public class LockOn extends GameCard{
     public void perform(Player performer, Player playerTarget, Game game) {
         if(playerTarget.isLockOn()){
             ArrayList<String> messages = messageService.getActionMessages(performer.getId(),
-                    "的", this.name, "沒有生效，因為", playerTarget.getId(), "已經被識破了");
+                    "的", this.name, "沒有生效，因為", playerTarget.getId(), "已經鎖定破了");
 
             messageService.broadcastActionPerformed(game, messages);
             playerTarget.beLockOn();

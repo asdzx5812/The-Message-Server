@@ -1,6 +1,6 @@
 package org.foop.finalproject.theMessageServer;
 
-import org.foop.finalproject.theMessageServer.action.ReceiveAction;
+import org.foop.finalproject.theMessageServer.actions.ReceiveAction;
 import org.foop.finalproject.theMessageServer.enums.Camp;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.PlayerStatus;

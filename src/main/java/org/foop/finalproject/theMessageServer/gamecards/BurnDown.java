@@ -1,4 +1,4 @@
-package org.foop.finalproject.theMessageServer.GameCards;
+package org.foop.finalproject.theMessageServer.gamecards;
 
 import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;

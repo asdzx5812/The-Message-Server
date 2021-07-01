@@ -1,14 +1,12 @@
 package org.foop.finalproject.theMessageServer.restapi;
 
 import org.foop.finalproject.theMessageServer.*;
-import org.foop.finalproject.theMessageServer.GameCards.Prove;
-import org.foop.finalproject.theMessageServer.round.ProveRound;
+import org.foop.finalproject.theMessageServer.rounds.ProveRound;
 import org.foop.finalproject.theMessageServer.service.GameService;
 import org.foop.finalproject.theMessageServer.service.RoomService;
 import org.foop.finalproject.theMessageServer.service.MessageService;
-import org.foop.finalproject.theMessageServer.action.*;
+import org.foop.finalproject.theMessageServer.actions.*;
 
-import org.foop.finalproject.theMessageServer.round.GameCardRound;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

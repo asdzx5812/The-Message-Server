@@ -1,11 +1,9 @@
 package org.foop.finalproject.theMessageServer.missions;
 
 import org.foop.finalproject.theMessageServer.Game;
-import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Mission;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
-import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 
 public class LiuJieMission extends Mission {
     public LiuJieMission(){

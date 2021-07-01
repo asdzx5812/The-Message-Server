@@ -1,10 +1,10 @@
-package org.foop.finalproject.theMessageServer.round;
+package org.foop.finalproject.theMessageServer.rounds;
 
 import org.foop.finalproject.theMessageServer.Action;
-import org.foop.finalproject.theMessageServer.GameCards.Counteract;
+import org.foop.finalproject.theMessageServer.gamecards.Counteract;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
-import org.foop.finalproject.theMessageServer.action.*;
+import org.foop.finalproject.theMessageServer.actions.*;
 import org.foop.finalproject.theMessageServer.enums.MessageType;
 
 public class GameCardRound extends Round {

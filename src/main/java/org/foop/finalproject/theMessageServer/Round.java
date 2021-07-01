@@ -1,9 +1,9 @@
 package org.foop.finalproject.theMessageServer;
 
-import org.foop.finalproject.theMessageServer.round.MainRound;
-import org.foop.finalproject.theMessageServer.round.GameCardRound;
-import org.foop.finalproject.theMessageServer.round.IntelligenceRound;
-import org.foop.finalproject.theMessageServer.round.CounteractRound;
+import org.foop.finalproject.theMessageServer.rounds.MainRound;
+import org.foop.finalproject.theMessageServer.rounds.GameCardRound;
+import org.foop.finalproject.theMessageServer.rounds.IntelligenceRound;
+import org.foop.finalproject.theMessageServer.rounds.CounteractRound;
 import org.foop.finalproject.theMessageServer.service.GameService;
 import org.foop.finalproject.theMessageServer.service.MessageService;
 

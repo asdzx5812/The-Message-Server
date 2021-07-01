@@ -1,11 +1,11 @@
-package org.foop.finalproject.theMessageServer.GameCards;
+package org.foop.finalproject.theMessageServer.gamecards;
 import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
-import org.foop.finalproject.theMessageServer.round.IntelligenceRound;
+import org.foop.finalproject.theMessageServer.rounds.IntelligenceRound;
 
 import java.util.ArrayList;
 

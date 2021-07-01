@@ -1,10 +1,15 @@
 package org.foop.finalproject.theMessageServer.service;
 
 import org.foop.finalproject.theMessageServer.Main;
+import org.foop.finalproject.theMessageServer.Room;
 import org.foop.finalproject.theMessageServer.User;
+import org.foop.finalproject.theMessageServer.Game;
+import org.foop.finalproject.theMessageServer.Player;
+import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 
@@ -32,9 +37,37 @@ public class WebSocketService {
      * @throws Exception
      */
     @OnClose
-    public void onClose() {
+    public void onClose(Session session, CloseReason closedReason) {
         // Main.closeSessions();
-        System.out.println("有人結束連線");
+        System.out.println("有人結束連線 : " + session.getId() + " " + closedReason.getReasonPhrase());
+        if(Main.sessionIdMapToUser.containsKey(session.getId())){
+            User user = Main.sessionIdMapToUser.get(session.getId());
+            Room room = user.getCurrentRoom();
+            //在房間裡
+            if(room != null){
+                RoomService roomService = new RoomService();
+                if(room.getIsPlaying()) {
+                    Game game = room.getGame();
+                    if(user == game.getRound().getCurrentPlayer().getUser()){
+
+                    }
+                    else{
+                        ArrayList<Player> players = game.getPlayers();
+                        for(Player player:players){
+                            if(player.getUser() == user){
+                                player.setStatus(PlayerStatus.Lose);
+                            }
+                        }
+                    }
+                    System.out.println(user.getName() + "從遊戲中離");
+                }
+                else{
+                    roomService.leaveRoom(room.getId(), user.getId());
+                    System.out.println(user.getName() + "斷線，從房間中移除。");
+                }
+            }
+        }
+        Main.sessionIdMapToUser.remove(session.getId());
     }
 
     /**
@@ -65,6 +98,7 @@ public class WebSocketService {
                 case "start": //Todo 創建user start-{username}
                     User user = new User(messages[1], session);
                     Main.addUser(user);
+                    Main.sessionIdMapToUser.put(session.getId(), user);
                     // Todo 看之後怎麼接
                     messageService.informUserId(user);
                     System.out.println("receive start and sent userId!!");

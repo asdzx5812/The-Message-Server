@@ -1,31 +1,25 @@
-package org.foop.finalproject.theMessageServer.action;
-
+package org.foop.finalproject.theMessageServer.actions;
 import org.foop.finalproject.theMessageServer.Action;
 import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.Player;
 import org.json.JSONObject;
 
-public class ReceiveAction extends Action {
-    public ReceiveAction(Game game, Player receiver){
-        super(game, null, null, receiver);
-    }
 
-    public ReceiveAction(IntelligenceAction intelligenceAction, Player playerTarget){
-        super(intelligenceAction.getGame(), intelligenceAction.getPerformer(), intelligenceAction.getCard(), playerTarget);
+
+public class PassAction extends Action{
+    public PassAction(Game game, Player performer){
+        super(game, performer, null, null);
     }
 
     @Override
     public void execute() {
         System.out.println("A pass should not be execute, so this should not happen ...");
     }
-
     @Override
     public JSONObject toJsonObject() {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("receiverId", playerTarget.getId());
-        jsonObject.put("senderId", performer.getId());
-        jsonObject.put("intelligence", card.toJsonObject());
-        jsonObject.put("action", "receive");
+        jsonObject.put("playerId", performer.getId());
+        jsonObject.put("action", "pass");
         return jsonObject;
     }
     @Override

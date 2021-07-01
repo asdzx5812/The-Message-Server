@@ -1,4 +1,4 @@
-package org.foop.finalproject.theMessageServer.action;
+package org.foop.finalproject.theMessageServer.actions;
 
 import org.foop.finalproject.theMessageServer.*;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;

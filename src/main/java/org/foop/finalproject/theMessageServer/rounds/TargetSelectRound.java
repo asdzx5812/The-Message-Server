@@ -1,11 +1,6 @@
-package org.foop.finalproject.theMessageServer.round;
+package org.foop.finalproject.theMessageServer.rounds;
 
 import org.foop.finalproject.theMessageServer.*;
-import org.foop.finalproject.theMessageServer.action.GameCardAction;
-import org.foop.finalproject.theMessageServer.action.ProveAction;
-
-import javax.websocket.EncodeException;
-import java.io.IOException;
 
 public class TargetSelectRound extends Round {
     Action action;
@@ -36,14 +31,12 @@ public class TargetSelectRound extends Round {
         if(parentRound instanceof ProveRound){
             GameCard gameCardTarget = action.getGameCardTarget();
             this.action.setGameCardTarget(gameCardTarget);
-            onTurnEnd();
         }
         else {
             Player playerTarget = action.getPlayerTarget();
             this.action.setPlayerTarget(playerTarget);
-            onTurnEnd();
         }
-
+        onTurnEnd();
     }
 
     @Override

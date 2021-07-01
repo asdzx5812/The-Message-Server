@@ -1,10 +1,10 @@
-package org.foop.finalproject.theMessageServer.GameCards;
+package org.foop.finalproject.theMessageServer.gamecards;
 import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
-import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
-import org.foop.finalproject.theMessageServer.action.ReceiveAction;
+import org.foop.finalproject.theMessageServer.actions.IntelligenceAction;
+import org.foop.finalproject.theMessageServer.actions.ReceiveAction;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import java.util.ArrayList;

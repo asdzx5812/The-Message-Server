@@ -1,11 +1,11 @@
-package org.foop.finalproject.theMessageServer.round;
+package org.foop.finalproject.theMessageServer.rounds;
 
 
 import org.foop.finalproject.theMessageServer.Action;
-import org.foop.finalproject.theMessageServer.GameCards.Prove;
+import org.foop.finalproject.theMessageServer.gamecards.Prove;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
-import org.foop.finalproject.theMessageServer.action.ProveAction;
+import org.foop.finalproject.theMessageServer.actions.ProveAction;
 import org.foop.finalproject.theMessageServer.enums.ProveOption;
 import org.json.JSONObject;
 

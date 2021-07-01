@@ -3,12 +3,14 @@ package org.foop.finalproject.theMessageServer;
 import org.foop.finalproject.theMessageServer.utils.Utility;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javax.websocket.Session;
 
 public class Main {
     static public ArrayList<Room> rooms = new ArrayList<>();
     static public ArrayList<User> users = new ArrayList<>();
-
+    static public Map<String, User> sessionIdMapToUser = new HashMap<>();
     public Main() throws Exception {
         /*
         rooms.add(new Room("123456", new User("EG", null)));

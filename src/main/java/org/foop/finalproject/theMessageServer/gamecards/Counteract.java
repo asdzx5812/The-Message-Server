@@ -1,9 +1,9 @@
-package org.foop.finalproject.theMessageServer.GameCards;
+package org.foop.finalproject.theMessageServer.gamecards;
 import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
-import org.foop.finalproject.theMessageServer.action.GameCardAction;
+import org.foop.finalproject.theMessageServer.actions.GameCardAction;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 

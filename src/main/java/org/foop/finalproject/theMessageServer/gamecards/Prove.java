@@ -1,15 +1,15 @@
-package org.foop.finalproject.theMessageServer.GameCards;
+package org.foop.finalproject.theMessageServer.gamecards;
 
 import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
-import org.foop.finalproject.theMessageServer.action.ProveAction;
+import org.foop.finalproject.theMessageServer.actions.ProveAction;
 import org.foop.finalproject.theMessageServer.enums.Camp;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.foop.finalproject.theMessageServer.enums.ProveOption;
-import org.foop.finalproject.theMessageServer.round.ProveRound;
+import org.foop.finalproject.theMessageServer.rounds.ProveRound;
 import org.json.JSONObject;
 
 import java.util.ArrayList;

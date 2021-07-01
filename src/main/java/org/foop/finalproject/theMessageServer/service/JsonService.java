@@ -1,9 +1,9 @@
 package org.foop.finalproject.theMessageServer.service;
 
-import org.foop.finalproject.theMessageServer.GameCards.Prove;
+import org.foop.finalproject.theMessageServer.gamecards.Prove;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.GameCard;
-import org.foop.finalproject.theMessageServer.action.GameCardAction;
+import org.foop.finalproject.theMessageServer.actions.GameCardAction;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;

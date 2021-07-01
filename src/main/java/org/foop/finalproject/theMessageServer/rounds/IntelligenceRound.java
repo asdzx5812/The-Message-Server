@@ -1,11 +1,11 @@
-package org.foop.finalproject.theMessageServer.round;
+package org.foop.finalproject.theMessageServer.rounds;
 
 import org.foop.finalproject.theMessageServer.Action;
 import org.foop.finalproject.theMessageServer.Player;
 import org.foop.finalproject.theMessageServer.Round;
-import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
-import org.foop.finalproject.theMessageServer.action.PassAction;
-import org.foop.finalproject.theMessageServer.action.ReceiveAction;
+import org.foop.finalproject.theMessageServer.actions.IntelligenceAction;
+import org.foop.finalproject.theMessageServer.actions.PassAction;
+import org.foop.finalproject.theMessageServer.actions.ReceiveAction;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.foop.finalproject.theMessageServer.enums.MessageType;
 import org.foop.finalproject.theMessageServer.enums.PlayerStatus;

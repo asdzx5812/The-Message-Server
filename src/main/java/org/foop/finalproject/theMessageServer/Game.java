@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
 
-import org.foop.finalproject.theMessageServer.GameCards.*;
-import org.foop.finalproject.theMessageServer.action.GameCardAction;
-import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
+import org.foop.finalproject.theMessageServer.gamecards.*;
+import org.foop.finalproject.theMessageServer.actions.GameCardAction;
+import org.foop.finalproject.theMessageServer.actions.IntelligenceAction;
 import org.foop.finalproject.theMessageServer.characters.*;
 import org.foop.finalproject.theMessageServer.enums.GameCardColor;
 import org.foop.finalproject.theMessageServer.enums.IntelligenceType;
 import org.foop.finalproject.theMessageServer.enums.PlayerStatus;
-import org.foop.finalproject.theMessageServer.round.MainRound;
+import org.foop.finalproject.theMessageServer.rounds.MainRound;
 import org.foop.finalproject.theMessageServer.service.MessageService;
 import org.foop.finalproject.theMessageServer.enums.Camp;
 

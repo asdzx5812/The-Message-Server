@@ -1,4 +1,4 @@
-package org.foop.finalproject.theMessageServer.GameCards;
+package org.foop.finalproject.theMessageServer.gamecards;
 import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
 import org.foop.finalproject.theMessageServer.Player;
@@ -42,6 +42,6 @@ public class Intercept extends GameCard {
 
     @Override
     public boolean isValid(Round currentRound, Player owner) {
-        return currentRound.isGameCardRound() && currentRound.parentRoundIsIntelligenceRound() && !currentRound.playerIsOwnerOfParentRound(owner);
+        return currentRound.isGameCardRound() && currentRound.parentRoundIsIntelligenceRound() && !currentRound.playerIsOwnerOfParentRound(owner) && !currentRound.playerIsCurrentPlayerOfParentRound(owner);
     }
 }

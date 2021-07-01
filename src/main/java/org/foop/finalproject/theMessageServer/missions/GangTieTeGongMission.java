@@ -2,7 +2,7 @@ package org.foop.finalproject.theMessageServer.missions;
 
 import org.foop.finalproject.theMessageServer.Game;
 import org.foop.finalproject.theMessageServer.GameCard;
-import org.foop.finalproject.theMessageServer.GameCards.Counteract;
+import org.foop.finalproject.theMessageServer.gamecards.Counteract;
 import org.foop.finalproject.theMessageServer.Mission;
 import org.foop.finalproject.theMessageServer.Player;
 

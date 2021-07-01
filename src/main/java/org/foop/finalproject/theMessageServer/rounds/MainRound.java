@@ -1,7 +1,7 @@
-package org.foop.finalproject.theMessageServer.round;
+package org.foop.finalproject.theMessageServer.rounds;
 
 import org.foop.finalproject.theMessageServer.*;
-import org.foop.finalproject.theMessageServer.action.IntelligenceAction;
+import org.foop.finalproject.theMessageServer.actions.IntelligenceAction;
 import org.foop.finalproject.theMessageServer.enums.MessageType;
 
 public class MainRound extends Round {

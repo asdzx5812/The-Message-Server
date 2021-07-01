@@ -2,9 +2,6 @@ package org.foop.finalproject.theMessageServer;
 
 import org.json.JSONObject;
 
-import javax.websocket.EncodeException;
-import java.io.IOException;
-
 public abstract class Action {
     protected Game game;
     protected Player performer;
