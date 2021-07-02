@@ -1,5 +1,5 @@
 package org.foop.finalproject.theMessageServer.service;
-
+/*
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
 import org.apache.tomcat.websocket.server.WsSci;
@@ -36,7 +36,7 @@ public class TomcatConfiguration {
      * 建立wss协议接口
      *
      * @return
-     */
+
     @Bean
     public TomcatContextCustomizer tomcatContextCustomizer() {
         System.out.println("init");
@@ -51,4 +51,4 @@ public class TomcatConfiguration {
     }
 
 
-}
+}*/
