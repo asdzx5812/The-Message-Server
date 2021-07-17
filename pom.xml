@@ -13,10 +13,13 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>the-message-server</name>
 	<description>Demo project for Spring Boot</description>
+	<!--
 	<properties>
 		<java.version>11</java.version>
 	</properties>
+
 	<packaging>jar</packaging>
+	-->
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -80,7 +83,6 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<mainClass>org.foop.finalproject.theMessageServer.TheMessageServerApplication</mainClass>
-
 				</configuration>
 				<executions>
 					<!-- 執行package時改執行repackage goal -->
